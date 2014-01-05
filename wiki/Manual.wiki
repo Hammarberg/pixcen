@@ -41,6 +41,21 @@ The palette (currently named VIC-II) shows your primary and secondary color sele
 
 The secondary color got two extra features: It will be used as the background fill when cutting out a selection. It will be used as the background mask when performing a masked paste
 
+=Color overflow=
+All modes except unrestricted mode have a limit on the number of colors that can be used per cell or for the whole of the image.
+
+The settings in the menu under Mode -> Color overflow, will control some aspects of color overflow.
+
+_Ignore_ will not let you draw the conflicting color.
+
+_Replace_ will replace all occurrences of the color being targeted, this can be image wide if it happens to be a global but not locked color.
+
+_Closest_ will temporary use one of the exiting colors that most closely match the conflicting color.
+
+You can toggle between _Replace_ and _Ignore_ with *CTRL*+*W*.
+
+Also see [Manual#Cell_window Cell window] for advanced information.
+
 =Undo & Redo=
 Undo is your friend!
 
