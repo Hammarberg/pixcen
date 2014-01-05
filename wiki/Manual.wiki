@@ -1,4 +1,4 @@
-#summary Manual index
+m#summary Manual index
 
 =Index=
 
@@ -63,9 +63,20 @@ Available as an option under the Edit menu or by pressing *CTRL*+*X*.
 Cut behaves much as copy except that the secondary color is used to fill the the selected area.
 
 ==Paste==
+Available as an option under the Edit menu or by pressing *CTRL*+*V*.
+
+When invoked, a temporary layer is created. The pasted bitmap is not merged until you press the left mouse button. This gives you the chance to place the bitmap.
+
+If you want to abort the paste operation, simply hit *ESC* at this point.
+
+When clicking the left mouse button the temporary layer is merged with the background bitmap. Depending on the graphics mode, the number of colors involved, color overflow settings and more, the merged result can be truncated. This is not an error but simple the restrictions of the C64 bitmap formats. If you are unhappy with the results simply undo.
 
 ===Masked paste===
+Available as an option under the Edit menu or by pressing *CTRL*+*Shift*+*V*.
 
+Behaves identical to paste except that the secondary color is used as a background mask.
+
+Tip: This can be used to fake brushes until those are implemented.
 
 =Preview window=
 
