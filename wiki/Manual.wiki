@@ -2,6 +2,29 @@
 
 =Index=
 
+[Manual#Navigating_the_bitmap]
+
+
+
+
 ==Navigating the bitmap==
 
-[Manual]
+If you get lost, restore view with Home key.
+
+To move around, hold middle (roll) button and move mouse or hold space and move mouse.
+
+Use arrow keys.
+
+To zoom, roll middle button or use + and - on keyboard.
+
+==Drawing & colors==
+
+To plot/draw, use left or right mouse button (primary and secondary color).
+
+To select new colors use right or left mouse on the palette or press 0 to F for quick selection of primary color.
+
+To swap primary and secondary colors use X key.
+
+==Undo & Redo==
+
+To undo press CTRL+Z, and CTRL+Y for redo.
