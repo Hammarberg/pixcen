@@ -12,15 +12,15 @@ To move around, hold middle (roll) button and move mouse or hold space and move 
 
 Use arrow keys.
 
-To zoom, roll middle button or use + and - on keyboard.
+To zoom, roll middle button or use *+* and *-* on keyboard.
 
 =Drawing & colors=
 
 To plot/draw, use left or right mouse button (primary and secondary color).
 
-To select new colors use right or left mouse on the palette or press 0-9/A-F for quick selection of primary color.
+To select new colors use right or left mouse on the palette or press *0*-*9*/*A*-*F* for quick selection of primary color.
 
-To swap primary and secondary colors use X key.
+To swap primary and secondary colors use *X* key.
 
 ==Palette window==
 
@@ -29,12 +29,38 @@ The palette (currently named VIC-II) shows your primary and secondary color sele
 The secondary color got two extra features: It will be used as the background fill when cutting out a selection. It will be used as the background mask when performing a masked paste
 
 =Undo & Redo=
+Undo is your friend!
 
-To undo press CTRL+Z, and CTRL+Y for redo.
+Undo and redo history is kept in RAM for 100 iterations and even works over mode change. 
+
+Undo and Redo is found under the Edit menu or by keyboard *CTRL*+*Z* and *CTRL*+*Y*.
 
 =Select=
+Select is the first step required for many tools.
 
-==Copy/Cut==
+To manually select an area, hit the *M* key and then drag with the mouse. Tip: If you want to select an area larger than your visible screen, you can use the arrow keys to move.
+
+To select everything, press *CTRL*+*A*.
+
+To select the current cell press *Shift*+*C*.
+
+To deselect or cancel any selection hit *ESC* or press *CTRL*+*D*.
+
+===Auto-select Cell===
+Available as an option under the Edit menu. This feature is handy when working on block graphics like chars or sprites as it will automatically select the current cell upon mouse hovering. The auto-selection can temporary be overridden with any of the other select methods.
+
+===Snap selection to Cell===
+Available as an option under the Edit menu. This feature will align any selection or paste operations to complete cells. Many operations can only be done successfully on complete cell boundaries.
+
+==Copy==
+Available as an option under the Edit menu or by pressing *CTRL*+*C*.
+
+A copied section is converted to RGB and placed on the Windows clipboard. This makes cross application copy and paste possible.
+
+==Cut==
+Available as an option under the Edit menu or by pressing *CTRL*+*X*.
+
+Cut behaves much as copy except that the secondary color is used to fill the the selected area.
 
 ==Paste==
 
