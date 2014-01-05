@@ -22,9 +22,15 @@ To zoom, roll middle button or use + and - on keyboard.
 
 To plot/draw, use left or right mouse button (primary and secondary color).
 
-To select new colors use right or left mouse on the palette or press 0 to F for quick selection of primary color.
+To select new colors use right or left mouse on the palette or press 0-9/A-F for quick selection of primary color.
 
 To swap primary and secondary colors use X key.
+
+==Palette window==
+
+The palette (currently named VIC-II) shows your primary and secondary color selection. You can select primary/secondary color directly from the window with the left and right mouse buttons respectively. The primary color will be marked with a square and the secondary color will be marked with an X.
+
+The secondary color got two extra features: It will be used as the background fill when cutting out a selection. It will be used as the background mask when performing a masked paste
 
 =Undo & Redo=
 
