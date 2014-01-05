@@ -1,4 +1,4 @@
-m#summary Manual index
+#summary Manual index
 
 =Index=
 
@@ -6,11 +6,9 @@ m#summary Manual index
 
 =Navigating the bitmap=
 
-If you get lost, restore view with Home key.
+If you get lost, restore view with *Home* key.
 
-To move around, hold middle (roll) button and move mouse or hold space and move mouse.
-
-Use arrow keys.
+To move around, hold middle (roll) button and move mouse or hold space and move mouse or use arrow keys.
 
 To zoom, roll middle button or use *+* and *-* on keyboard.
 
@@ -52,41 +50,66 @@ Available as an option under the Edit menu. This feature is handy when working o
 ===Snap selection to Cell===
 Available as an option under the Edit menu. This feature will align any selection or paste operations to complete cells. Many operations can only be done successfully on complete cell boundaries.
 
-==Copy==
+=Copy=
 Available as an option under the Edit menu or by pressing *CTRL*+*C*.
 
-A copied section is converted to RGB and placed on the Windows clipboard. This makes cross application copy and paste possible.
+A copied section the image is converted to RGB and placed on the Windows clipboard. This makes cross application copy and paste possible.
 
-==Cut==
+=Cut=
 Available as an option under the Edit menu or by pressing *CTRL*+*X*.
 
-Cut behaves much as copy except that the secondary color is used to fill the the selected area.
+Cut behaves like copy except that the secondary color is used to fill the the selected area.
 
-==Paste==
+=Paste=
 Available as an option under the Edit menu or by pressing *CTRL*+*V*.
 
-When invoked, a temporary layer is created. The pasted bitmap is not merged until you press the left mouse button. This gives you the chance to place the bitmap.
+When invoked, a temporary layer is created. The pasted image is not merged until you press the left mouse button. This gives you the chance to place the image.
 
 If you want to abort the paste operation, simply hit *ESC* at this point.
 
-When clicking the left mouse button the temporary layer is merged with the background bitmap. Depending on the graphics mode, the number of colors involved, color overflow settings and more, the merged result can be truncated. This is not an error but simple the restrictions of the C64 bitmap formats. If you are unhappy with the results simply undo.
+When clicking the left mouse button the temporary layer is merged with the background image. Depending on the graphics mode, the number of colors involved, color overflow settings and more, the merged result can be truncated. This is not an error but simply the restrictions of the C64 graphics formats or any other restriction enforced by settings. If you are unhappy with the results simply undo.
 
-===Masked paste===
+==Masked paste==
 Available as an option under the Edit menu or by pressing *CTRL*+*Shift*+*V*.
 
-Behaves identical to paste except that the secondary color is used as a background mask.
+Behaves like paste except that the secondary color is used as a background mask.
 
 Tip: This can be used to fake brushes until those are implemented.
 
 =Preview window=
+Available as an option under the View menu or by pressing *CTRL*+*P*.
 
-==Aspect ratio==
+The preview window can be navigated and zoomed with the mouse in a similar way to the main view. You can also open multiple preview windows.
+
+==Pixel Aspect Ratio (PAR)==
+Under View -> Preview pixel aspect ratio, you can change the PAR for the preview window(s). Default is PC(1:1) but this might not be a good representation of the image on the real thing. The pixels on the C64 are slightly taller than they are wide.
 
 =Cell window=
+The cell window is a bit advanced and if you are a casual artist you probably only want to set the background/border color and not bother with the rest. If you are drawing graphics with specific restrictions or if you are a coder preparing graphics, then this is for you.
 
-==Indexed vs Global==
+There are two types of colors in the window:
 
-==Lock==
+Indexed colors are represented by a square icons. These colors are unique per cell of the image. In a bitmap they represent color RAM and/or screen RAM. In character mode and sprite mode there is only one indexed color and that is color RAM or individual sprite color respectively. When you mouse over the image, you will notice the indexed colors might change with the location.
+
+Global colors are represented by round icons. These colors are shared over the image (in technical terms these are some or more of $D020-$D024).
+
+In order to manipulate indexed colors you must first do a [Manual#Select selection] on an area covering one or more cells. For global colors, no selection is needed.
+
+All manipulation is done by right clicking an icon in the cell window. A popup menu will show a palette as well as options to cripple, decripple, lock and unlock. There are also some currently unused options for future expansion.
+
+===Cripple===
+It's possible to clipple an indexed color into behave like a global color. For instance, it's common to fill color RAM with one solid color.
+
+===Lock===
+Locked colors are marked with a red line crossing the icon. They are locked in the sense that when drawing, Pixcen will not under any circumstances try to change a locked. Otherwise, if the color is unused, Pixcen might decide to change it. Some colors like (global background) will be locked by default.
+
+===Background color===
+In all modes except single color bitmap and unrestricted the _0_ mask in the cell window is global and represents the background color, switching background color is simply done by right clicking this icon and select a color from the drop down palette.
+
+In single color bitmap mode or unrestricted mode, there is no global color for background. To switch the background color (on a preferably new and empty bitmap), select the desired background color from the palette as your secondary color. Select the entire image with *CTRL*+*A* then hit *Delete* or *Backspace* en the entire image will be filled with the secondary color.
+
+===Border color===
+The border color is always global and marked as _Bd_ in the cell window. By default it's set to light blue but some file formats preserve border color. Pixcen will save this color when possible. You also want to set the border color before exporting a [Manual#C64_Exe C64 executable].
 
 =New window=
 
