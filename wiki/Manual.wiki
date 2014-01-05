@@ -98,25 +98,25 @@ In order to manipulate indexed colors you must first do a [Manual#Select selecti
 All manipulation is done by right clicking an icon in the cell window. A popup menu will show a palette as well as options to cripple, decripple, lock and unlock. There are also some currently unused options for future expansion.
 
 ===Cripple===
-It's possible to clipple an indexed color into behave like a global color. For instance, it's common to fill color RAM with one solid color.
+It's possible to clipple an indexed color into behave like a global color. Pixcen will treat a crippled color like it is a global color.
 
 ===Lock===
-Locked colors are marked with a red line crossing the icon. They are locked in the sense that when drawing, Pixcen will not under any circumstances try to change a locked. Otherwise, if the color is unused, Pixcen might decide to change it. Some colors like (global background) will be locked by default.
+Locked colors are marked with a red line crossing the icon. They are locked in the sense that when drawing, Pixcen will not under any circumstances try to change it. Otherwise, if the color is unused, Pixcen might decide to change it. Some colors like (global background) will be locked by default.
 
 ===Background color===
-In all modes except single color bitmap and unrestricted the _0_ mask in the cell window is global and represents the background color, switching background color is simply done by right clicking this icon and select a color from the drop down palette.
+In all modes except single color bitmap and unrestricted the _0_ mask in the cell window is global and represents the background color, switching background color is done by right clicking this icon and select a new color from the drop down palette.
 
-In single color bitmap mode or unrestricted mode, there is no global color for background. To switch the background color (on a preferably new and empty bitmap), select the desired background color from the palette as your secondary color. Select the entire image with *CTRL*+*A* then hit *Delete* or *Backspace* en the entire image will be filled with the secondary color.
+In single color bitmap mode or unrestricted mode, there is no global color for background. To switch the background color (on a preferably new and empty bitmap), select the desired background color from the palette as your secondary color. Select the entire image with *CTRL*+*A* then hit *Delete* or *Backspace* and the entire image will be filled with the secondary color.
 
 ===Border color===
-The border color is always global and marked as _Bd_ in the cell window. By default it's set to light blue but some file formats preserve border color. Pixcen will save this color when possible. You also want to set the border color before exporting a [Manual#C64_Exe C64 executable].
+The border color is always global and marked as _Bd_ in the cell window. By default it's set to light blue but some file formats preserve border color. Pixcen will preserve this color when possible. You also want to set the border color before exporting a [Manual#C64_Exe C64 executable].
 
 =New window=
 
 =File formats=
 
 ===GPX===
-This is the PC file format used by Pixcen. The format saves the full state of the current project including back buffers, undo history and any meta-data applicable. This is meant to be the day to day working format but it's not suitable for exporting data C64 as it's a compressed 32 bit format.
+This is the PC file format used by Pixcen. The format saves the full state of the current project including back buffers, undo history and any meta-data applicable. This is meant to be the day to day working format and it's not suitable for exporting data C64 as it's a compressed 32 bit format.
 
 ===PNG/BMP/GIF/JPG===
 Export and import of these native PC formats is supported via Windows GDI. 
@@ -134,7 +134,7 @@ A word of warning, JPG is a destructive format and should not be used for anythi
 ===C64 Exe===
 This format is export only and is only available under certain  conditions. For bitmap modes the resolutions must be full screen. For character mode the resolution must be full screen and the character count must not exceed 256.
 
-The produced file will be compressed with [http://csdb.dk/release/?id=109317 Byte Boozer] and executable on C64.
+The produced file will be compressed with [http://csdb.dk/release/?id=109317 Byte Boozer] and can be executed directly on C64.
 
 ==Binary & PRG formats==
 The following low level export formats exists in two versions: binary and PRG. Binary is suitable for cross development as many cross development tools such as assemblers can include binary data directly (a binary file could also be treated as a SEQ or USR-file on C64). PRG is the more common native C64 format, it's a binary prefixed 16 bit load address. When exporting any of the p??? formats a dialog will ask for the address to prefix.
