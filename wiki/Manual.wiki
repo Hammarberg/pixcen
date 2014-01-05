@@ -72,9 +72,12 @@ A word of warning, JPG is a destructive format and should not be used for anythi
 ===Cenimate===
 
 ===C64 Exe===
-This format is export only and is only available under certain  restrictions. For bitmap modes the resolutions must be full screen. For character mode the resolution must be full screen and the character count must not exceed 256.
+This format is export only and is only available under certain  conditions. For bitmap modes the resolutions must be full screen. For character mode the resolution must be full screen and the character count must not exceed 256.
 
 The produced file will be compressed with [http://csdb.dk/release/?id=109317 Byte Boozer] and executable on C64.
+
+==Binary & PRG formats==
+The following low level export formats exists in two versions: binary and PRG. Binary is suitable for cross development as many cross development tools such as assemblers can include binary data directly (a binary file could also be treated as a SEQ or USR-file on C64). PRG is the more common native C64 format, it's a binary prefixed 16 bit load address. When exporting any of the p??? formats a dialog will ask for the address to prefix.
 
 ===Bitmap RAM (map/pmap)===
 This format is currently export only and is always available. The bitmap RAM represents the raw bitmap per row of cells from left to right, top to bottom, 8 bytes per cell. Likewise, for sprites this means rows of sprites from left to right, top to bottom, 64 bytes per cell where the last byte always is zero. In character mode this is the non indexed bitmap just like bitmap mode and you might want to consider saving an indexed char map & indexed screen instead.
@@ -82,7 +85,7 @@ This format is currently export only and is always available. The bitmap RAM rep
 ===Screen RAM (scr/pscr)===
 This format is currently export only and is available for bitmap mode. The screen RAM contains the color data for mask 01 and 10 in bitmap multi color mode or mask 0 and 1 in bitmap single color mode. The colors are encoded as high nibble and low nibble, one byte per cell from left to right, top to bottom. This data is commonly loaded at address $0400 on the C64.
 
-===Color RAM===
+===Color RAM (col/pcol)===
 This format is currently export only and is always available. The color RAM contains the color data for mask 11 in bitmap/char multi color mode or mask 1 in single color char mode. The colors are encoded as low nibble with the high nibble always set to zero, one byte per cell from left to right, top to bottom. This data is commonly used at address $D800 on the C64.
 
 For sprite mode the color ram represents the individual sprite color set at $D027-$D02E.
