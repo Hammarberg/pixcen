@@ -1,5 +1,7 @@
-#summary Index
+#summary Manual index
 
 =Index=
 
-[KeyboardMouse Mouse and keyboard shortcuts]
+==Navigating the bitmap==
+
+[Manual]
