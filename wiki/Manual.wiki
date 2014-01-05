@@ -61,9 +61,31 @@ This is the PC file format used by Pixcen. The format saves the full state of th
 ===PNG/BMP/GIF/JPG===
 Export and import of these native PC formats is supported via Windows GDI. 
 
-Pixcen is designed to be able to export and import bitmaps without any loss but be aware that there could be bugs. Also, BMP bitmaps exported from other tools like [http://csdb.dk/release/?id=86776 Project One] could use a different palette and that can mean Pixcen will not be able to recreate the bitmap correctly. In this case, using a native C64 format like Koala is the safe way to move pictures between applications.
+Pixcen is designed to be able to export and import bitmaps without any loss but be aware that there could be bugs. Also, BMP bitmaps exported from other tools like [http://csdb.dk/release/?id=86776 Project One] could use a different palette and that can mean Pixcen will not be able to recreate the bitmap correctly. In this case, using a native C64 format like Koala is a safer way to move pictures between applications.
 
 A word of warning, JPG is a destructive format and should not be used for anything but pure export.
+
+===Koala===
+
+===Advanced Art Studio===
+
+===Cenimate===
+
+===C64 Exe===
+This format is export only and is only available under certain  restrictions. For bitmap modes the resolutions must be full screen. For character mode the resolution must be full screen and the character count must not exceed 256.
+
+The produced file will be compressed with [http://csdb.dk/release/?id=109317 Byte Boozer] and executable on C64.
+
+===Bitmap RAM (map/pmap)===
+This format is currently export only and is always available. The bitmap RAM represents the raw bitmap per row of cells from left to right, top to bottom, 8 bytes per cell. Likewise, for sprites this means rows of sprites from left to right, top to bottom, 64 bytes per cell where the last byte always is zero. In character mode this is the non indexed bitmap just like bitmap mode and you might want to consider saving an indexed char map & indexed screen instead.
+
+===Screen RAM (scr/pscr)===
+This format is currently export only and is available for bitmap mode. The screen RAM contains the color data for mask 01 and 10 in bitmap multi color mode or mask 0 and 1 in bitmap single color mode. The colors are encoded as high nibble and low nibble, one byte per cell from left to right, top to bottom. This data is commonly loaded at address $0400 on the C64.
+
+===Color RAM===
+This format is currently export only and is always available. The color RAM contains the color data for mask 11 in bitmap/char multi color mode or mask 1 in single color char mode. The colors are encoded as low nibble with the high nibble always set to zero, one byte per cell from left to right, top to bottom. This data is commonly used at address $D800 on the C64.
+
+For sprite mode the color ram represents the individual sprite color set at $D027-$D02E.
 
 ==Load==
 
