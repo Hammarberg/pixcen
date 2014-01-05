@@ -7,7 +7,6 @@
 =New window=
 
 =Bitmap mode=
-
 ===Multi-color===
 ===Single color===
 
@@ -105,6 +104,14 @@ Available as an option under the Edit menu or by pressing *CTRL*+*Shift*+*V*.
 Behaves like paste except that the secondary color is used as a background mask.
 
 Tip: This can be used to fake brushes until those are implemented.
+
+=Manipulating a selection=
+Under the Selection menu or via several keyboard shortcuts it's possible to manipulate the current selection or the temporary image being pasted.
+
+Press *V* to flip vertically, *H* to flip selection horizontally or use 
+*Shift*+*Arrow* to shift pixels in the desired direction.
+
+The rotations are restricted to selections of equal width en height but can always be performed on paste images. *Shift*+*R* to rotate clockwise or *CTRL*+*R* to rotate counter clockwise.
 
 =Preview window=
 Available as an option under the View menu or by pressing *CTRL*+*P*.
