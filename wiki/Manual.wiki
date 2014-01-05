@@ -2,11 +2,7 @@
 
 =Index=
 
-[Manual#Navigating_the_bitmap Navigating the bitmap]
-
-[Manual#Drawing_&_colors Drawing & colors]
-
-[Manual#Undo_&_Redo Undo & Redo]
+...TODO...
 
 =Navigating the bitmap=
 
@@ -57,9 +53,22 @@ To undo press CTRL+Z, and CTRL+Y for redo.
 
 =New window=
 
-=Load/Save=
+=File formats=
 
-==Import/Export==
+===GPX===
+This is the PC file format used by Pixcen. The format saves the full state of the current project including back buffers, undo history and any meta-data applicable. This is meant to be the day to day working format but it's not suitable for exporting data C64 as it's a compressed 32 bit format.
+
+===PNG/BMP/GIF/JPG===
+Export and import of these native PC formats is supported via Windows GDI. 
+
+Pixcen is designed to be able to export and import bitmaps without any loss but be aware that there could be bugs. Also, BMP bitmaps exported from other tools like [http://csdb.dk/release/?id=86776 Project One] could use a different palette and that can mean Pixcen will not be able to recreate the bitmap correctly. In this case, using a native C64 format like Koala is the safe way to move pictures between applications.
+
+A word of warning, JPG is a destructive format and should not be used for anything but pure export.
+
+==Load==
+
+==Save==
+
 
 =Bitmap mode=
 
