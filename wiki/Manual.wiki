@@ -2,12 +2,13 @@
 
 =Index=
 
-[Manual#Navigating_the_bitmap]
+[Manual#Navigating_the_bitmap Navigating the bitmap]
 
+[Manual#Drawing_&_colors Drawing & colors]
 
+[Manual#Undo_&_Redo Undo & Redo]
 
-
-==Navigating the bitmap==
+=Navigating the bitmap=
 
 If you get lost, restore view with Home key.
 
@@ -17,7 +18,7 @@ Use arrow keys.
 
 To zoom, roll middle button or use + and - on keyboard.
 
-==Drawing & colors==
+=Drawing & colors=
 
 To plot/draw, use left or right mouse button (primary and secondary color).
 
@@ -25,6 +26,39 @@ To select new colors use right or left mouse on the palette or press 0 to F for 
 
 To swap primary and secondary colors use X key.
 
-==Undo & Redo==
+=Undo & Redo=
 
 To undo press CTRL+Z, and CTRL+Y for redo.
+
+=Select=
+
+==Copy/Cut==
+
+==Paste==
+
+===Masked paste===
+
+
+=Preview window=
+
+==Aspect ratio==
+
+=Cell window=
+
+==Indexed vs Global==
+
+==Lock==
+
+=New window=
+
+=Load/Save=
+
+==Import/Export==
+
+=Bitmap mode=
+
+=Character mode=
+
+=Sprite mode=
+
+=Unrestricted mode=
