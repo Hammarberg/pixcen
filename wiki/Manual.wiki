@@ -4,6 +4,16 @@
 
 ...TODO...
 
+=New window=
+
+=Bitmap mode=
+
+=Character mode=
+
+=Sprite mode=
+
+=Unrestricted mode=
+
 =Navigating the bitmap=
 
 If you get lost, restore view with *Home* key.
@@ -111,8 +121,6 @@ In single color bitmap mode or unrestricted mode, there is no global color for b
 ===Border color===
 The border color is always global and marked as _Bd_ in the cell window. By default it's set to light blue but some file formats preserve border color. Pixcen will preserve this color when possible. You also want to set the border color before exporting a [Manual#C64_Exe C64 executable].
 
-=New window=
-
 =File formats=
 
 ===GPX===
@@ -131,6 +139,10 @@ A word of warning, JPG is a destructive format and should not be used for anythi
 
 ===Cenimate===
 
+===Paint Magic===
+
+===Art Studio===
+
 ===C64 Exe===
 This format is export only and is only available under certain  conditions. For bitmap modes the resolutions must be full screen. For character mode the resolution must be full screen and the character count must not exceed 256.
 
@@ -142,26 +154,15 @@ The following low level export formats exists in two versions: binary and PRG. B
 ===Bitmap RAM (map/pmap)===
 This format is currently export only and is always available. The bitmap RAM represents the raw bitmap per row of cells from left to right, top to bottom, 8 bytes per cell. Likewise, for sprites this means rows of sprites from left to right, top to bottom, 64 bytes per cell where the last byte always is zero. In character mode this is the non indexed bitmap just like bitmap mode and you might want to consider saving an indexed char map & indexed screen instead.
 
+In unrestricted mode this format is very different. Pixels are saved in scan lines from left to right, top to bottom, one byte per pixel. The byte is double nibbled, color 1 is represented as $11 and color 2 as $22, etc.
+
 ===Screen RAM (scr/pscr)===
 This format is currently export only and is available for bitmap mode. The screen RAM contains the color data for mask 01 and 10 in bitmap multi color mode or mask 0 and 1 in bitmap single color mode. The colors are encoded as high nibble and low nibble, one byte per cell from left to right, top to bottom. This data is commonly loaded at address $0400 on the C64.
 
 ===Color RAM (col/pcol)===
-This format is currently export only and is always available. The color RAM contains the color data for mask 11 in bitmap/char multi color mode or mask 1 in single color char mode. The colors are encoded as low nibble with the high nibble always set to zero, one byte per cell from left to right, top to bottom. This data is commonly used at address $D800 on the C64.
+This format is currently export only and is available for all modes except unrestricted. The color RAM contains the color data for mask 11 in bitmap/char multi color mode or mask 1 in single color char mode. The colors are encoded as low nibble with the high nibble always set to zero, one byte per cell from left to right, top to bottom. This data is commonly used at address $D800 on the C64.
 
 For sprite mode the color ram represents the individual sprite color set at $D027-$D02E.
 
 ===Indexed char map (imap/pimap) & Index screen (iscr/piscr)===
 These formats are currently export only and available for char mode if the unique character count is no more than 256. The indexed map is a set of all unique characters represented in the bitmap while the index screen contains the index pointers to these unique chars. The map will be saved in chunks of 8 bytes in the order they appear in the original map with the possible exception if index $20 (offset $100) that will hold the first empty character discovered. The index screen will be saved from left to right, top to bottom. When exporting the indexed map and index screen it's important not to make any alterations to the image between the two exports as the generated data could become out of sync.
-
-==Load==
-
-==Save==
-
-
-=Bitmap mode=
-
-=Character mode=
-
-=Sprite mode=
-
-=Unrestricted mode=
