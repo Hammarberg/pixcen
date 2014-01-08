@@ -5,37 +5,30 @@
 
 =Manual=
 
-==Intro==
+==Graphics modes==
+Currently supported graphics modes are:
+  * Bitmap
+  * Char
+  * Sprite
+  * Unrestricted
+Further, each mode can be divided into _multi-color_ or _single color_.
 
-==Basics about C64 and the VIC2 chip==
+====Unrestricted mode====
+This mode is *not* a native VIC2 graphics mode. It's included as an intermediate mode for preparing graphics or for making a draft. However, it can be used for pure color drawing (color cycling or other special effects) or selecting colors for raster bars.
+
+In this mode, the only difference between single- and multi-color is the width of the pixels.
 
 ==New image==
 By default an empty multi-color bitmap of standard size is created. This format is compatible with many popular C64 file formats as Koala, Advanced Art Studio and more.
 
-==Graphics modes==
-Currently Pixcen supports versions of the common VIC2 graphics display modes. These include bitmap, characters and sprites. These modes come in two flavors: Single color or multi-color.
-
-===Single color===
-Single color modes are restricted to two colors per pixel and cell, a foreground and a background (binary 0 and 1 in the bitmap).
-
-===Multi-color===
-Multi-color modes got half the resolution horizontally but instead two bits per pixel giving up to 4 colors per cell.
-
-===Unrestricted mode===
-This mode is *not* a native VIC2 graphics mode. It's included as an intermediate mode for preparing graphics or for making a draft. However, it can be used for pure color drawing like color cycling or selecting colors for raster bars.
-
-In this mode, the only difference between single- and multi-color is the width of the pixels.
-
 ==Navigating the image==
-
-If you get lost, restore view with *Home* key.
+If you manage to lose the image outside a border, or zoom too much, restore the view with *Home* key.
 
 To move around, hold middle (roll) button and move mouse or hold *space* and move mouse or use arrow keys.
 
 To zoom, roll middle button or use *+* and *-* on keyboard.
 
 ==Drawing & colors==
-
 To plot/draw, use left or right mouse button (primary and secondary color).
 
 To select new colors use right or left mouse on the palette or press *0*-*9*/*A*-*F* for quick selection of primary color.
@@ -45,7 +38,6 @@ To swap primary and secondary colors use *X* key.
 To pick a new primary color from the image, hold *Shift* while click the left mouse button.
 
 ==Palette window==
-
 The palette (currently named VIC-II) shows your primary and secondary color selection. You can select primary/secondary color directly from the window with the left and right mouse buttons respectively. The primary color will be marked with a square and the secondary color will be marked with an X.
 
 The secondary color got two extra features: It will be used as the background fill when cutting out a selection. It will be used as the background mask when performing a masked paste
@@ -145,7 +137,7 @@ In order to manipulate indexed colors you must first do a [Manual#Select selecti
 All manipulation is done by right clicking an icon in the cell window. A popup menu will show a palette as well as options to cripple, decripple, lock and unlock. There are also some currently unused options for future expansion.
 
 ===Cripple===
-It's possible to clipple an indexed color into behave like a global color. Pixcen will treat a crippled color like it is a global color.
+It's possible to cripple an indexed color into behave like a global color. Pixcen will treat a crippled color like it is a global color.
 
 ===Lock===
 Locked colors are marked with a red line crossing the icon. They are locked in the sense that when drawing, Pixcen will not under any circumstances try to change it. Otherwise, if the color is unused, Pixcen might decide to change it. Some colors like (global background) will be locked by default.
