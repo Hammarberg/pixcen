@@ -35,7 +35,7 @@ To select new colors use right or left mouse on the palette or press *0*-*9*/*A*
 
 To swap primary and secondary colors use *X* key.
 
-To pick a new primary color from the image, hold *Shift* while click the left mouse button.
+To pick a new primary color from the image, hold *Shift* while clicking the left mouse button on a color.
 
 ==Palette window==
 The palette (currently named VIC-II) shows your primary and secondary color selection. You can select primary/secondary color directly from the window with the left and right mouse buttons respectively. The primary color will be marked with a square and the secondary color will be marked with an X.
@@ -190,7 +190,7 @@ In unrestricted mode this format is very different. Pixels are saved in scan lin
 This format is currently export only and is available for bitmap mode. The screen RAM contains the color data for mask 01 and 10 in bitmap multi color mode or mask 0 and 1 in bitmap single color mode. The colors are encoded as high nibble and low nibble, one byte per cell from left to right, top to bottom. This data is commonly loaded at address $0400 on the C64.
 
 ===Color RAM===
-This format is currently export only and is available for all modes except unrestricted. The color RAM contains the color data for mask 11 in bitmap/char multi color mode or mask 1 in single color char mode. The colors are encoded as low nibble with the high nibble always set to zero, one byte per cell from left to right, top to bottom. This data is commonly used at address $D800 on the C64.
+This format is currently export only and is available for all modes except unrestricted and single color bitmap. The color RAM contains the color data for mask 11 in bitmap/char multi color mode or mask 1 in single color char mode. The colors are encoded as low nibble with the high nibble always set to zero, one byte per cell from left to right, top to bottom. This data is commonly used at address $D800 on the C64.
 
 For sprite mode the color ram represents the individual sprite color set at $D027-$D02E.
 
