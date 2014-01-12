@@ -197,8 +197,29 @@ For sprite mode the color ram represents the individual sprite color set at $D02
 ===Indexed char map & Index screen===
 These formats are currently export only and available for char mode if the unique character count is no more than 256. The indexed map is a set of all unique characters represented in the bitmap while the index screen contains the index pointers to these unique chars. The map will be saved in chunks of 8 bytes in the order they appear in the original map with the possible exception if index $20 (offset $100) that will hold the first empty character discovered. The index screen will be saved from left to right, top to bottom. When exporting the indexed map and index screen it's important not to make any alterations to the image between the two exports as the generated data could become out of sync.
 
-=Changelog=
+=Credits=
+Programmed by John Hammarberg ([http://csdb.dk/scener/?id=7007 CRT/Censor Design])
 
+Icon by [http://csdb.dk/scener/?id=25364 cg]
+
+[http://csdb.dk/release/?id=109317 Byte Boozer] by [http://csdb.dk/scener/?id=8075 HCL]
+
+Includes [http://www.zlib.net/ zlib].
+
+Valuable feedback and/or early adopters:
+ * [http://csdb.dk/scener/?id=413 Creeper]
+ * [http://csdb.dk/scener/?id=16913 Magnar]
+ * [http://csdb.dk/scener/?id=24462 Lavazza]
+ * [http://csdb.dk/scener/?id=2846 Death]
+ * [http://csdb.dk/scener/?id=17087 Grasstust]
+ * [http://csdb.dk/scener/?id=24193 Shine]
+ * [http://csdb.dk/scener/?id=16488 Fat Frost]
+ * [http://csdb.dk/scener/?id=8139 Oswald]
+ * [http://csdb.dk/scener/?id=22648 Bamse]
+
+..and others..
+
+=Changelog=
 r27
  * Upped version to 0.6.0.x to compensate for the lower revision number of the new repository.
  * New version script/tool for Google code.
