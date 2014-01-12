@@ -196,6 +196,8 @@ ON_UPDATE_COMMAND_UI(ID_FILE_SAVESELECTION, &CChildView::OnUpdateFileSaveselecti
 ON_COMMAND(ID_FILE_SAVESELECTION, &CChildView::OnFileSaveselection)
 ON_UPDATE_COMMAND_UI(ID_EDIT_SNAPSELECTION, &CChildView::OnUpdateEditSnapselection)
 ON_COMMAND(ID_EDIT_SNAPSELECTION, &CChildView::OnEditSnapselection)
+ON_UPDATE_COMMAND_UI(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnUpdateToolDeleteundohistory)
+ON_COMMAND(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnToolDeleteundohistory)
 END_MESSAGE_MAP()
 
 
@@ -2692,7 +2694,6 @@ void CChildView::OnUpdateViewPrevbuffer(CCmdUI *pCmdUI)
 }
 
 
-
 void CChildView::OnUpdateOverflowIgnore(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(m_pbm->GetOverflow() == C64Interface::NOTHING ? 1 : 0);
@@ -2832,4 +2833,16 @@ void CChildView::SnapToCell(CPoint &pt)
 	pt.x -= pt.x%m_pbm->GetCellSizeX();
 	pt.y += m_pbm->GetCellSizeY()/2;
 	pt.y -= pt.y%m_pbm->GetCellSizeY();
+}
+
+
+void CChildView::OnUpdateToolDeleteundohistory(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(m_pbm->CanUndo()||m_pbm->CanRedo());
+}
+
+
+void CChildView::OnToolDeleteundohistory()
+{
+	m_pbm->DeleteHistory();
 }

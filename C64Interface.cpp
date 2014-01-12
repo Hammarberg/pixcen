@@ -74,6 +74,16 @@ void C64Interface::DeleteHistoryNext(void)
 	}
 }
 
+void C64Interface::DeleteHistory(void)
+{
+	//Delete all history
+	DeleteHistoryPrevious();
+	DeleteHistoryNext();
+	history_pos = 0;
+	history_undo.count(0);
+	history_redo.count(0);
+}
+
 void C64Interface::BeginHistory(void)
 {
 	memcpy(tbuffer, buffer, buffersize);
