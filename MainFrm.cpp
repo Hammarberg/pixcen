@@ -528,7 +528,11 @@ afx_msg LRESULT CMainFrame::OnUmUpdateVersion(WPARAM wParam, LPARAM lParam)
 	{
 		if(MessageBox(_T("There is an updated version of Pixcen.\nWould you like to download?"),_T("New version"),MB_YESNO|MB_ICONQUESTION) == IDYES)
 		{
+#ifdef _M_X64
+			ShellExecute(NULL,L"open",L"http://censordesign.com/pixcen/pixcen64.zip",NULL,NULL,SW_SHOWNORMAL);
+#else
 			ShellExecute(NULL,L"open",L"http://censordesign.com/pixcen/pixcen.zip",NULL,NULL,SW_SHOWNORMAL);
+#endif
 		}
 	}
 
@@ -541,9 +545,10 @@ afx_msg LRESULT CMainFrame::OnUmUpdateVersion(WPARAM wParam, LPARAM lParam)
 
 void CMainFrame::OnHelpCheckforupdates()
 {
-	// TODO: Add your command handler code here
+#ifdef RELEASEVERSION
 	if(m_pUpdateThread)return;
 	m_pUpdateThread = AfxBeginThread(UpdateThread, this);
+#endif
 }
 
 
@@ -554,16 +559,15 @@ void CMainFrame::OnUpdateHelpCheckforupdates(CCmdUI *pCmdUI)
 }
 
 
-
 void CMainFrame::OnHelpHelp()
 {
 	// TODO: Add your command handler code here
-	ShellExecute(NULL,L"open",L"http://censordesign.com/pixcen/manual.txt",NULL,NULL,SW_SHOWNORMAL);
+	ShellExecute(NULL,L"open",L"https://code.google.com/p/pixcen/wiki/Manual",NULL,NULL,SW_SHOWNORMAL);
 }
 
 
 void CMainFrame::OnHelpDownloadsourcecode()
 {
 	// TODO: Add your command handler code here
-	ShellExecute(NULL,L"open",L"http://censordesign.com/pixcen/pixcen_src.zip",NULL,NULL,SW_SHOWNORMAL);
+	ShellExecute(NULL,L"open",L"https://code.google.com/p/pixcen/source/checkout",NULL,NULL,SW_SHOWNORMAL);
 }

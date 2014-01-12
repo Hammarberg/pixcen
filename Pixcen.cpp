@@ -1,3 +1,22 @@
+/*
+   Pixcen - A windows platform low level pixel editor for C64
+   Copyright (C) 2013  John Hammarberg (crt@nospam.censordesign.com)
+   
+    This file is part of Pixcen.
+
+    Pixcen is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Pixcen is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Pixcen.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 // Pixcen.cpp : Defines the class behaviors for the application.
 //
@@ -7,6 +26,7 @@
 #include "afxdialogex.h"
 #include "Pixcen.h"
 #include "MainFrm.h"
+#include "afxwin.h"
 
 
 #ifdef _DEBUG
@@ -171,6 +191,9 @@ protected:
 // Implementation
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	CStatic m_version;
+	virtual BOOL OnInitDialog();
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -180,6 +203,30 @@ CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_STATIC_VERSION, m_version);
+}
+
+#ifdef _M_X64
+#define BUILDBITS 64
+#else
+#define BUILDBITS 32
+#endif
+
+BOOL CAboutDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	CString vtxt;
+#ifdef RELEASEVERSION
+	vtxt.Format(_T("Official %d.%d.%d.%d / %d bit build"), VERSION_A, VERSION_B, VERSION_C, VERSION_D, BUILDBITS);
+#else
+	vtxt.Format(_T("Custom %d.%d.%d.%d / %d bit build"), VERSION_A, VERSION_B, VERSION_C, VERSION_D, BUILDBITS);
+#endif
+
+	m_version.SetWindowText(vtxt);
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
@@ -212,6 +259,5 @@ void CGraphixApp::SaveCustomState()
 }
 
 // CGraphixApp message handlers
-
 
 
