@@ -245,5 +245,7 @@ public:
 	afx_msg void OnFileSaveselection();
 	afx_msg void OnUpdateEditSnapselection(CCmdUI *pCmdUI);
 	afx_msg void OnEditSnapselection();
+	afx_msg void OnUpdateToolDeleteundohistory(CCmdUI *pCmdUI);
+	afx_msg void OnToolDeleteundohistory();
 };
 

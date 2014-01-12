@@ -169,6 +169,7 @@ public:
 	void BeginHistory(void);
 	void EndHistory(void);
 	void InheritHistory(C64Interface *old);
+	void DeleteHistory(void);
 
 	bool CanUndo(void){return history_pos > 0 || history_previous;}
 	bool CanRedo(void){return history_pos < history_redo.count() || history_next;}
