@@ -196,3 +196,14 @@ For sprite mode the color ram represents the individual sprite color set at $D02
 
 ===Indexed char map & Index screen===
 These formats are currently export only and available for char mode if the unique character count is no more than 256. The indexed map is a set of all unique characters represented in the bitmap while the index screen contains the index pointers to these unique chars. The map will be saved in chunks of 8 bytes in the order they appear in the original map with the possible exception if index $20 (offset $100) that will hold the first empty character discovered. The index screen will be saved from left to right, top to bottom. When exporting the indexed map and index screen it's important not to make any alterations to the image between the two exports as the generated data could become out of sync.
+
+=Changelog=
+
+r27
+ * Upped version to 0.6.0.x to compensate for the lower revision number of the new repository.
+ * New version script/tool for Google code.
+ * Help section and download source code pointed to Google pages.
+ * Check for update is only active with a "releaseversion" build. Other builds are considered custom.
+ * Download of updated version can now handle 64 bit builds.
+ * Added a tool project (versioner) to generate version string for update checks.
+ * Fixed undo/redo bug on very large images.
