@@ -2844,7 +2844,7 @@ void CChildView::OnUpdateToolDeleteundohistory(CCmdUI *pCmdUI)
 
 void CChildView::OnToolDeleteundohistory()
 {
-	if(AfxMessageBox(_T("Are you sure?"), MB_YESNO))
+	if(AfxMessageBox(_T("Are you sure?"), MB_YESNO) == IDYES)
 	{
 		m_pbm->DeleteHistory();
 	}
