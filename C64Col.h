@@ -23,6 +23,10 @@
 
 #define RGB2REF(x)  (((x&0xff0000) >> 16) | (x & 0x00ff00) | ((x&0x0000ff) << 16))
 
+#define REF2R(x) ((x) & 0xff)
+#define REF2G(x) (((x) & 0xff00) >> 8)
+#define REF2B(x) ((x) >> 16)
+
 extern const COLORREF g_Vic2[16];
 
 int ClosestMatch(COLORREF c , const COLORREF *list, int num);

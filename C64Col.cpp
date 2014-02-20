@@ -21,6 +21,7 @@
 
 #include "StdAfx.h"
 #include "C64Col.h"
+//#include <cmath>
 
 const COLORREF g_Vic2[16]={
 		RGB2REF(0x000000),
@@ -41,26 +42,29 @@ const COLORREF g_Vic2[16]={
 		RGB2REF(0xababab)
 	};
 
+//http://www.compuphase.com/cmetric.htm
+
+static int ColourDistance(COLORREF c1, COLORREF c2)
+{
+	int rmean = ( (int)REF2R(c1) + (int)REF2R(c2) ) / 2;
+	int r = (int)REF2R(c1) - (int)REF2R(c2);
+	int g = (int)REF2G(c1) - (int)REF2G(c2);
+	int b = (int)REF2B(c1) - (int)REF2B(c2);
+	return ((((512+rmean)*r*r)>>8) + 4*g*g + (((767-rmean)*b*b)>>8));
+}
+
 int ClosestMatch(COLORREF c , const COLORREF *list, int num)
 {
-	int best=256, index=0;
-
-	int cb=c>>16;
-	int cg=(c & 0xff00) >> 8;
-	int cr=c & 0xff;
+	int best = 1000000;
+	int index=0;
 
 	for(int t=0;t<num;t++)
 	{
+		int dist = ColourDistance(c, list[t]);
 
-		int b=list[t]>>16;
-		int g=(list[t] & 0xff00) >> 8;
-		int r=list[t] & 0xff;
-
-		int delta = ( abs(r-cr) + abs(g-cg) + abs(b-cb) ) /3;
-
-		if(delta<best)
+		if(dist<best)
 		{
-			best = delta;
+			best = dist;
 			index = t;
 		}
 	}
