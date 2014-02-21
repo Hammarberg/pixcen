@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="bb.cpp">
+      <Filter>ByteBoozer</Filter>
+    </ClCompile>
+    <ClCompile Include="C64Interface.cpp">
+      <Filter>C64Format</Filter>
+    </ClCompile>
+    <ClCompile Include="Bitmap.cpp">
+      <Filter>C64Format</Filter>
+    </ClCompile>
+    <ClCompile Include="Unrestricted.cpp">
+      <Filter>C64Format</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>C64Format</Filter>
+    </ClCompile>
+    <ClCompile Include="MCBitmap.cpp">
+      <Filter>C64Format</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>C64Format</Filter>
+    </ClCompile>
+    <ClCompile Include="MainFrm.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Pixcen.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="ChildView.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="AddressDlg.cpp">
+      <Filter>OtherGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="C64DropPalette.cpp">
+      <Filter>OtherGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="C64Palette.cpp">
+      <Filter>OtherGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Col.cpp">
+      <Filter>OtherGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorCtrl.cpp">
+      <Filter>OtherGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="ImportDlg.cpp">
+      <Filter>OtherGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="NewDlg.cpp">
+      <Filter>Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="Preview.cpp">
+      <Filter>OtherGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Romfont.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolDialog.cpp">
+      <Filter>OtherGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="C64Col.cpp">
+      <Filter>Misc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="bb.h">
+      <Filter>ByteBoozer</Filter>
+    </ClInclude>
+    <ClInclude Include="C64Interface.h">
+      <Filter>C64Format</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFrm.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Pixcen.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="ChildView.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="AddressDlg.h">
+      <Filter>OtherGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="C64DropPalette.h">
+      <Filter>OtherGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="C64Palette.h">
+      <Filter>OtherGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Col.h">
+      <Filter>OtherGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorCtrl.h">
+      <Filter>OtherGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="ImportDlg.h">
+      <Filter>OtherGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="mail.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="NewDlg.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Preview.h">
+      <Filter>OtherGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="Romfont.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="ToolDialog.h">
+      <Filter>OtherGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="C64Col.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\DropPalette.bmp">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="UserImages.bmp">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="res\DropPalette.png">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="res\LockLock.bmp">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="res\LockUnlock.bmp">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="res\Pixcen.ico">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="res\Pixcen.rc2">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="ReadMe.txt">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="res\Toolbar.bmp">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="res\Toolbar256.bmp">
+      <Filter>Rsc</Filter>
+    </None>
+    <None Include="arrow.cur">
+      <Filter>Rsc</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="C64Format">
+      <UniqueIdentifier>{66805348-2891-4f19-9ed6-6c6b036f2568}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ByteBoozer">
+      <UniqueIdentifier>{cbd28ee5-1af2-4402-a4fa-bbfdf75e603d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{58f2bdf6-9756-4fd1-b597-704b7ecad016}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="OtherGUI">
+      <UniqueIdentifier>{29d7c5fb-a2ef-4850-ae06-9aebfcbb182c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{e74f7a4b-6697-4b3a-917f-b56296a602e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rsc">
+      <UniqueIdentifier>{7c0d4c47-7712-4da5-a888-de78ea844b4b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Pixcen.rc">
+      <Filter>Rsc</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
