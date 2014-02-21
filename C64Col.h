@@ -27,12 +27,18 @@
 #define REF2G(x) (((x) & 0xff00) >> 8)
 #define REF2B(x) ((x) >> 16)
 
-extern const COLORREF g_Vic2[16];
+extern const COLORREF *g_Vic2;
 
 int ClosestMatch(COLORREF c , const COLORREF *list, int num);
 BYTE ToC64Index(COLORREF c);
 
 int ClosestMatch(COLORREF c, const BYTE *list, int num);
+
+int ClosestPalette(const COLORREF *list, int num);
+
+LPCTSTR GetPaletteName(int n);
+int SetPalette(int n);
+int GetPalette(void);
 
 static COLORREF blend(COLORREF aa, COLORREF bb)
 {

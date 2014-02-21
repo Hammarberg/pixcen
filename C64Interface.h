@@ -359,6 +359,7 @@ protected:
 
 		bool wide;
 
+		int palette;
 		BYTE *p;
 
 		bool find(BYTE col, BYTE *p, int count)

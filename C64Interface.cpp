@@ -22,6 +22,7 @@
 #include "StdAfx.h"
 #include "C64Interface.h"
 #include <malloc.h>
+#include <unordered_set>
 
 const double C64Interface::parvalue[3]={1.0,0.9365,0.75};
 
@@ -835,6 +836,8 @@ void C64Interface::Load(nmemfile &file, LPCTSTR type, int version)
 
 			_aligned_free(temp_buffer);
 		}
+
+		SetPalette(GetMetaInt("palette"));
 	}
 }
 
@@ -1801,13 +1804,64 @@ C64Interface::ImportHelper::ImportHelper(CImage &inimg, int x, int y, int xcells
 	p=new BYTE[xsize*ysize];
 	ZeroMemory(p, xsize*ysize);
 
+	//Identify what palette have the best match
+	std::unordered_set<COLORREF> unique;
+	COLORREF *prgbmap = new COLORREF[xsize*ysize];
+
+	bool many = false;
+
 	for(y=0;y<ysize;y++)
 	{
 		for(x=0;x<xsize;x++)
 		{
-			p[y * xsize + x] = ToC64Index(GetImagePixel(x,y));
+			COLORREF c = GetImagePixel(x,y);
+			prgbmap[y * xsize + x] = c;
+
+			if(!many)
+			{
+				many = unique.size() >= 32;
+				unique.insert(c);
+			}
 		}
 	}
+
+	if(!many)
+	{
+		COLORREF *unmap = new COLORREF[unique.size()];
+
+		int r=0;
+		for(std::unordered_set<COLORREF>::iterator i=unique.begin();i!=unique.end();i++,r++)
+		{
+			unmap[r]=*i;
+		}
+
+		palette = ClosestPalette(unmap, r);
+
+		delete unmap;
+	}
+	else
+	{
+		//Just using pepto for anything truly RGB
+		palette = 1;
+	}
+
+	//Set the palette and use the regular color reduction
+	
+	int old = SetPalette(palette);
+
+	for(y=0;y<ysize;y++)
+	{
+		for(x=0;x<xsize;x++)
+		{
+			p[y * xsize + x] = ToC64Index(prgbmap[y * xsize + x]);
+		}
+	}
+
+	delete [] prgbmap;
+
+	//Restore palette
+	SetPalette(old);
+	
 }
 
 C64Interface::ImportHelper::~ImportHelper()
@@ -1920,6 +1974,8 @@ void C64Interface::ImportHelper::ReduceColors(int maxcolor, BYTE *force, int for
 	BYTE use[16];
 	ZeroMemory(use,16);
 
+	int old = SetPalette(palette);
+
 	for(cy=0;cy<ysize/ycs;cy++)
 	{
 		for(cx=0;cx<xsize/xcs;cx++)
@@ -1950,5 +2006,7 @@ void C64Interface::ImportHelper::ReduceColors(int maxcolor, BYTE *force, int for
 			}
 		}
 	}
+
+	SetPalette(old);
 }
 
