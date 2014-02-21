@@ -247,5 +247,9 @@ public:
 	afx_msg void OnEditSnapselection();
 	afx_msg void OnUpdateToolDeleteundohistory(CCmdUI *pCmdUI);
 	afx_msg void OnToolDeleteundohistory();
+	afx_msg void OnUpdateModePalette(CCmdUI *pCmdUI);
+	afx_msg void OnModePalette(UINT nID);
+	afx_msg void OnUpdateModePaletteRange(CCmdUI *pCmdUI);
+
 };
 
