@@ -198,6 +198,9 @@ ON_UPDATE_COMMAND_UI(ID_EDIT_SNAPSELECTION, &CChildView::OnUpdateEditSnapselecti
 ON_COMMAND(ID_EDIT_SNAPSELECTION, &CChildView::OnEditSnapselection)
 ON_UPDATE_COMMAND_UI(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnUpdateToolDeleteundohistory)
 ON_COMMAND(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnToolDeleteundohistory)
+ON_UPDATE_COMMAND_UI(ID_PALETTE_DUMMY, &CChildView::OnUpdateModePalette)
+ON_COMMAND_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnModePalette)
+ON_UPDATE_COMMAND_UI_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnUpdateModePaletteRange)
 END_MESSAGE_MAP()
 
 
@@ -2848,4 +2851,43 @@ void CChildView::OnToolDeleteundohistory()
 	{
 		m_pbm->DeleteHistory();
 	}
+}
+
+
+void CChildView::OnUpdateModePalette(CCmdUI *pCmdUI)
+{
+	CMenu *sub = pCmdUI->m_pSubMenu;
+
+	if(sub->GetMenuItemCount()==1)
+	{
+		LPCTSTR str;
+		for(int r=0;;r++)
+		{
+			str=GetPaletteName(r);
+			if(!*str)break;
+			sub->AppendMenu(MF_STRING, ID_MODE_PALETTE_0+r, str);
+		}
+
+		sub->DeleteMenu(ID_PALETTE_DUMMY, MF_BYCOMMAND);
+	}
+}
+
+
+void CChildView::OnUpdateModePaletteRange(CCmdUI *pCmdUI)
+{
+	int check = GetPalette();
+	pCmdUI->SetCheck(pCmdUI->m_nID-ID_MODE_PALETTE_0 == check ? 1 : 0);
+
+}
+
+
+void CChildView::OnModePalette(UINT nID)
+{
+	int n = int(nID-ID_MODE_PALETTE_0);
+
+	SetPalette(n);
+	m_pbm->SetMetaInt("palette", n);
+
+	Invalidate();
+	Mail(MSG_REFRESH);
 }
