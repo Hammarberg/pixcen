@@ -196,7 +196,7 @@ static const TCHAR s_PaletteName[][16]={
 
 const COLORREF *g_Vic2 = &s_Pallete[0][0];
 
-/*
+
 //http://www.compuphase.com/cmetric.htm
 
 static int ColourDistance(COLORREF c1, COLORREF c2)
@@ -207,17 +207,6 @@ static int ColourDistance(COLORREF c1, COLORREF c2)
 	int b = (int)REF2B(c1) - (int)REF2B(c2);
 	return ((((512+rmean)*r*r)>>8) + 4*g*g + (((767-rmean)*b*b)>>8));
 }
-*/
-
-
-static int ColourDistance(COLORREF c1, COLORREF c2)
-{
-	int r = ((int)REF2R(c1) - (int)REF2R(c2));
-	int g = ((int)REF2G(c1) - (int)REF2G(c2));
-	int b = ((int)REF2B(c1) - (int)REF2B(c2));
-	return r*r*30 + g*g*59 + b*b*11;
-}
-
 
 int ClosestMatch(COLORREF c , const COLORREF *list, int num)
 {
