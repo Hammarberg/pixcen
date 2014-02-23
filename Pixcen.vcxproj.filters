@@ -129,6 +129,7 @@
     <ClInclude Include="C64Col.h">
       <Filter>Misc</Filter>
     </ClInclude>
+    <ClInclude Include="Monomap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\DropPalette.bmp">

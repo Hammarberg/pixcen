@@ -30,6 +30,8 @@
 #include "ImportDlg.h"
 #include "NewDlg.h"
 #include "AddressDlg.h"
+#include "Monomap.h"
+#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -85,6 +87,7 @@ CChildView::CChildView()
 
 	m_pBackBufferDC = NULL;
 
+	m_Fill = false;
 }
 
 CChildView::~CChildView()
@@ -201,6 +204,7 @@ ON_COMMAND(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnToolDeleteundohistory)
 ON_UPDATE_COMMAND_UI(ID_PALETTE_DUMMY, &CChildView::OnUpdateModePalette)
 ON_COMMAND_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnModePalette)
 ON_UPDATE_COMMAND_UI_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnUpdateModePaletteRange)
+ON_COMMAND(ID_TOOL_FILL, &CChildView::OnToolFill)
 END_MESSAGE_MAP()
 
 
@@ -843,6 +847,11 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			BYTE col = m_pbm->GetPixel(pix.x, pix.y);
 			Mail(MSG_PAL_SEL_COL, col, 0);
 		}
+		else if(m_Fill)
+		{
+			m_Fill = false;
+			FloodFill(pix.x, pix.y, m_Col1, m_pbm->GetPixel(pix.x, pix.y));
+		}
 		else
 		{
 			m_pbm->BeginHistory();
@@ -896,6 +905,11 @@ void CChildView::OnRButtonDown(UINT nFlags, CPoint point)
 		{
 			BYTE col = m_pbm->GetPixel(pix.x, pix.y);
 			Mail(MSG_PAL_SEL_COL, col, 1);
+		}
+		else if(m_Fill)
+		{
+			m_Fill = false;
+			FloodFill(pix.x, pix.y, m_Col2, m_pbm->GetPixel(pix.x, pix.y));
 		}
 		else
 		{
@@ -2890,4 +2904,64 @@ void CChildView::OnModePalette(UINT nID)
 
 	Invalidate();
 	Mail(MSG_REFRESH);
+}
+
+
+void CChildView::OnToolFill()
+{
+	m_Fill = true;
+}
+
+
+static void workFill(int x, int y, BYTE replace, Monomap *mono, C64Interface *pbm)
+{
+	std::vector<std::pair<int, int> > queue;
+
+	if(x >= 0 && x < pbm->GetSizeX() && y >= 0 && y < pbm->GetSizeY() && mono->GetPixel(x,y) == 0 && pbm->GetPixel(x,y) == replace)
+	{
+		queue.push_back(std::pair<int, int>(x,y));
+
+		while(queue.size())
+		{
+			x = queue[queue.size()-1].first;
+			y = queue[queue.size()-1].second;
+			queue.pop_back();
+
+			mono->SetPixel(x,y);
+		
+			if(x+1 < pbm->GetSizeX() && mono->GetPixel(x+1,y) == 0 && pbm->GetPixel(x+1,y) == replace)
+				queue.push_back(std::pair<int, int>(x+1,y));
+
+			if(x-1 >= 0 && mono->GetPixel(x-1,y) == 0 && pbm->GetPixel(x-1,y) == replace)
+				queue.push_back(std::pair<int, int>(x-1,y));
+
+			if(y+1 < pbm->GetSizeY() && mono->GetPixel(x,y+1) == 0 && pbm->GetPixel(x,y+1) == replace)
+				queue.push_back(std::pair<int, int>(x,y+1));
+
+			if(y-1 >= 0 && mono->GetPixel(x,y-1) == 0 && pbm->GetPixel(x,y-1) == replace)
+				queue.push_back(std::pair<int, int>(x,y-1));
+		}
+	}
+}
+
+
+void CChildView::FloodFill(int x, int y, BYTE col, BYTE replace)
+{
+	m_pbm->BeginHistory();
+
+	Monomap mono(m_pbm->GetSizeX(), m_pbm->GetSizeY());
+	workFill(x, y, replace, &mono, m_pbm);
+
+	for(y=0;y<m_pbm->GetSizeY();y++)
+	{
+		for(x=0;x<m_pbm->GetSizeX();x++)
+		{
+			if(mono.GetPixel(x,y))
+			{
+				m_pbm->SetPixel(x,y,col);
+			}
+		}
+	}
+
+	m_pbm->EndHistory();
 }

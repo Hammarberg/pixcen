@@ -104,6 +104,10 @@ private:
 
 	CPoint m_MovePoint;
 
+	bool m_Fill;
+
+	void FloodFill(int x, int y, BYTE col, BYTE replace);
+
 	bool GetPixelFromPoint(CPoint &point, CPoint &pixel, bool select=false);
 
 	void SelectInfo(CellInfo *pset=NULL);
@@ -251,5 +255,6 @@ public:
 	afx_msg void OnModePalette(UINT nID);
 	afx_msg void OnUpdateModePaletteRange(CCmdUI *pCmdUI);
 
+	afx_msg void OnToolFill();
 };
 
