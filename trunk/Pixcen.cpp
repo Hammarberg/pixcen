@@ -110,7 +110,7 @@ BOOL CGraphixApp::InitInstance()
 	SetRegistryKey(_T("Censor Pixcen"));
 
 
-	const int REGVER=15;
+	const int REGVER=16;
 
 	int regver=GetProfileInt(_T("Version"),_T("RegVer"),0);
 
