@@ -37,6 +37,9 @@ To swap primary and secondary colors use *X* key.
 
 To pick a new primary color from the image, hold *Shift* while clicking the left mouse button on a color.
 
+===Fill===
+Fill is available under Tool or by the *G* button. Once selected the next mouse click will be the start point for the fill.
+
 ==Palette window==
 The palette (currently named VIC-II) shows your primary and secondary color selection. You can select primary/secondary color directly from the window with the left and right mouse buttons respectively. The primary color will be marked with a square and the secondary color will be marked with an X.
 
@@ -158,7 +161,7 @@ This is the PC file format used by Pixcen. The format saves the full state of th
 ===PNG/BMP/GIF/JPG===
 Export and import of these native PC formats is supported via Windows GDI. 
 
-Pixcen is designed to be able to export and re-import images without any loss but be aware that there could be bugs. Also, BMP bitmaps exported from other tools like [http://csdb.dk/release/?id=86776 Project One] could use a different palette and that can mean Pixcen will not be able to recreate the image correctly. In this case, using a native C64 format like [Manual#Koala Koala] is a safer way to move images between applications.
+Pixcen is designed to be able to export and re-import images without any loss but be aware that there could be bugs.
 
 A word of warning, JPG is a destructive format and should not be used for anything but pure export.
 
@@ -220,6 +223,13 @@ Valuable feedback and/or early adopters:
 ..and others..
 
 =Changelog=
+r39
+ * Delete undo history added under tools.
+ * Color comparison is now using a more perceptual algorithm.
+ * Seven new palettes are added and available under mode. Palette setting is saved with GPX.
+ * Known palettes are searched for an best match when importing RGB images.
+ * Flood fill is available under tools.
+
 r27
  * Upped version to 0.6.0.x to compensate for the lower revision number of the new repository.
  * New version script/tool for Google code.
