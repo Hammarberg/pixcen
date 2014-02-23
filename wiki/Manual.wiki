@@ -148,7 +148,7 @@ Locked colors are marked with a red line crossing the icon. They are locked in t
 ===Background color===
 In all modes except single color bitmap and unrestricted the _0_ mask in the cell window is global and represents the background color, switching background color is done by right clicking this icon and select a new color from the drop down palette.
 
-In single color bitmap mode or unrestricted mode, there is no global color for background. To switch the background color (on a preferably new and empty bitmap), select the desired background color from the palette as your secondary color. Select the entire image with *CTRL*+*A* then hit *Delete* or *Backspace* and the entire image will be filled with the secondary color.
+In single color bitmap mode or unrestricted mode, there is no global color for background. To switch the background color (on a preferably new and empty bitmap) you can use fill or a select all followed by a cut.
 
 ===Border color===
 The border color is always global and marked as _Bd_ in the cell window. By default it's set to light blue but some file formats preserve border color. Pixcen will preserve this color when possible. You also want to set the border color before exporting a [Manual#C64_Exe C64 executable].
@@ -224,11 +224,11 @@ Valuable feedback and/or early adopters:
 
 =Changelog=
 r39
- * Delete undo history added under tools.
+ * Delete undo history added under tool menu.
  * Color comparison is now using a more perceptual algorithm.
  * Seven new palettes are added and available under mode. Palette setting is saved with GPX.
- * Known palettes are searched for an best match when importing RGB images.
- * Flood fill is available under tools.
+ * Known palettes are searched for the best match when importing RGB images.
+ * Flood fill is available under tool menu.
 
 r27
  * Upped version to 0.6.0.x to compensate for the lower revision number of the new repository.
