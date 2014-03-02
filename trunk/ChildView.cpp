@@ -1204,6 +1204,13 @@ found:
 		delete m_pbm;
 		m_pbm = i;
 
+		//View specific meta data
+		if(ex.cmpi(_T("gpx"))==0)
+		{
+			m_AutoMarker = m_pbm->GetMetaInt("autoselect") ? true : false;
+			m_CellSnapMarker = m_pbm->GetMetaInt("cellsnap") ? true : false;
+		}
+
 		Invalidate();
 		Mail(MSG_PREV_PAR,UINT_PTR((1.0/m_pbm->GetPARValue())*10000000));
 		Mail(MSG_REFRESH);
@@ -1279,6 +1286,7 @@ void CChildView::OnFileSave()
 {
 	if(m_pbm->GotFileEx())
 	{
+		SetViewSpecificMetaData();
 		try
 		{
 			m_pbm->Save(NULL,NULL);
@@ -1304,6 +1312,8 @@ void CChildView::OnUpdateFileSave(CCmdUI *pCmdUI)
 
 void CChildView::Saveas(C64Interface *i)
 {
+	SetViewSpecificMetaData();
+
 	narray<autoptr<SaveFormat>, int> fmt;
 	i->GetSaveFormats(fmt);
 
@@ -2964,4 +2974,11 @@ void CChildView::FloodFill(int x, int y, BYTE col, BYTE replace)
 	}
 
 	m_pbm->EndHistory();
+}
+
+
+void CChildView::SetViewSpecificMetaData(void)
+{
+	m_pbm->SetMetaInt("autoselect", m_AutoMarker?1:0);
+	m_pbm->SetMetaInt("cellsnap",m_CellSnapMarker?1:0);
 }
