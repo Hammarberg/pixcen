@@ -88,6 +88,8 @@ CChildView::CChildView()
 	m_pBackBufferDC = NULL;
 
 	m_Fill = false;
+
+	m_goodFormat = false;
 }
 
 CChildView::~CChildView()
@@ -1215,11 +1217,12 @@ found:
 		Mail(MSG_PREV_PAR,UINT_PTR((1.0/m_pbm->GetPARValue())*10000000));
 		Mail(MSG_REFRESH);
 
-		if(good_format)
-		{
-			m_pbm->SetFileName(path,ex);
-		}
-		else
+		m_pbm->SetFileName(path);
+		m_goodFormat = good_format;
+
+		this->SetTitleFileName(path);
+
+		if(!good_format)
 		{
 			m_pbm->SetDirty();
 		}
@@ -1284,7 +1287,7 @@ void CChildView::OnFileLoad()
 
 void CChildView::OnFileSave()
 {
-	if(m_pbm->GotFileEx())
+	if(m_goodFormat && *m_pbm->GetFileName()!=_T('\0'))
 	{
 		SetViewSpecificMetaData();
 		try
@@ -1378,15 +1381,14 @@ void CChildView::Saveas(C64Interface *i)
 		{
 			i->Save(dlg.GetPathName(), ex);
 
-			if(good_format && i->GetBackBufferCount() == 1)
+			if((good_format && i->GetBackBufferCount() == 1) || ex.cmpi(_T("gpx"))==0)
 			{
 				i->ClearDirty();
-				i->SetFileName(dlg.GetPathName(),ex);
+				SetTitleFileName(dlg.GetPathName());
 			}
-			else
-			{
-				i->SetFileName(dlg.GetPathName(),NULL);
-			}
+
+			i->SetFileName(dlg.GetPathName());
+			m_goodFormat = good_format;
 
 		}
 		catch(LPCTSTR str)
@@ -1472,6 +1474,7 @@ void CChildView::OnEditUndo()
 		m_pbm = m_pbm->Undo();
 		Invalidate();
 		Mail(MSG_REFRESH);
+		m_pbm->SetDirty();
 	}
 }
 
@@ -1489,6 +1492,7 @@ void CChildView::OnEditRedo()
 		m_pbm = m_pbm->Redo();
 		Invalidate();
 		Mail(MSG_REFRESH);
+		m_pbm->SetDirty();
 	}
 }
 
@@ -1704,6 +1708,9 @@ void CChildView::ChangeMode(C64Interface::tmode to)
 		m_pbm = i;
 
 		i->SetBackBuffer(curbuf);
+
+		m_goodFormat = false;
+		i->SetDirty();
 		
 		Invalidate();
 		Mail(MSG_REFRESH);
@@ -2981,4 +2988,18 @@ void CChildView::SetViewSpecificMetaData(void)
 {
 	m_pbm->SetMetaInt("autoselect", m_AutoMarker?1:0);
 	m_pbm->SetMetaInt("cellsnap",m_CellSnapMarker?1:0);
+}
+
+void CChildView::SetTitleFileName(LPCTSTR file)
+{
+	nstr tmp,path = file;
+	size_t n = path.rfindany(_T("\\/"));
+	if(n==-1)
+		tmp = path;
+	else
+		tmp = path.mid(n+1);
+
+	TCHAR *p=new TCHAR[tmp.size()+1];
+	lstrcpy(p, tmp);
+	Mail(MSG_FILE_TITLE, (UINT_PTR)p);
 }
