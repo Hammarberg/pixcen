@@ -201,6 +201,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_pCColCtrl->Create(IDD_CONTROL, &m_wndView);
 	m_pCColCtrl->ShowWindow(SW_SHOW);
 
+	TCHAR *p=new TCHAR[16];
+	lstrcpy(p, _T("Untitled"));
+	Mail(MSG_FILE_TITLE, (UINT_PTR)p);
 
 	OnHelpCheckforupdates();
 
@@ -443,6 +446,16 @@ void CMainFrame::Receive(unsigned short message, UINT_PTR data, unsigned short e
 			{
 				m_pPreview.remove(n);
 			}
+		}
+		break;
+	case MSG_FILE_TITLE:
+		{
+			TCHAR *p =(TCHAR *)data;
+
+			nstr tmp = _T("Pixcen - ");
+			tmp += p;
+			delete [] p;
+			SetWindowText(tmp);
 		}
 		break;
 	default:

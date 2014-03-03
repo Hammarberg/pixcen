@@ -185,7 +185,10 @@ void C64Interface::InheritHistory(C64Interface *old)
 C64Interface *C64Interface::Undo(void)
 {
 	if(!history_pos && history_previous)
+	{
+		history_previous->file_name.empty();
 		return history_previous;
+	}
 
 	history_pos--;PlayHistory(history_undo[history_pos]+4);
 	return this;
@@ -194,7 +197,10 @@ C64Interface *C64Interface::Undo(void)
 C64Interface *C64Interface::Redo(void)
 {
 	if(history_pos == history_redo.count() && history_next)
+	{
+		history_next->file_name.empty();
 		return history_next;
+	}
 
 	PlayHistory(history_redo[history_pos]+4);history_pos++;
 	return this;
@@ -455,10 +461,7 @@ void C64Interface::Save(LPCTSTR pszFileName, LPCTSTR type)
 	if(!pszFileName)
 	{
 		ASSERT(file_name.isnotempty());
-		ASSERT(file_ex.isnotempty());
-
 		pszFileName = file_name;
-		type = file_ex;
 	}
 
 	if(lstrcmpi(_T("bmp"),type)==0 || lstrcmpi(_T("png"),type)==0 || lstrcmpi(_T("jpg"),type)==0 || lstrcmpi(_T("gif"),type)==0)
@@ -1635,7 +1638,6 @@ C64Interface *C64Interface::Load(LPCTSTR pszFileName, LPCTSTR type, tmode mode, 
 		i = CreateFromImage(&img, 1, mode);
 
 		i->file_name = pszFileName;
-		i->file_ex = type;
 
 		return i;
 	}

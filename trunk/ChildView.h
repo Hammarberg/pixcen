@@ -61,6 +61,8 @@ protected:
 
 
 private:
+	bool m_goodFormat;
+	void SetTitleFileName(LPCTSTR file);
 
 	int m_TimeCount;
 
