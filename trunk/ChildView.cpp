@@ -1460,6 +1460,21 @@ void CChildView::Receive(unsigned short message, UINT_PTR data, unsigned short e
 			free(p);
 		}
 		break;
+	case MSG_PREV_REPOS:
+		{
+			CPoint *pix=(CPoint *)data;
+
+			CRect rc;
+			GetClientRect(rc);
+
+			m_posX = rc.right/2 - ((pix->x) * m_lastScale * m_pbm->GetPixelWidth());
+			m_posY = rc.bottom/2 - ((pix->y) * m_lastScale);
+
+			Invalidate();
+
+			delete pix;
+		}
+		break;
 
 	default:
 		break;

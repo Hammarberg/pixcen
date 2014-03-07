@@ -57,6 +57,7 @@ BEGIN_MESSAGE_MAP(CPreview, CWnd)
 	ON_WM_WINDOWPOSCHANGED()
 	ON_WM_MOUSEWHEEL()
 	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -256,14 +257,57 @@ BOOL CPreview::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt)
 
 void CPreview::OnMouseMove(UINT nFlags, CPoint point)
 {
-	if(nFlags&(MK_LBUTTON|MK_MBUTTON|MK_RBUTTON))
+	if(nFlags&(MK_MBUTTON|MK_RBUTTON))
 	{
 		m_posX+=point.x-m_MovePoint.x;
 		m_posY+=point.y-m_MovePoint.y;
 		Invalidate();
 	}
+	else if(nFlags&MK_LBUTTON)
+	{
+		OnLButtonDown(nFlags, point);
+	}
 
 	m_MovePoint = point;
 
 	__super::OnMouseMove(nFlags, point);
+}
+
+
+bool CPreview::GetPixelFromPoint(CPoint &point, CPoint &pixel)
+{
+	C64Interface *pInterface = *m_ppInterface;
+
+	int scale = 1+m_Zoom/ZOOMVALUE;
+
+	int x,y,mx=pInterface->GetSizeX(),my=pInterface->GetSizeY(),pw=pInterface->GetPixelWidth();
+	int bmx = scale * mx * pw;
+	int bmy = scale * my;
+
+	x = (point.x - m_posX);
+	y = int((point.y - m_posY) / m_scaleY + 0.5);
+
+	if(x < 0 || x >= bmx || y < 0 || y >= bmy) return false;	//Outside
+	
+	pixel.x = x / (scale * pw);
+	pixel.y = y / (scale);
+
+	return true;
+}
+
+
+void CPreview::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: Add your message handler code here and/or call default
+	CPoint *pix = new CPoint;
+	if(GetPixelFromPoint(point, *pix))
+	{
+		Mail(MSG_PREV_REPOS, UINT_PTR(pix));
+	}
+	else
+	{
+		delete pix;
+	}
+
+	__super::OnLButtonDown(nFlags, point);
 }
