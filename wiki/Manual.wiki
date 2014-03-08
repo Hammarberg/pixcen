@@ -121,7 +121,9 @@ The rotations are restricted to selections of equal width en height but can alwa
 ==Preview window==
 Available as an option under the View menu or by pressing *CTRL*+*P*.
 
-The preview window can be navigated and zoomed with the mouse in a similar way to the main view. You can also open multiple preview windows.
+The preview window can be navigated and zoomed with the mouse in a similar way to the main view. You can also open multiple preview windows. 
+
+A left mouse button click will center the main view to the equivalent position over the image. When holding the left mouse button while moving over the preview window, the main view will scroll along.
 
 ===Pixel Aspect Ratio (PAR)===
 Under View -> Preview pixel aspect ratio, you can change the PAR for the preview window(s). Default is PC(1:1) but this might not be a good representation of the image on the real thing. The pixels on the C64 are slightly taller than they are wide.
@@ -223,6 +225,11 @@ Valuable feedback and/or early adopters:
 ..and others..
 
 =Changelog=
+r44
+ * Saving auto-select cell and snap selection as meta data in GPX format.
+ * File name in title. Reworked the default save target and dirty flags.
+ * Left click and/or holding left mouse button in preview window while moving will reposition/move the main view.
+
 r39
  * Delete undo history added under tool menu.
  * Color comparison is now using a more perceptual algorithm.
