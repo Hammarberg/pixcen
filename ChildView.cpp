@@ -912,6 +912,7 @@ void CChildView::OnRButtonDown(UINT nFlags, CPoint point)
 		{
 			m_Fill = false;
 			FloodFill(pix.x, pix.y, m_Col2, m_pbm->GetPixel(pix.x, pix.y));
+			Invalidate(FALSE);
 		}
 		else
 		{
