@@ -194,6 +194,9 @@ void C64Palette::Receive(unsigned short message, UINT_PTR data, unsigned short e
 			col2 = int(data);
 		Invalidate();
 		break;
+	case MSG_REFRESH:
+		Invalidate();
+		break;
 
 	default:
 		break;

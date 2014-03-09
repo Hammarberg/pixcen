@@ -180,10 +180,14 @@ public:
 	void SetDirty(void){dirty=true;}
 	void ClearDirty(void){dirty=false;}
 
-	bool GotFileEx(void){return file_ex.isnotempty();}
 	LPCTSTR GetFileName(void){return file_name;}
-	LPCTSTR GetFileEx(void){return file_ex;}
-	void SetFileName(LPCTSTR s, LPCTSTR ex){file_name=s;file_ex=ex;}
+	void SetFileName(LPCTSTR s){file_name=s;}
+	nstr GetFileExt(void)
+	{
+		size_t n=file_name.rfind(_T('.'));
+		if(n==-1)return _T("");
+		return file_name.mid(n+1);
+	}
 
 	void Save(LPCTSTR pszFileName, LPCTSTR type);
 
@@ -396,7 +400,7 @@ private:
 
 	static const double parvalue[3];
 
-	nstr file_name, file_ex;
+	nstr file_name;
 
 	bool dirty;
 
