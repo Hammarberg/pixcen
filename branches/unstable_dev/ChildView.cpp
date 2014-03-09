@@ -30,6 +30,8 @@
 #include "ImportDlg.h"
 #include "NewDlg.h"
 #include "AddressDlg.h"
+#include "Monomap.h"
+#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -85,6 +87,9 @@ CChildView::CChildView()
 
 	m_pBackBufferDC = NULL;
 
+	m_Fill = false;
+
+	m_goodFormat = false;
 }
 
 CChildView::~CChildView()
@@ -201,6 +206,7 @@ ON_COMMAND(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnToolDeleteundohistory)
 ON_UPDATE_COMMAND_UI(ID_PALETTE_DUMMY, &CChildView::OnUpdateModePalette)
 ON_COMMAND_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnModePalette)
 ON_UPDATE_COMMAND_UI_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnUpdateModePaletteRange)
+ON_COMMAND(ID_TOOL_FILL, &CChildView::OnToolFill)
 END_MESSAGE_MAP()
 
 
@@ -843,6 +849,11 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			BYTE col = m_pbm->GetPixel(pix.x, pix.y);
 			Mail(MSG_PAL_SEL_COL, col, 0);
 		}
+		else if(m_Fill)
+		{
+			m_Fill = false;
+			FloodFill(pix.x, pix.y, m_Col1, m_pbm->GetPixel(pix.x, pix.y));
+		}
 		else
 		{
 			m_pbm->BeginHistory();
@@ -896,6 +907,12 @@ void CChildView::OnRButtonDown(UINT nFlags, CPoint point)
 		{
 			BYTE col = m_pbm->GetPixel(pix.x, pix.y);
 			Mail(MSG_PAL_SEL_COL, col, 1);
+		}
+		else if(m_Fill)
+		{
+			m_Fill = false;
+			FloodFill(pix.x, pix.y, m_Col2, m_pbm->GetPixel(pix.x, pix.y));
+			Invalidate(FALSE);
 		}
 		else
 		{
@@ -1190,15 +1207,23 @@ found:
 		delete m_pbm;
 		m_pbm = i;
 
+		//View specific meta data
+		if(ex.cmpi(_T("gpx"))==0)
+		{
+			m_AutoMarker = m_pbm->GetMetaInt("autoselect") ? true : false;
+			m_CellSnapMarker = m_pbm->GetMetaInt("cellsnap") ? true : false;
+		}
+
 		Invalidate();
 		Mail(MSG_PREV_PAR,UINT_PTR((1.0/m_pbm->GetPARValue())*10000000));
 		Mail(MSG_REFRESH);
 
-		if(good_format)
-		{
-			m_pbm->SetFileName(path,ex);
-		}
-		else
+		m_pbm->SetFileName(path);
+		m_goodFormat = good_format;
+
+		this->SetTitleFileName(path);
+
+		if(!good_format)
 		{
 			m_pbm->SetDirty();
 		}
@@ -1263,8 +1288,9 @@ void CChildView::OnFileLoad()
 
 void CChildView::OnFileSave()
 {
-	if(m_pbm->GotFileEx())
+	if(m_goodFormat && *m_pbm->GetFileName()!=_T('\0'))
 	{
+		SetViewSpecificMetaData();
 		try
 		{
 			m_pbm->Save(NULL,NULL);
@@ -1290,6 +1316,8 @@ void CChildView::OnUpdateFileSave(CCmdUI *pCmdUI)
 
 void CChildView::Saveas(C64Interface *i)
 {
+	SetViewSpecificMetaData();
+
 	narray<autoptr<SaveFormat>, int> fmt;
 	i->GetSaveFormats(fmt);
 
@@ -1354,15 +1382,14 @@ void CChildView::Saveas(C64Interface *i)
 		{
 			i->Save(dlg.GetPathName(), ex);
 
-			if(good_format && i->GetBackBufferCount() == 1)
+			if((good_format && i->GetBackBufferCount() == 1) || ex.cmpi(_T("gpx"))==0)
 			{
 				i->ClearDirty();
-				i->SetFileName(dlg.GetPathName(),ex);
+				SetTitleFileName(dlg.GetPathName());
 			}
-			else
-			{
-				i->SetFileName(dlg.GetPathName(),NULL);
-			}
+
+			i->SetFileName(dlg.GetPathName());
+			m_goodFormat = good_format;
 
 		}
 		catch(LPCTSTR str)
@@ -1434,6 +1461,21 @@ void CChildView::Receive(unsigned short message, UINT_PTR data, unsigned short e
 			free(p);
 		}
 		break;
+	case MSG_PREV_REPOS:
+		{
+			CPoint *pix=(CPoint *)data;
+
+			CRect rc;
+			GetClientRect(rc);
+
+			m_posX = rc.right/2 - ((pix->x) * m_lastScale * m_pbm->GetPixelWidth());
+			m_posY = rc.bottom/2 - ((pix->y) * m_lastScale);
+
+			Invalidate();
+
+			delete pix;
+		}
+		break;
 
 	default:
 		break;
@@ -1448,6 +1490,7 @@ void CChildView::OnEditUndo()
 		m_pbm = m_pbm->Undo();
 		Invalidate();
 		Mail(MSG_REFRESH);
+		m_pbm->SetDirty();
 	}
 }
 
@@ -1465,6 +1508,7 @@ void CChildView::OnEditRedo()
 		m_pbm = m_pbm->Redo();
 		Invalidate();
 		Mail(MSG_REFRESH);
+		m_pbm->SetDirty();
 	}
 }
 
@@ -1680,6 +1724,9 @@ void CChildView::ChangeMode(C64Interface::tmode to)
 		m_pbm = i;
 
 		i->SetBackBuffer(curbuf);
+
+		m_goodFormat = false;
+		i->SetDirty();
 		
 		Invalidate();
 		Mail(MSG_REFRESH);
@@ -2890,4 +2937,85 @@ void CChildView::OnModePalette(UINT nID)
 
 	Invalidate();
 	Mail(MSG_REFRESH);
+}
+
+
+void CChildView::OnToolFill()
+{
+	m_Fill = true;
+}
+
+
+static void workFill(int x, int y, BYTE replace, Monomap *mono, C64Interface *pbm)
+{
+	std::vector<std::pair<int, int> > queue;
+
+	if(x >= 0 && x < pbm->GetSizeX() && y >= 0 && y < pbm->GetSizeY() && mono->GetPixel(x,y) == 0 && pbm->GetPixel(x,y) == replace)
+	{
+		queue.push_back(std::pair<int, int>(x,y));
+
+		while(queue.size())
+		{
+			x = queue[queue.size()-1].first;
+			y = queue[queue.size()-1].second;
+			queue.pop_back();
+
+			mono->SetPixel(x,y);
+		
+			if(x+1 < pbm->GetSizeX() && mono->GetPixel(x+1,y) == 0 && pbm->GetPixel(x+1,y) == replace)
+				queue.push_back(std::pair<int, int>(x+1,y));
+
+			if(x-1 >= 0 && mono->GetPixel(x-1,y) == 0 && pbm->GetPixel(x-1,y) == replace)
+				queue.push_back(std::pair<int, int>(x-1,y));
+
+			if(y+1 < pbm->GetSizeY() && mono->GetPixel(x,y+1) == 0 && pbm->GetPixel(x,y+1) == replace)
+				queue.push_back(std::pair<int, int>(x,y+1));
+
+			if(y-1 >= 0 && mono->GetPixel(x,y-1) == 0 && pbm->GetPixel(x,y-1) == replace)
+				queue.push_back(std::pair<int, int>(x,y-1));
+		}
+	}
+}
+
+
+void CChildView::FloodFill(int x, int y, BYTE col, BYTE replace)
+{
+	m_pbm->BeginHistory();
+
+	Monomap mono(m_pbm->GetSizeX(), m_pbm->GetSizeY());
+	workFill(x, y, replace, &mono, m_pbm);
+
+	for(y=0;y<m_pbm->GetSizeY();y++)
+	{
+		for(x=0;x<m_pbm->GetSizeX();x++)
+		{
+			if(mono.GetPixel(x,y))
+			{
+				m_pbm->SetPixel(x,y,col);
+			}
+		}
+	}
+
+	m_pbm->EndHistory();
+}
+
+
+void CChildView::SetViewSpecificMetaData(void)
+{
+	m_pbm->SetMetaInt("autoselect", m_AutoMarker?1:0);
+	m_pbm->SetMetaInt("cellsnap",m_CellSnapMarker?1:0);
+}
+
+void CChildView::SetTitleFileName(LPCTSTR file)
+{
+	nstr tmp,path = file;
+	size_t n = path.rfindany(_T("\\/"));
+	if(n==-1)
+		tmp = path;
+	else
+		tmp = path.mid(n+1);
+
+	TCHAR *p=new TCHAR[tmp.size()+1];
+	lstrcpy(p, tmp);
+	Mail(MSG_FILE_TITLE, (UINT_PTR)p);
 }

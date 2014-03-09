@@ -61,6 +61,8 @@ protected:
 
 
 private:
+	bool m_goodFormat;
+	void SetTitleFileName(LPCTSTR file);
 
 	int m_TimeCount;
 
@@ -104,6 +106,10 @@ private:
 
 	CPoint m_MovePoint;
 
+	bool m_Fill;
+
+	void FloodFill(int x, int y, BYTE col, BYTE replace);
+
 	bool GetPixelFromPoint(CPoint &point, CPoint &pixel, bool select=false);
 
 	void SelectInfo(CellInfo *pset=NULL);
@@ -112,6 +118,9 @@ private:
 	void SelectionSetPixel(bool pastemode, int x, int y, BYTE col);
 
 	static int sign(int x){return x == 0 ? 0 : ( x<0 ? -1 : 1 );}
+
+
+	void SetViewSpecificMetaData(void);
 
 protected:
 	void ZoomCommand(short zDelta, CPoint &pt);
@@ -251,5 +260,6 @@ public:
 	afx_msg void OnModePalette(UINT nID);
 	afx_msg void OnUpdateModePaletteRange(CCmdUI *pCmdUI);
 
+	afx_msg void OnToolFill();
 };
 
