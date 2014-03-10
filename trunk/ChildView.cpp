@@ -613,6 +613,7 @@ void CChildView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		break;
 	case VK_ESCAPE:
 		m_Paste = false;
+		m_Fill = false;
 		OnEditDeselect();
 		break;
 	case VK_DELETE:
