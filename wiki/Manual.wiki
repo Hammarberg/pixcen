@@ -225,6 +225,10 @@ Valuable feedback and/or early adopters:
 ..and others..
 
 =Changelog=
+r49
+ * Fixed severe bug (Issue 21) in save where files ended up with 0 size.
+ * Fixed refresh bug after using fill with secondary color.
+
 r44
  * Saving auto-select cell and snap selection as meta data in GPX format.
  * File name in title. Reworked the default save target and dirty flags.
