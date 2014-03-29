@@ -53,6 +53,7 @@ CChildView::CChildView()
 	m_posY = 0;
 	m_lastScale = 1;
 	m_Grid = 1;
+	m_CellGrid = 1;
 
 	m_Col1 = 1;	//White
 	m_Col2 = 0;	//Black
@@ -207,6 +208,8 @@ ON_UPDATE_COMMAND_UI(ID_PALETTE_DUMMY, &CChildView::OnUpdateModePalette)
 ON_COMMAND_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnModePalette)
 ON_UPDATE_COMMAND_UI_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnUpdateModePaletteRange)
 ON_COMMAND(ID_TOOL_FILL, &CChildView::OnToolFill)
+ON_COMMAND(ID_VIEW_CELLGRID, &CChildView::OnViewCellgrid)
+ON_UPDATE_COMMAND_UI(ID_VIEW_CELLGRID, &CChildView::OnUpdateViewCellgrid)
 END_MESSAGE_MAP()
 
 
@@ -387,6 +390,7 @@ void CChildView::OnPaint()
 	}
 
 	bool usegrid = scale > 4 && m_Grid ? true : false;
+	bool usecellgrid = scale > 4 && m_CellGrid ? true : false;
 
 	CPen *pOld=dc.SelectObject((CPen *)NULL);
 
@@ -424,51 +428,54 @@ void CChildView::OnPaint()
 						col = m_pbm->GetPixel(x,y);
 					}
 
-					if(usegrid)
-					{
-						dc.FillSolidRect(posx+1,posy+1,(scale*pw)-((x+1)%cw==0?2:1),(scale*1)-((y+1)%ch==0?2:1),g_Vic2[col]);
-					}
-					else 
-					{
-						dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
-					}
+					dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
 				}
 			}
 
-			if(usegrid)
+			if(usecellgrid)
 			{
 				if(y%ch==0)
 				{
 					dc.SelectObject(m_cLine);
+					dc.MoveTo(startx,posy);
+					dc.LineTo(posx+scale*pw,posy);
 				}
-				else
+				else if(usegrid)
 				{
 					dc.SelectObject(m_fLine);
+					dc.MoveTo(startx,posy);
+					dc.LineTo(posx+scale*pw,posy);
 				}
+
+			}
+			else if(usegrid)
+			{
+				dc.SelectObject(m_fLine);
 
 				dc.MoveTo(startx,posy);
 				dc.LineTo(posx+scale*pw,posy);
 			}
-
 		}
 	}
 
-	if(usegrid)
+	if(usegrid || usecellgrid)
 	{
 		for(x=0;x<=mx;x++)
 		{
 			posx = startx + scale * x * pw;
-			if(x%cw==0)
+			if(usecellgrid && x%cw==0)
 			{
 				dc.SelectObject(m_cLine);
+				dc.MoveTo(posx,starty);
+				dc.LineTo(posx,posy+scale);
 			}
-			else
+			else if(usegrid)
 			{
 				dc.SelectObject(m_fLine);
+				dc.MoveTo(posx,starty);
+				dc.LineTo(posx,posy+scale);
 			}
 
-			dc.MoveTo(posx,starty);
-			dc.LineTo(posx,posy+scale);
 		}
 	}
 
@@ -1595,6 +1602,19 @@ void CChildView::OnViewGrid()
 void CChildView::OnUpdateViewGrid(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(m_Grid ? 1 : 0);
+}
+
+
+void CChildView::OnViewCellgrid()
+{
+	m_CellGrid = 1 - m_CellGrid;
+	Invalidate();
+}
+
+
+void CChildView::OnUpdateViewCellgrid(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(m_CellGrid ? 1 : 0);
 }
 
 
@@ -3038,3 +3058,4 @@ void CChildView::SetTitleFileName(LPCTSTR file)
 	lstrcpy(p, tmp);
 	Mail(MSG_FILE_TITLE, (UINT_PTR)p);
 }
+
