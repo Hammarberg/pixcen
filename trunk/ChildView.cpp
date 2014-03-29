@@ -821,6 +821,24 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			if(m_CellSnapMarker)SnapToCell(pix);
 			m_pbm->BeginHistory();
 			int x,y,mx=m_pbm->GetSizeX(),my=m_pbm->GetSizeY();
+
+			//Pre-fill area with background or one solid color
+			if(!m_MaskedPaste)
+			{
+				CellInfo info;
+				m_pbm->GetCellInfo(0,0,1,1,&info);
+				for(y=0;y<m_PasteSizeY;y++)
+				{
+					if(y+pix.y>=my)break;
+					for(x=0;x<m_PasteSizeX;x++)
+					{
+						if(x+pix.x>=mx)break;
+						m_pbm->SetPixel(pix.x+x,pix.y+y,info.col[0]);
+					}
+				}
+			}
+
+			//Set paste buffer
 			for(y=0;y<m_PasteSizeY;y++)
 			{
 				if(y+pix.y>=my)break;
