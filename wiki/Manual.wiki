@@ -175,6 +175,11 @@ A word of warning, JPG is a destructive format and should not be used for anythi
 [http://csdb.dk/release/?id=29012 Cenimate]
 
 ===Paint Magic===
+This is a crippled multi-color bitmap format. The color RAM is filled with one solid color and when loading a Paint Magic image, Pixcen will cripple color 3 automatically. This is also a requirement to be able to save as Paint Magic.
+
+Paint magic got a built in viewer routine that can be started with:
+LOAD "IMAGEFILE",8
+RUN
 
 ===Art Studio===
 
