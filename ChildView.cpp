@@ -311,6 +311,8 @@ void CChildView::OnPaint()
 		m_pBackBufferDC->CreateCompatibleDC(&realdc);
 	}
 
+	C64Interface *pbm = m_pbm;
+
 	CBitmap *bitmap;
 	bitmap = m_pBackBufferDC->GetCurrentBitmap();
 	BITMAP bm;
@@ -328,13 +330,13 @@ void CChildView::OnPaint()
 
 	int scale = 1+m_Zoom/ZOOMVALUE;
 
-	int x,y,mx=m_pbm->GetSizeX(),my=m_pbm->GetSizeY(),pw=m_pbm->GetPixelWidth();
+	int x,y,mx=pbm->GetSizeX(),my=pbm->GetSizeY(),pw=pbm->GetPixelWidth();
 	int bmx = scale * mx * pw;
 	int bmy = scale * my;
-	int cw=m_pbm->GetCellSizeX();
-	int ch=m_pbm->GetCellSizeY();
+	int cw=pbm->GetCellSizeX();
+	int ch=pbm->GetCellSizeY();
 
-	COLORREF border = g_Vic2[m_pbm->GetBorderColor()];
+	COLORREF border = g_Vic2[pbm->GetBorderColor()];
 
 	//Change border color slightly from palette
 	BYTE *bd=(BYTE *)&border;
@@ -394,67 +396,49 @@ void CChildView::OnPaint()
 
 	CPen *pOld=dc.SelectObject((CPen *)NULL);
 
+	//Give the optimizer some freedom by copying to local
+	bool Paste = m_Paste;
+	CPoint PastePoint = m_PastePoint;
+	bool MaskedPaste = m_MaskedPaste;
+	int Col2 = m_Col2;
+	int PasteSizeX = m_PasteSizeX;
+	int PasteSizeY = m_PasteSizeY;
+
 	int posy,posx;
 
 	for(y=0;y<my;y++)
 	{
+		if((starty + scale * (y+1)) < 0)continue;
+
 		posy = starty + scale * y;
 
-		if(int(posy)>=rc.bottom)break;
+		if(LONG(posy) >= rc.bottom)break;
 
-		if(posy+scale > 0)
+		for(x=0;x<mx;x++)
 		{
-			for(x=0;x<mx;x++)
-			{
-				posx = startx + scale * x * pw;
+			if((startx + scale * (x+1) * pw) < 0)continue;
 
-				if(int(posx)>=rc.right)break;
+			posx = startx + scale * x * pw;
 
-				if(posx+scale*pw > 0)
-				{
-					int col;
+			if(LONG(posx) >= rc.right)break;
+
+			int col;
 					
-					if(m_Paste && y>=m_PastePoint.y && y<m_PastePoint.y+m_PasteSizeY && x>=m_PastePoint.x && x<m_PastePoint.x+m_PasteSizeX)
-					{
-						col = m_pPasteBuffer[(y-m_PastePoint.y)*m_PasteSizeX + (x-m_PastePoint.x)];
-
-						if(m_MaskedPaste && col == m_Col2)
-						{
-							col = m_pbm->GetPixel(x,y);
-						}
-					}
-					else
-					{
-						col = m_pbm->GetPixel(x,y);
-					}
-
-					dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
-				}
-			}
-
-			if(usecellgrid)
+			if(Paste && y>=PastePoint.y && y<PastePoint.y+PasteSizeY && x>=PastePoint.x && x<PastePoint.x+PasteSizeX)
 			{
-				if(y%ch==0)
-				{
-					dc.SelectObject(m_cLine);
-					dc.MoveTo(startx,posy);
-					dc.LineTo(posx+scale*pw,posy);
-				}
-				else if(usegrid)
-				{
-					dc.SelectObject(m_fLine);
-					dc.MoveTo(startx,posy);
-					dc.LineTo(posx+scale*pw,posy);
-				}
+				col = m_pPasteBuffer[(y-PastePoint.y)*PasteSizeX + (x-PastePoint.x)];
 
+				if(MaskedPaste && col == Col2)
+				{
+					col = pbm->GetPixel(x,y);
+				}
 			}
-			else if(usegrid)
+			else
 			{
-				dc.SelectObject(m_fLine);
-
-				dc.MoveTo(startx,posy);
-				dc.LineTo(posx+scale*pw,posy);
+				col = pbm->GetPixel(x,y);
 			}
+
+			dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
 		}
 	}
 
@@ -463,25 +447,49 @@ void CChildView::OnPaint()
 		for(x=0;x<=mx;x++)
 		{
 			posx = startx + scale * x * pw;
+
+			if(posx < 0)continue;
+			if(LONG(posx) >= rc.right)break;
+
 			if(usecellgrid && x%cw==0)
 			{
 				dc.SelectObject(m_cLine);
 				dc.MoveTo(posx,starty);
-				dc.LineTo(posx,posy+scale);
+				dc.LineTo(posx,endy);
 			}
 			else if(usegrid)
 			{
 				dc.SelectObject(m_fLine);
 				dc.MoveTo(posx,starty);
-				dc.LineTo(posx,posy+scale);
+				dc.LineTo(posx,endy);
 			}
+		}
 
+		for(y=0;y<my;y++)
+		{
+			posy = starty + scale * y;
+
+			if(posy < 0)continue;
+			if(LONG(posy) >= rc.bottom)break;
+
+			if(usecellgrid && y%ch==0)
+			{
+				dc.SelectObject(m_cLine);
+				dc.MoveTo(startx,posy);
+				dc.LineTo(endx,posy);
+			}
+			else if(usegrid)
+			{
+				dc.SelectObject(m_fLine);
+				dc.MoveTo(startx,posy);
+				dc.LineTo(endx,posy);
+			}
 		}
 	}
 
-	if(m_Paste)
+	if(Paste)
 	{
-		m_Mark[0] = m_PastePoint;
+		m_Mark[0] = PastePoint;
 
 		if(m_CellSnapMarker)
 				SnapToCell(m_Mark[0]);
@@ -492,7 +500,7 @@ void CChildView::OnPaint()
 		m_Mark[1].y += m_PasteSizeY;
 	}
 
-	if(m_MarkerCount > 0 || m_Paste)
+	if(m_MarkerCount > 0 || Paste)
 	{
 		dc.SelectObject(m_sLine[m_TimeCount&1]);
 
