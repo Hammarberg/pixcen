@@ -230,6 +230,11 @@ Valuable feedback and/or early adopters:
 ..and others..
 
 =Changelog=
+r54
+ * Fixed for color overflow issues with paste.
+ * Turn pixel grid or cell grid on and off individually (issue 19).
+ * Re-worked grid drawing (optimized) and prepared for shapes.
+
 r49
  * Fixed severe bug (Issue 21) in save where files ended up with 0 size.
  * Fixed refresh bug after using fill with secondary color.
