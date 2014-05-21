@@ -228,11 +228,11 @@ MCSprite::MCSprite(int x, int y, int backbuffers)
 	infouse[1].use = InfoUse::INFO_VALUE;
 	infouse[1].pp = &ext0;
 
-	infouse[2].use = InfoUse::INFO_VALUE;
-	infouse[2].pp = &ext1;
+	infouse[2].use = InfoUse::INFO_INDEX;
+	infouse[2].pp = &color;
 
-	infouse[3].use = InfoUse::INFO_INDEX;
-	infouse[3].pp = &color;
+	infouse[3].use = InfoUse::INFO_VALUE;
+	infouse[3].pp = &ext1;
 
 	lock[0] = 1;
 
@@ -267,10 +267,10 @@ BYTE MCSprite::GetPixel(int x, int y)
 		b = ext[0];
 		break;
 	case 2:
-		b = ext[1];
+		b = color[ci];
 		break;
 	case 3:
-		b = color[ci];
+		b = ext[1];
 		break;
 	}
 
