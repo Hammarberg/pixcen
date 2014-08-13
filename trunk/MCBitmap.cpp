@@ -193,7 +193,7 @@ nstr MCBitmap::IdentifyFile(nmemfile &file)
 
 	file >> addr;
 
-	if(file.len() == 10003 && addr == 0x6000)
+	if(file.len() == 10003 && (addr == 0x6000 || addr == 0x2000))
 	{
 		ex = _T("kla");
 	}

@@ -76,11 +76,11 @@ nstr Bitmap::IdentifyFile(nmemfile &file)
 
 	file >> addr;
 
-	if((file.len() == 9002 || file.len() == 9009)  && addr == 0x2000)
+	if((file.len() == 9002 && file.len() == 9009)  && addr == 0x2000)
 	{
 		ex = _T("art");
 	}
-	else if(file.len() == 9218 || (addr == 0x2000 || addr == 0x1c00))
+	else if(file.len() == 9218 && (addr == 0x2000 || addr == 0x1c00))
 	{
 		ex = _T("dd");
 	}
