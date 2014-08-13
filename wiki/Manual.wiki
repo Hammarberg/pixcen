@@ -230,6 +230,10 @@ Valuable feedback and/or early adopters:
 ..and others..
 
 =Changelog=
+r57
+ * Fixed for issue 29, format identification issue for non standard Koala.
+ * Fix for Issue 28, wrong mask with multi-color sprites.
+
 r54
  * Fixed for color overflow issues with paste.
  * Turn pixel grid or cell grid on and off individually (issue 19).
