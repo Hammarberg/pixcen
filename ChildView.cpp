@@ -887,6 +887,7 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			m_Fill = false;
 			FloodFill(pix.x, pix.y, m_Col1, m_pbm->GetPixel(pix.x, pix.y));
+			Mail(MSG_REFRESH);
 		}
 		else
 		{
@@ -947,6 +948,7 @@ void CChildView::OnRButtonDown(UINT nFlags, CPoint point)
 			m_Fill = false;
 			FloodFill(pix.x, pix.y, m_Col2, m_pbm->GetPixel(pix.x, pix.y));
 			Invalidate(FALSE);
+			Mail(MSG_REFRESH);
 		}
 		else
 		{
