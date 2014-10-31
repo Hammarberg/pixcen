@@ -88,7 +88,7 @@ nstr Bitmap::IdentifyFile(nmemfile &file)
 	{
 		BYTE buffer[9216];
 		//Compressed doodle uses same RLE as compressed Koala
-		if(MCBitmap::DecompressKoalaStream(((BYTE *)file)+2, file.len()-2, buffer, 9216) == 9216)
+		if(MCBitmap::DecompressKoalaStream(((BYTE *)file)+2, int(file.len()-2), buffer, 9216) == 9216)
 		{
 			ex = _T("jj");
 		}
@@ -136,7 +136,7 @@ void Bitmap::Load(nmemfile &file, LPCTSTR type, int version)
 	else if(lstrcmpi(_T("jj"),type)==0)
 	{
 		BYTE buffer[9216];	//Decompress will skip PRG header
-		if(MCBitmap::DecompressKoalaStream(((BYTE *)file)+2, file.len()-2, buffer, 9216)!=9216)
+		if(MCBitmap::DecompressKoalaStream(((BYTE *)file)+2, int(file.len()-2), buffer, 9216)!=9216)
 		{
 			throw _T("Invalid Doodle stream");
 		}
@@ -159,7 +159,7 @@ void Bitmap::Load(nmemfile &file, LPCTSTR type, int version)
 		}
 
 		xsize = 40*8;
-		ysize = ((len+319)/320)*8;
+		ysize = int(((len+319)/320)*8);
 
 		Destroy();
 		Create(ysize * (xsize/8), 0, (ysize/8) * (xsize/8));
