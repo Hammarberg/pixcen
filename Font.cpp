@@ -279,7 +279,7 @@ void MCFont::Load(nmemfile &file, LPCTSTR type, int version)
 		}
 
 		xsize = 32*4;
-		ysize = ((len+255)/256)*8;
+		ysize = int(((len+255)/256)*8);
 
 		Destroy();
 		Create(ysize * (xsize/4), 3, 0);
@@ -480,7 +480,7 @@ void SFont::Load(nmemfile &file, LPCTSTR type, int version)
 		}
 
 		xsize = 32*8;
-		ysize = ((len+255)/256)*8;
+		ysize = int(((len+255)/256)*8);
 
 		Destroy();
 

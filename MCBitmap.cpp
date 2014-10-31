@@ -212,7 +212,7 @@ nstr MCBitmap::IdentifyFile(nmemfile &file)
 	else if(addr == 0x6000)
 	{
 		BYTE buffer[10001];
-		if(DecompressKoalaStream(((BYTE *)file)+2, file.len()-2, buffer, 10001) == 10001)
+		if(DecompressKoalaStream(((BYTE *)file)+2, int(file.len()-2), buffer, 10001) == 10001)
 		{
 			ex = _T("gg");
 		}
@@ -251,7 +251,7 @@ void MCBitmap::Load(nmemfile &file, LPCTSTR type, int version)
 	else if(lstrcmpi(_T("gg"),type)==0)
 	{
 		BYTE buffer[10001];	//Decompress will skip PRG header
-		if(DecompressKoalaStream(((BYTE *)file)+2, file.len()-2, buffer, 10001)!=10001)
+		if(DecompressKoalaStream(((BYTE *)file)+2, int(file.len()-2), buffer, 10001)!=10001)
 		{
 			throw _T("Invalid Koala stream");
 		}
@@ -370,7 +370,7 @@ void MCBitmap::Load(nmemfile &file, LPCTSTR type, int version)
 		}
 
 		xsize = 40*4;
-		ysize = ((len+319)/320)*8;
+		ysize = int(((len+319)/320)*8);
 
 		Destroy();
 		Create(ysize * (xsize/4), (xsize/4) * (ysize/8), (xsize/4) * (ysize/8));

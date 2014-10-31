@@ -167,7 +167,7 @@ afx_msg LRESULT CColorCtrl::OnUmCellRclick(WPARAM wParam, LPARAM lParam)
 		GetCursorPos(&point);
 
 		C64DropPalette *p=new C64DropPalette();
-		p->Create(point.x,point.y,this, wParam);
+		p->Create(point.x,point.y,this, (int)wParam);
 		p->ShowWindow(SW_SHOW);
 	}
 

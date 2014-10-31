@@ -323,7 +323,7 @@ bool crunch(File *aSource, File *aTarget, uint startAdress, uint theDecrType, bo
     //break;
   }
 
-  ibufSize = aSource->size - 2;
+  ibufSize = (uint)aSource->size - 2;
   ibuf = (byte *)malloc(ibufSize);
   for(i = 0; i < ibufSize; ++i) {
     ibuf[i] = aSource->data[i + 2];

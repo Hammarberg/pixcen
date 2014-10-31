@@ -641,7 +641,7 @@ void C64Interface::Save(nmemfile &file, LPCTSTR type)
 		for(int r=0;r<history_redo.count();r++)
 			file.write(history_redo[r], *((int32_t *)history_redo[r]));
 
-		uLongf destsize = file.len()+16;
+		uLongf destsize = uLongf(file.len()+16);
 		BYTE *p = (BYTE *)malloc(destsize);
 		if(compress2(p,&destsize,file.buf(),(uLong)file.len(),Z_BEST_COMPRESSION) != Z_OK)
 		{
@@ -1668,7 +1668,7 @@ C64Interface *C64Interface::Load(LPCTSTR pszFileName, LPCTSTR type, tmode mode, 
 			destsize+=0x10000;
 			p = (BYTE *)malloc(destsize);
 
-			int n=uncompress(p, &destsize, file.buf(), file.len());
+			int n=uncompress(p, &destsize, file.buf(), (uLong)file.len());
 			if(n == Z_BUF_ERROR) continue;
 			if(n == Z_OK)break;
 

@@ -1882,7 +1882,7 @@ static bool BitmapToClipboard(HBITMAP hBM, HWND hWnd)
         bi.biBitCount = 24;
     
     // Get size of color table.
-    SIZE_T dwColTableLen = (bi.biBitCount <= 8) ? (1 << bi.biBitCount) * sizeof(RGBQUAD) : 0;
+    SIZE_T dwColTableLen = (bi.biBitCount <= 8) ? SIZE_T(1 << bi.biBitCount) * sizeof(RGBQUAD) : 0;
     
     // Create a device context with palette
     HDC hDC = ::GetDC(NULL);
