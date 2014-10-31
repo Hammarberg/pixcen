@@ -72,6 +72,7 @@ private:
 	int m_posX;
 	int m_posY;
 	int m_Grid;
+	int m_CellGrid;
 
 	int m_Col1;
 	int m_Col2;
@@ -261,5 +262,7 @@ public:
 	afx_msg void OnUpdateModePaletteRange(CCmdUI *pCmdUI);
 
 	afx_msg void OnToolFill();
+	afx_msg void OnViewCellgrid();
+	afx_msg void OnUpdateViewCellgrid(CCmdUI *pCmdUI);
 };
 

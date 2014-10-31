@@ -458,10 +458,18 @@ void C64Interface::SetMaskInfo(int cx, int cy, int w, int h, int infoindex, Cell
 
 void C64Interface::Save(LPCTSTR pszFileName, LPCTSTR type)
 {
+	nstr stype;
+
 	if(!pszFileName)
 	{
 		ASSERT(file_name.isnotempty());
 		pszFileName = file_name;
+	}
+
+	if(!type)
+	{
+		stype=GetFileExt();
+		type=stype;
 	}
 
 	if(lstrcmpi(_T("bmp"),type)==0 || lstrcmpi(_T("png"),type)==0 || lstrcmpi(_T("jpg"),type)==0 || lstrcmpi(_T("gif"),type)==0)

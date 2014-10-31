@@ -53,6 +53,7 @@ CChildView::CChildView()
 	m_posY = 0;
 	m_lastScale = 1;
 	m_Grid = 1;
+	m_CellGrid = 1;
 
 	m_Col1 = 1;	//White
 	m_Col2 = 0;	//Black
@@ -207,6 +208,8 @@ ON_UPDATE_COMMAND_UI(ID_PALETTE_DUMMY, &CChildView::OnUpdateModePalette)
 ON_COMMAND_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnModePalette)
 ON_UPDATE_COMMAND_UI_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnUpdateModePaletteRange)
 ON_COMMAND(ID_TOOL_FILL, &CChildView::OnToolFill)
+ON_COMMAND(ID_VIEW_CELLGRID, &CChildView::OnViewCellgrid)
+ON_UPDATE_COMMAND_UI(ID_VIEW_CELLGRID, &CChildView::OnUpdateViewCellgrid)
 END_MESSAGE_MAP()
 
 
@@ -308,6 +311,8 @@ void CChildView::OnPaint()
 		m_pBackBufferDC->CreateCompatibleDC(&realdc);
 	}
 
+	C64Interface *pbm = m_pbm;
+
 	CBitmap *bitmap;
 	bitmap = m_pBackBufferDC->GetCurrentBitmap();
 	BITMAP bm;
@@ -325,13 +330,13 @@ void CChildView::OnPaint()
 
 	int scale = 1+m_Zoom/ZOOMVALUE;
 
-	int x,y,mx=m_pbm->GetSizeX(),my=m_pbm->GetSizeY(),pw=m_pbm->GetPixelWidth();
+	int x,y,mx=pbm->GetSizeX(),my=pbm->GetSizeY(),pw=pbm->GetPixelWidth();
 	int bmx = scale * mx * pw;
 	int bmy = scale * my;
-	int cw=m_pbm->GetCellSizeX();
-	int ch=m_pbm->GetCellSizeY();
+	int cw=pbm->GetCellSizeX();
+	int ch=pbm->GetCellSizeY();
 
-	COLORREF border = g_Vic2[m_pbm->GetBorderColor()];
+	COLORREF border = g_Vic2[pbm->GetBorderColor()];
 
 	//Change border color slightly from palette
 	BYTE *bd=(BYTE *)&border;
@@ -387,94 +392,104 @@ void CChildView::OnPaint()
 	}
 
 	bool usegrid = scale > 4 && m_Grid ? true : false;
+	bool usecellgrid = scale > 4 && m_CellGrid ? true : false;
 
 	CPen *pOld=dc.SelectObject((CPen *)NULL);
+
+	//Give the optimizer some freedom by copying to local
+	bool Paste = m_Paste;
+	CPoint PastePoint = m_PastePoint;
+	bool MaskedPaste = m_MaskedPaste;
+	int Col2 = m_Col2;
+	int PasteSizeX = m_PasteSizeX;
+	int PasteSizeY = m_PasteSizeY;
 
 	int posy,posx;
 
 	for(y=0;y<my;y++)
 	{
+		if((starty + scale * (y+1)) < 0)continue;
+
 		posy = starty + scale * y;
 
-		if(int(posy)>=rc.bottom)break;
+		if(LONG(posy) >= rc.bottom)break;
 
-		if(posy+scale > 0)
+		for(x=0;x<mx;x++)
 		{
-			for(x=0;x<mx;x++)
-			{
-				posx = startx + scale * x * pw;
+			if((startx + scale * (x+1) * pw) < 0)continue;
 
-				if(int(posx)>=rc.right)break;
+			posx = startx + scale * x * pw;
 
-				if(posx+scale*pw > 0)
-				{
-					int col;
+			if(LONG(posx) >= rc.right)break;
+
+			int col;
 					
-					if(m_Paste && y>=m_PastePoint.y && y<m_PastePoint.y+m_PasteSizeY && x>=m_PastePoint.x && x<m_PastePoint.x+m_PasteSizeX)
-					{
-						col = m_pPasteBuffer[(y-m_PastePoint.y)*m_PasteSizeX + (x-m_PastePoint.x)];
-
-						if(m_MaskedPaste && col == m_Col2)
-						{
-							col = m_pbm->GetPixel(x,y);
-						}
-					}
-					else
-					{
-						col = m_pbm->GetPixel(x,y);
-					}
-
-					if(usegrid)
-					{
-						dc.FillSolidRect(posx+1,posy+1,(scale*pw)-((x+1)%cw==0?2:1),(scale*1)-((y+1)%ch==0?2:1),g_Vic2[col]);
-					}
-					else 
-					{
-						dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
-					}
-				}
-			}
-
-			if(usegrid)
+			if(Paste && y>=PastePoint.y && y<PastePoint.y+PasteSizeY && x>=PastePoint.x && x<PastePoint.x+PasteSizeX)
 			{
-				if(y%ch==0)
-				{
-					dc.SelectObject(m_cLine);
-				}
-				else
-				{
-					dc.SelectObject(m_fLine);
-				}
+				col = m_pPasteBuffer[(y-PastePoint.y)*PasteSizeX + (x-PastePoint.x)];
 
-				dc.MoveTo(startx,posy);
-				dc.LineTo(posx+scale*pw,posy);
+				if(MaskedPaste && col == Col2)
+				{
+					col = pbm->GetPixel(x,y);
+				}
+			}
+			else
+			{
+				col = pbm->GetPixel(x,y);
 			}
 
+			dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
 		}
 	}
 
-	if(usegrid)
+	if(usegrid || usecellgrid)
 	{
 		for(x=0;x<=mx;x++)
 		{
 			posx = startx + scale * x * pw;
-			if(x%cw==0)
+
+			if(posx < 0)continue;
+			if(LONG(posx) >= rc.right)break;
+
+			if(usecellgrid && x%cw==0)
 			{
 				dc.SelectObject(m_cLine);
+				dc.MoveTo(posx,starty);
+				dc.LineTo(posx,endy);
 			}
-			else
+			else if(usegrid)
 			{
 				dc.SelectObject(m_fLine);
+				dc.MoveTo(posx,starty);
+				dc.LineTo(posx,endy);
 			}
+		}
 
-			dc.MoveTo(posx,starty);
-			dc.LineTo(posx,posy+scale);
+		for(y=0;y<my;y++)
+		{
+			posy = starty + scale * y;
+
+			if(posy < 0)continue;
+			if(LONG(posy) >= rc.bottom)break;
+
+			if(usecellgrid && y%ch==0)
+			{
+				dc.SelectObject(m_cLine);
+				dc.MoveTo(startx,posy);
+				dc.LineTo(endx,posy);
+			}
+			else if(usegrid)
+			{
+				dc.SelectObject(m_fLine);
+				dc.MoveTo(startx,posy);
+				dc.LineTo(endx,posy);
+			}
 		}
 	}
 
-	if(m_Paste)
+	if(Paste)
 	{
-		m_Mark[0] = m_PastePoint;
+		m_Mark[0] = PastePoint;
 
 		if(m_CellSnapMarker)
 				SnapToCell(m_Mark[0]);
@@ -485,7 +500,7 @@ void CChildView::OnPaint()
 		m_Mark[1].y += m_PasteSizeY;
 	}
 
-	if(m_MarkerCount > 0 || m_Paste)
+	if(m_MarkerCount > 0 || Paste)
 	{
 		dc.SelectObject(m_sLine[m_TimeCount&1]);
 
@@ -613,6 +628,7 @@ void CChildView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		break;
 	case VK_ESCAPE:
 		m_Paste = false;
+		m_Fill = false;
 		OnEditDeselect();
 		break;
 	case VK_DELETE:
@@ -820,6 +836,24 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 			if(m_CellSnapMarker)SnapToCell(pix);
 			m_pbm->BeginHistory();
 			int x,y,mx=m_pbm->GetSizeX(),my=m_pbm->GetSizeY();
+
+			//Pre-fill area with background or one solid color
+			if(!m_MaskedPaste)
+			{
+				CellInfo info;
+				m_pbm->GetCellInfo(0,0,1,1,&info);
+				for(y=0;y<m_PasteSizeY;y++)
+				{
+					if(y+pix.y>=my)break;
+					for(x=0;x<m_PasteSizeX;x++)
+					{
+						if(x+pix.x>=mx)break;
+						m_pbm->SetPixel(pix.x+x,pix.y+y,info.col[0]);
+					}
+				}
+			}
+
+			//Set paste buffer
 			for(y=0;y<m_PasteSizeY;y++)
 			{
 				if(y+pix.y>=my)break;
@@ -853,6 +887,7 @@ void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 		{
 			m_Fill = false;
 			FloodFill(pix.x, pix.y, m_Col1, m_pbm->GetPixel(pix.x, pix.y));
+			Mail(MSG_REFRESH);
 		}
 		else
 		{
@@ -913,6 +948,7 @@ void CChildView::OnRButtonDown(UINT nFlags, CPoint point)
 			m_Fill = false;
 			FloodFill(pix.x, pix.y, m_Col2, m_pbm->GetPixel(pix.x, pix.y));
 			Invalidate(FALSE);
+			Mail(MSG_REFRESH);
 		}
 		else
 		{
@@ -1576,6 +1612,19 @@ void CChildView::OnViewGrid()
 void CChildView::OnUpdateViewGrid(CCmdUI *pCmdUI)
 {
 	pCmdUI->SetCheck(m_Grid ? 1 : 0);
+}
+
+
+void CChildView::OnViewCellgrid()
+{
+	m_CellGrid = 1 - m_CellGrid;
+	Invalidate();
+}
+
+
+void CChildView::OnUpdateViewCellgrid(CCmdUI *pCmdUI)
+{
+	pCmdUI->SetCheck(m_CellGrid ? 1 : 0);
 }
 
 
@@ -3019,3 +3068,4 @@ void CChildView::SetTitleFileName(LPCTSTR file)
 	lstrcpy(p, tmp);
 	Mail(MSG_FILE_TITLE, (UINT_PTR)p);
 }
+
