@@ -165,6 +165,9 @@
     <None Include="arrow.cur">
       <Filter>Rsc</Filter>
     </None>
+    <None Include="res\bin1.bin" />
+    <None Include="res\mspixcen.koa" />
+    <None Include="res\mspixcen.kla" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="C64Format">
