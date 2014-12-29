@@ -31,6 +31,7 @@
 #include "NewDlg.h"
 #include "AddressDlg.h"
 #include "Monomap.h"
+#include "resource.h"
 #include <vector>
 
 #ifdef _DEBUG
@@ -44,10 +45,25 @@
 
 CChildView::CChildView()
 {
+	m_Zoom = 0;
+
 	m_pbm = new MCBitmap;
+
+	HRSRC hIntro = FindResource(NULL, MAKEINTRESOURCE(IDR_INTRO), _T("bin"));
+	HGLOBAL hResource = LoadResource(NULL, hIntro);
+	if(hResource)
+	{
+		nmemfile file(LockResource(hResource), SizeofResource(NULL, hIntro));
+		m_pbm->Load(file, _T("kla"), 0);
+
+		UnlockResource(hResource);
+		m_Zoom = 340;
+
+	}
+
 	m_pselection = NULL;
 
-	m_Zoom = 0;
+	m_Zoom = 340;
 	m_ZoomPoint.SetPoint(0,0);
 	m_posX = 0;
 	m_posY = 0;
