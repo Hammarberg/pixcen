@@ -264,5 +264,7 @@ public:
 	afx_msg void OnToolFill();
 	afx_msg void OnViewCellgrid();
 	afx_msg void OnUpdateViewCellgrid(CCmdUI *pCmdUI);
+	afx_msg void OnHelpLoadintro();
+	bool LoadIntro(void);
 };
 

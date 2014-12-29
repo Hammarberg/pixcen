@@ -49,16 +49,11 @@ CChildView::CChildView()
 
 	m_pbm = new MCBitmap;
 
-	HRSRC hIntro = FindResource(NULL, MAKEINTRESOURCE(IDR_INTRO), _T("bin"));
-	HGLOBAL hResource = LoadResource(NULL, hIntro);
-	if(hResource)
+	//Show intro pic (Miss Pixcen) on the first load only
+	if(AfxGetApp()->GetProfileInt(_T("Intro"),_T("Shown"),0) == 0)
 	{
-		nmemfile file(LockResource(hResource), SizeofResource(NULL, hIntro));
-		m_pbm->Load(file, _T("kla"), 0);
-
-		UnlockResource(hResource);
-		m_Zoom = 340;
-
+		LoadIntro();
+		AfxGetApp()->WriteProfileInt(_T("Intro"),_T("Shown"),1);
 	}
 
 	m_pselection = NULL;
@@ -226,6 +221,7 @@ ON_UPDATE_COMMAND_UI_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::On
 ON_COMMAND(ID_TOOL_FILL, &CChildView::OnToolFill)
 ON_COMMAND(ID_VIEW_CELLGRID, &CChildView::OnViewCellgrid)
 ON_UPDATE_COMMAND_UI(ID_VIEW_CELLGRID, &CChildView::OnUpdateViewCellgrid)
+ON_COMMAND(ID_HELP_LOADINTRO, &CChildView::OnHelpLoadintro)
 END_MESSAGE_MAP()
 
 
@@ -3085,3 +3081,34 @@ void CChildView::SetTitleFileName(LPCTSTR file)
 	Mail(MSG_FILE_TITLE, (UINT_PTR)p);
 }
 
+
+void CChildView::OnHelpLoadintro()
+{
+	if(LoadIntro())
+	{
+		Invalidate();
+		Mail(MSG_REFRESH);
+	}
+}
+
+
+bool CChildView::LoadIntro(void)
+{
+	HRSRC hIntro = FindResource(NULL, MAKEINTRESOURCE(IDR_INTRO), _T("bin"));
+	HGLOBAL hResource = LoadResource(NULL, hIntro);
+	if(hResource)
+	{
+		C64Interface *i = new MCBitmap;
+		i->InheritHistory(m_pbm);
+		m_pbm = i;
+
+		nmemfile file(LockResource(hResource), SizeofResource(NULL, hIntro));
+		m_pbm->Load(file, _T("kla"), 0);
+
+		UnlockResource(hResource);
+		m_Zoom = 340;
+		return true;
+	}
+
+	return false;
+}
