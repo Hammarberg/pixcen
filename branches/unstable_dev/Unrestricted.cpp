@@ -102,7 +102,7 @@ void Unrestricted::GetCellInfo(int cx, int cy, int w, int h, CellInfo *info)
 
 void Unrestricted::Import(CImage &img, bool foreceLocks)
 {
-	ClearBackBuffer();
+	ClearBackBuffer(foreceLocks);
 
 	ImportHelper help(img, xsize, ysize, xcell, ycell, mode == W_UNRESTRICTED ? true : false);
 

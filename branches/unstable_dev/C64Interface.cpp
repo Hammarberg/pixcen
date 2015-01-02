@@ -910,10 +910,13 @@ void C64Interface::SetBackBuffer(int n)
 }
 
 
-void C64Interface::ClearBackBuffer(void)
+void C64Interface::ClearBackBuffer(bool forceLocks)
 {
 	BYTE *p = buffer + 64 + (64 + rmapsize + rscreensize + rcolorsize) * rbackbufnum;
-	ZeroMemory(p+64, (rmapsize + rscreensize + rcolorsize));
+	if(!forceLocks)
+		ZeroMemory(p+64, (rmapsize + rscreensize + rcolorsize));
+	else
+		ZeroMemory(p+64, rmapsize);
 }
 
 

@@ -62,7 +62,7 @@ MCBitmap::~MCBitmap()
 
 void MCBitmap::Import(CImage &img, bool foreceLocks)
 {
-	ClearBackBuffer();
+	ClearBackBuffer(foreceLocks);
 
 	ImportHelper help(img, xsize, ysize, xcell, ycell, true);
 

@@ -303,7 +303,7 @@ void Bitmap::SetPixel(int x, int y, BYTE col)
 
 void Bitmap::Import(CImage &img, bool foreceLocks)
 {
-	ClearBackBuffer();
+	ClearBackBuffer(foreceLocks);
 
 	ImportHelper help(img, xsize, ysize, xcell, ycell, false);
 

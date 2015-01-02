@@ -172,7 +172,7 @@ void Sprite::Save(nmemfile &file, LPCTSTR type)
 
 void Sprite::Import(CImage &img, bool foreceLocks)
 {
-	ClearBackBuffer();
+	ClearBackBuffer(foreceLocks);
 
 	ImportHelper help(img, xsize, ysize, xcell, ycell, false);
 
@@ -369,7 +369,7 @@ void MCSprite::Save(nmemfile &file, LPCTSTR type)
 
 void MCSprite::Import(CImage &img, bool foreceLocks)
 {
-	ClearBackBuffer();
+	ClearBackBuffer(foreceLocks);
 
 	ImportHelper help(img, xsize, ysize, xcell, ycell, true);
 

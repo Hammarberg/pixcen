@@ -87,31 +87,48 @@ void CCol::OnPaint()
 	}
 	else if(m_Color==0xfe)
 	{
-		CRect r;
+		if(m_crippled)
+		{
+			COLORREF colour = GetSysColor(COLOR_3DFACE);
+			dc.FillSolidRect(rc,colour);
 
-		r.top=rc.top;
-		r.bottom = rc.CenterPoint().y;
-		r.left=rc.left;
-		r.right = rc.CenterPoint().x;
+			CPen *oldpen,pen(PS_SOLID, 1, g_Vic2[0]);
+			CBrush *oldbrush, solid;
+			solid.CreateSolidBrush(g_Vic2[m_Color]);
+			oldpen=dc.SelectObject(&pen);
+			oldbrush=dc.SelectObject(&solid);
+			dc.Ellipse(rc.left, rc.top, rc.right, rc.bottom);
+			dc.SelectObject(oldbrush);
+			dc.SelectObject(oldpen);
+		}
+		else
+		{
+			CRect r;
 
-		dc.FillSolidRect(r,g_Vic2[2]);
+			r.top=rc.top;
+			r.bottom = rc.CenterPoint().y;
+			r.left=rc.left;
+			r.right = rc.CenterPoint().x;
 
-		r.left=rc.CenterPoint().x;
-		r.right = rc.right;
+			dc.FillSolidRect(r,g_Vic2[2]);
 
-		dc.FillSolidRect(r,g_Vic2[3]);
+			r.left=rc.CenterPoint().x;
+			r.right = rc.right;
 
-		r.top=rc.CenterPoint().y;
-		r.bottom = rc.bottom;
-		r.left=rc.left;
-		r.right = rc.CenterPoint().x;
+			dc.FillSolidRect(r,g_Vic2[3]);
 
-		dc.FillSolidRect(r,g_Vic2[4]);
+			r.top=rc.CenterPoint().y;
+			r.bottom = rc.bottom;
+			r.left=rc.left;
+			r.right = rc.CenterPoint().x;
 
-		r.left=rc.CenterPoint().x;
-		r.right = rc.right;
+			dc.FillSolidRect(r,g_Vic2[4]);
 
-		dc.FillSolidRect(r,g_Vic2[5]);
+			r.left=rc.CenterPoint().x;
+			r.right = rc.right;
+
+			dc.FillSolidRect(r,g_Vic2[5]);
+		}
 	}
 	else
 	{

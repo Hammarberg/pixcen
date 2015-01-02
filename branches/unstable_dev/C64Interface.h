@@ -213,7 +213,7 @@ public:
 	void SetBackBuffer(int n);
 	int GetBackBuffer(void){return rbackbufnum;}
 	int GetBackBufferCount(void){return rbackbuffers;}
-	void ClearBackBuffer(void);
+	void ClearBackBuffer(bool forceLocks=false);
 
 	int GetPAR(void){return par;}
 	double GetPARValue(void){return parvalue[par];}
