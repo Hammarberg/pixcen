@@ -371,6 +371,7 @@
     <ClInclude Include="ColorCtrl.h" />
     <ClInclude Include="Monomap.h" />
     <ClInclude Include="NewDlg.h" />
+    <ClInclude Include="PButton.h" />
     <ClInclude Include="Pixcen.h" />
     <ClInclude Include="ImportDlg.h" />
     <ClInclude Include="mail.h" />
@@ -396,6 +397,7 @@
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="MCBitmap.cpp" />
     <ClCompile Include="NewDlg.cpp" />
+    <ClCompile Include="PButton.cpp" />
     <ClCompile Include="Pixcen.cpp" />
     <ClCompile Include="ImportDlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />

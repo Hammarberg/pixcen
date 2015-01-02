@@ -1495,7 +1495,24 @@ void CChildView::Receive(unsigned short message, UINT_PTR data, unsigned short e
 			Invalidate();
 		}
 		break;
-
+	case MSG_CELL_REMAP_QUERY:
+		{
+			CellInfo *info = new CellInfo;
+			m_pbm->GetCellInfo(0,0,m_pbm->GetCellCountX(),m_pbm->GetCellCountY(),info);
+			Mail(MSG_CELL_INFO, UINT_PTR(info));
+		}
+		break;
+	case MSG_CELL_REMAP:
+		{
+			CellInfo *info = (CellInfo *)data;
+			m_pbm->BeginHistory();
+			m_pbm->Optimize(info);
+			m_pbm->EndHistory();
+			Invalidate();
+			Mail(MSG_REFRESH);
+			delete info;
+		}
+		break;
 	case MSG_PAL_SEL_COL:
 		if(!extra)
 			this->m_Col1=int(data);
@@ -1645,6 +1662,8 @@ void CChildView::OnToolOptimize()
 	m_pbm->BeginHistory();
 	m_pbm->Optimize();
 	m_pbm->EndHistory();
+	Invalidate();
+	Mail(MSG_REFRESH);
 }
 
 

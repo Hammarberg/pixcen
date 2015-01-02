@@ -60,7 +60,7 @@ MCBitmap::~MCBitmap()
 }
 
 
-void MCBitmap::Import(CImage &img)
+void MCBitmap::Import(CImage &img, bool foreceLocks)
 {
 	ClearBackBuffer();
 
@@ -69,7 +69,8 @@ void MCBitmap::Import(CImage &img)
 	BYTE top[16];
 	int num = help.CountTopColorsPerCell(top);
 
-	*background = top[0];
+	if(!foreceLocks)
+		*background = top[0];
 
 	help.ReduceColors(4, top, num<1?num:1);
 
@@ -83,7 +84,8 @@ void MCBitmap::Import(CImage &img)
 		}
 	}
 
-	*border = GuessBorderColor();
+	if(!foreceLocks)
+		*border = GuessBorderColor();
 }
 
 void MCBitmap::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)

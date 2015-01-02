@@ -216,7 +216,7 @@ MCFont::~MCFont()
 {
 }
 
-void MCFont::Import(CImage &img)
+void MCFont::Import(CImage &img, bool foreceLocks)
 {
 	ClearBackBuffer();
 
@@ -225,7 +225,8 @@ void MCFont::Import(CImage &img)
 	BYTE top[16];
 	int num = help.CountTopColorsPerCell(top);
 
-	*background = top[0];
+	if(!foreceLocks)
+		*background = top[0];
 	//if(num>=2)ext[0]=top[1];
 	//if(num>=3)ext[1]=top[2];
 
@@ -247,7 +248,8 @@ void MCFont::Import(CImage &img)
 
 	//PopLocks();
 
-	*border = GuessBorderColor();
+	if(!foreceLocks)
+		*border = GuessBorderColor();
 }
 
 void MCFont::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
@@ -626,7 +628,7 @@ void SFont::SetPixel(int x, int y, BYTE col)
 	map[mi] = (map[mi] & filtermask) | mask;
 }
 
-void SFont::Import(CImage &img)
+void SFont::Import(CImage &img, bool foreceLocks)
 {
 	ClearBackBuffer();
 
@@ -635,7 +637,8 @@ void SFont::Import(CImage &img)
 	BYTE top[16];
 	int num = help.CountTopColorsPerCell(top);
 
-	*background = top[0];
+	if(!foreceLocks)
+		*background = top[0];
 
 	help.ReduceColors(2, top, num<1?num:1);
 
@@ -649,7 +652,8 @@ void SFont::Import(CImage &img)
 		}
 	}
 
-	*border = GuessBorderColor();
+	if(!foreceLocks)
+		*border = GuessBorderColor();
 }
 
 int SFont::GetMask(int x, int y)

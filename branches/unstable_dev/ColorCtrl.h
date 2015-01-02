@@ -23,6 +23,7 @@
 #include "ToolDialog.h"
 #include "afxwin.h"
 #include "col.h"
+#include "PButton.h"
 
 // CColorCtrl dialog
 
@@ -66,4 +67,9 @@ protected:
 	afx_msg LRESULT OnUmDropPalSel(WPARAM wParam, LPARAM lParam);
 
 public:
+	CPButton m_button_remap;
+	afx_msg void OnBnClickedButtonRemap();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	virtual BOOL DestroyWindow();
+	uint32_t m_nRemapCount;
 };

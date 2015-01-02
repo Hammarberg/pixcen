@@ -146,7 +146,7 @@ public:
 
 //protected:
 
-	virtual void Import(CImage &img){}
+	virtual void Import(CImage &img, bool forceLocks){}
 	virtual void Save(nmemfile &file, LPCTSTR type);
 	virtual void Load(nmemfile &file, LPCTSTR type, int version);
 
@@ -198,7 +198,7 @@ public:
 
 	C64Interface *CreateFromSelection(int x, int y, int w, int h);
 
-	void Optimize(void);
+	void Optimize(CellInfo *info = NULL);
 
 	bool IsBitmap(void){return mode == BITMAP || mode == MC_BITMAP;}
 	bool IsSprite(void){return mode == SPRITE || mode == MC_SPRITE;}
@@ -409,7 +409,7 @@ private:
 	void GetMaskInfo(int cx, int cy, int w, int h, int infoindex, CellInfo &info);
 	void SetMaskInfo(int cx, int cy, int w, int h, int infoindex, CellInfo &info);
 
-	bool mymemspn_low(const BYTE *ptr, BYTE value, int num)
+	static bool mymemspn_low(const BYTE *ptr, BYTE value, int num)
 	{
 		for(;num>1;num--,ptr++)
 		{
@@ -419,7 +419,7 @@ private:
 		return true;
 	}
 
-	bool mymemspn_high(const BYTE *ptr, BYTE value, int num)
+	static bool mymemspn_high(const BYTE *ptr, BYTE value, int num)
 	{
 		for(;num>1;num--,ptr++)
 		{
@@ -447,7 +447,7 @@ protected:
 	int GetPixelWidth(void){return 2;}
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	bool CanOptimize(void){return true;}
-	void Import(CImage &img);
+	void Import(CImage &img, bool foreceLocks);
 	void Load(nmemfile &file, LPCTSTR type, int version);
 	void Save(nmemfile &file, LPCTSTR type);
 
@@ -477,7 +477,7 @@ protected:
 	void SetPixel(int x, int y, BYTE col);
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	bool CanOptimize(void){return true;}
-	void Import(CImage &img);
+	void Import(CImage &img, bool foreceLocks);
 	void Load(nmemfile &file, LPCTSTR type, int version);
 	void Save(nmemfile &file, LPCTSTR type);
 
@@ -507,7 +507,7 @@ protected:
 	int GetPixelWidth(void){return mode == W_UNRESTRICTED ? 2 : 1;}
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	bool CanOptimize(void){return false;}
-	void Import(CImage &img);
+	void Import(CImage &img, bool foreceLocks);
 	void Save(nmemfile &file, LPCTSTR type);
 
 	static void GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt);
@@ -550,7 +550,7 @@ protected:
 	BYTE GetPixel(int x, int y);
 	void SetPixel(int x, int y, BYTE col);
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
-	void Import(CImage &img);
+	void Import(CImage &img, bool foreceLocks);
 	void Load(nmemfile &file, LPCTSTR type, int version);
 	void Save(nmemfile &file, LPCTSTR type);
 	int GetPixelWidth(void){return 2;};
@@ -575,7 +575,7 @@ protected:
 	BYTE GetPixel(int x, int y);
 	void SetPixel(int x, int y, BYTE col);
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
-	void Import(CImage &img);
+	void Import(CImage &img, bool foreceLocks);
 	void Load(nmemfile &file, LPCTSTR type, int version);
 	void Save(nmemfile &file, LPCTSTR type);
 
@@ -603,7 +603,7 @@ protected:
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	void Load(nmemfile &file, LPCTSTR type, int version);
 	void Save(nmemfile &file, LPCTSTR type);
-	void Import(CImage &img);
+	void Import(CImage &img, bool foreceLocks);
 
 private:
 	int GetMask(int x, int y);
@@ -625,7 +625,7 @@ protected:
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	void Load(nmemfile &file, LPCTSTR type, int version);
 	void Save(nmemfile &file, LPCTSTR type);
-	void Import(CImage &img);
+	void Import(CImage &img, bool foreceLocks);
 
 	int GetPixelWidth(void){return 2;};
 

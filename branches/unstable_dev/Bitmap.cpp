@@ -301,7 +301,7 @@ void Bitmap::SetPixel(int x, int y, BYTE col)
 }
 
 
-void Bitmap::Import(CImage &img)
+void Bitmap::Import(CImage &img, bool foreceLocks)
 {
 	ClearBackBuffer();
 
@@ -319,7 +319,8 @@ void Bitmap::Import(CImage &img)
 		}
 	}
 
-	*border = GuessBorderColor();
+	if(!foreceLocks)
+		*border = GuessBorderColor();
 }
 
 int Bitmap::GetMask(int x, int y)

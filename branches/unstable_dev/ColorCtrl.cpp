@@ -41,6 +41,7 @@ CColorCtrl::CColorCtrl(CWnd* pParent /*=NULL*/)
 	for(int r=0;r<6;r++)
 		m_col[r].m_id = r;
 
+	m_nRemapCount = 0;
 }
 
 CColorCtrl::~CColorCtrl()
@@ -62,6 +63,7 @@ void CColorCtrl::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_C3, m_col[3]);
 	DDX_Control(pDX, IDC_STATIC_C4, m_col[4]);
 	DDX_Control(pDX, IDC_STATIC_C5, m_col[5]);
+	DDX_Control(pDX, IDC_BUTTON_REMAP, m_button_remap);
 }
 
 
@@ -75,6 +77,7 @@ BEGIN_MESSAGE_MAP(CColorCtrl, CToolDialog)
 	ON_STN_CLICKED(IDC_STATIC_C5, &CColorCtrl::OnStnClickedStaticC5)
 	ON_MESSAGE(UM_CELL_RCLICK, &CColorCtrl::OnUmCellRclick)
 	ON_MESSAGE(UM_DROP_PAL_SEL, &CColorCtrl::OnUmDropPalSel)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -104,13 +107,20 @@ void CColorCtrl::PaintCol(CPaintDC &dc)
 BOOL CColorCtrl::OnInitDialog()
 {
 	CToolDialog::OnInitDialog();
-	CPaintDC dc(this); // device context for painting
-
-	// TODO:  Add extra initialization here
+	SetTimer(11,500,NULL);
+	m_button_remap.SetButtonStyle(m_button_remap.GetButtonStyle()|BS_FLAT, true);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
+
+
+BOOL CColorCtrl::DestroyWindow()
+{
+	KillTimer(11);
+	return CToolDialog::DestroyWindow();
+}
+
 
 void CColorCtrl::OnClickedColStatic(int n)
 {
@@ -177,7 +187,27 @@ afx_msg LRESULT CColorCtrl::OnUmCellRclick(WPARAM wParam, LPARAM lParam)
 
 afx_msg LRESULT CColorCtrl::OnUmDropPalSel(WPARAM wParam, LPARAM lParam)
 {
-	Mail(MSG_CELL_COL, UINT_PTR(wParam), unsigned short(lParam));
+	if(!m_nRemapCount)
+	{
+		Mail(MSG_CELL_COL, UINT_PTR(wParam), unsigned short(lParam));
+	}
+	else
+	{
+		switch(wParam)
+		{
+		case 101:
+			m_col[lParam].m_crippled = 1 - m_col[lParam].m_crippled;
+			break;
+		case 102:
+			m_col[lParam].m_lock = 1 - m_col[lParam].m_lock;
+			break;
+		default:
+			m_col[lParam].m_Color = BYTE(wParam);
+			break;
+		}
+		m_col[lParam].Invalidate(TRUE);
+	}
+
 	return 0;
 }
 
@@ -201,34 +231,78 @@ void CColorCtrl::Receive(unsigned short message, UINT_PTR data, unsigned short e
 		{
 			CellInfo *info = (CellInfo *)data;
 
-			//Invalidate(TRUE);
-
-			for(int r=0;r<6;r++)
+			if(m_nRemapCount < 2)
 			{
-				m_col[r].m_Color=info->col[r];
-
-				if(m_col[r].m_Color != 0xff)
+				for(int r=0;r<6;r++)
 				{
-					m_c[r].EnableWindow(TRUE);
-				}
-				else
-				{
-					m_c[r].EnableWindow(FALSE);
+					m_col[r].m_Color=info->col[r];
+
+					if(m_col[r].m_Color != 0xff)
+					{
+						m_c[r].EnableWindow(TRUE);
+					}
+					else
+					{
+						m_c[r].EnableWindow(FALSE);
+					}
+
+					m_col[r].m_lock = info->lock[r];
+					m_col[r].m_crippled = info->crippled[r];
+
+					m_col[r].Invalidate(TRUE);
 				}
 
-				m_col[r].m_lock = info->lock[r];
-				m_col[r].m_crippled = info->crippled[r];
-
-				m_col[r].Invalidate(TRUE);
+				if(m_nRemapCount)
+					m_nRemapCount++;
 			}
 
-
 			delete info;
+
 		}
+		break;
+	case MSG_CELL_REMAP_CLICK:
+		OnBnClickedButtonRemap();
+		break;
 	default:
 		break;
 	}
 }
 
+
+void CColorCtrl::OnBnClickedButtonRemap()
+{
+ 	if(!m_nRemapCount)
+	{
+		m_nRemapCount++;
+		Mail(MSG_CELL_REMAP_QUERY);
+	}
+	else
+	{
+		m_nRemapCount = 0;
+		m_button_remap.SetWindowText(_T("Remap"));
+
+		CellInfo *info = new CellInfo;
+
+		for(int r=0;r<6;r++)
+		{
+			info->col[r] = m_col[r].m_Color;
+			info->crippled[r] = 2 + m_col[r].m_crippled;
+			info->lock[r] = 2 + m_col[r].m_lock;
+		}
+
+		Mail(MSG_CELL_REMAP, UINT_PTR(info));
+	}
+}
+
+
+void CColorCtrl::OnTimer(UINT_PTR nIDEvent)
+{
+	if(nIDEvent == 11 && m_nRemapCount > 1)
+	{
+		m_button_remap.SetWindowText(((++m_nRemapCount)&1) ? _T("OK") : _T("Finish"));
+	}
+
+	CToolDialog::OnTimer(nIDEvent);
+}
 
 

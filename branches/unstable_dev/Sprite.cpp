@@ -170,7 +170,7 @@ void Sprite::Save(nmemfile &file, LPCTSTR type)
 	}
 }
 
-void Sprite::Import(CImage &img)
+void Sprite::Import(CImage &img, bool foreceLocks)
 {
 	ClearBackBuffer();
 
@@ -179,7 +179,8 @@ void Sprite::Import(CImage &img)
 	BYTE top[16];
 	int num = help.CountTopColorsPerCell(top);
 
-	*background = top[0];
+	if(!foreceLocks)
+		*background = top[0];
 
 	help.ReduceColors(2, top, num<1?num:1);
 
@@ -193,7 +194,8 @@ void Sprite::Import(CImage &img)
 		}
 	}
 
-	*border = GuessBorderColor();
+	if(!foreceLocks)
+		*border = GuessBorderColor();
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -365,7 +367,7 @@ void MCSprite::Save(nmemfile &file, LPCTSTR type)
 	}
 }
 
-void MCSprite::Import(CImage &img)
+void MCSprite::Import(CImage &img, bool foreceLocks)
 {
 	ClearBackBuffer();
 
@@ -374,13 +376,16 @@ void MCSprite::Import(CImage &img)
 	BYTE top[16];
 	int num = help.CountTopColorsPerCell(top);
 
-	*background = top[0];
-	if(num>=2)ext[0]=top[1];
-	if(num>=3)ext[1]=top[2];
+	if(!foreceLocks)
+	{
+		*background = top[0];
+		if(num>=2)ext[0]=top[1];
+		if(num>=3)ext[1]=top[2];
 
-	PushLocks();
-	lock[0]=lock[1]=lock[2]=1;
-	lock[3]=lock[4]=lock[5]=0;
+		PushLocks();
+		lock[0]=lock[1]=lock[2]=1;
+		lock[3]=lock[4]=lock[5]=0;
+	}
 
 	help.ReduceColors(4, top, num<3?num:3);
 
@@ -394,8 +399,10 @@ void MCSprite::Import(CImage &img)
 		}
 	}
 
-	PopLocks();
-
-	*border = GuessBorderColor();
+	if(!foreceLocks)
+	{
+		PopLocks();
+		*border = GuessBorderColor();
+	}
 }
 

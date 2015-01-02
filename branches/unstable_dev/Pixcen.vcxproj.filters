@@ -67,6 +67,7 @@
     <ClCompile Include="C64Col.cpp">
       <Filter>Misc</Filter>
     </ClCompile>
+    <ClCompile Include="PButton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bb.h">
@@ -130,6 +131,7 @@
       <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="Monomap.h" />
+    <ClInclude Include="PButton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\DropPalette.bmp">

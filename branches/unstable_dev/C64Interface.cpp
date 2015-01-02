@@ -219,11 +219,13 @@ void C64Interface::GetCellInfo(int cx, int cy, int w, int h, CellInfo *info)
 
 void C64Interface::GetMaskInfo(int cx, int cy, int w, int h, int infoindex, CellInfo &info)
 {
-
 	int y,ci;
 	BYTE b,*p;
 
 	InfoUse &use = infouse[infoindex];
+
+	//if(use.use == InfoUse::INFO_NO)
+		//return;
 
 	BYTE &col=info.col[infoindex];
 
@@ -233,7 +235,7 @@ void C64Interface::GetMaskInfo(int cx, int cy, int w, int h, int infoindex, Cell
 	{
 	case InfoUse::INFO_NO:
 		col = 0xff;
-		crip = 0;
+		crip = 1;
 		break;
 	case InfoUse::INFO_VALUE:
 		col = **use.pp;
@@ -263,7 +265,7 @@ void C64Interface::GetMaskInfo(int cx, int cy, int w, int h, int infoindex, Cell
 			ci = (y+cy)*GetCellCountX() + cx + 0;
 			if(!mymemspn_low(&p[ci], b, w))
 			{
-				col = 0xfe;
+				b = 0xfe;
 				break;
 			}
 		}
@@ -319,45 +321,58 @@ void C64Interface::SetMaskInfo(int cx, int cy, int w, int h, int infoindex, Cell
 {
 	InfoUse &use = infouse[infoindex];
 
+	if(use.use == InfoUse::INFO_NO)
+		return;
+
 	if(info.lock[infoindex]!=-1)
-		lock[infoindex]=1-lock[infoindex];
-
-	if(info.crippled[infoindex]!=-1)
 	{
-		BYTE *p = *use.pp;
-		if(crippled[infoindex]==0 && use.use!=InfoUse::INFO_NO && use.use!=InfoUse::INFO_VALUE)
-		{
-			bool high = use.use == InfoUse::INFO_INDEX_HIGH ? true : false;
+		if(info.lock[infoindex] < 2)	//Relative mode, switching
+			lock[infoindex]=1 - lock[infoindex];
+		else	//Absolute mode, setting
+			lock[infoindex]=info.lock[infoindex] - 2;
+	}
 
-			int size = GetCellCountX()*GetCellCountY();
-
-			BYTE col=GetCommonColorFromMask(infoindex, p, size, high);
-
-			if(use.use == InfoUse::INFO_INDEX)
-			{
-				memset(p, col, size);
-			}
-			else if(use.use == InfoUse::INFO_INDEX_LOW)
-			{
-				for(int r=0;r<size;r++)
-				{
-					p[r]=(p[r]&0xf0)|col;
-				}
-			}
-			else //(use.use == InfoUse::INFO_INDEX_LOW)
-			{
-				for(int r=0;r<size;r++)
-				{
-					p[r]=(p[r]&0x0f)|(col<<4);
-				}
-			}
-
-			crippled[infoindex]=1;
-		}
+	if(info.crippled[infoindex]!=-1 && use.use != InfoUse::INFO_VALUE)
+	{
+		int newmode;
+		if(info.crippled[infoindex] < 2)
+			newmode = 1 - crippled[infoindex];
 		else
+			newmode = info.crippled[infoindex] - 2;
+
+		if(crippled[infoindex] != newmode)
 		{
-			crippled[infoindex]=0;
+			BYTE *p = *use.pp;
+			if(crippled[infoindex]==0 && /*use.use!=InfoUse::INFO_NO &&*/ use.use!=InfoUse::INFO_VALUE)
+			{
+				bool high = use.use == InfoUse::INFO_INDEX_HIGH ? true : false;
+
+				int size = GetCellCountX()*GetCellCountY();
+
+				BYTE col=GetCommonColorFromMask(infoindex, p, size, high);
+
+				if(use.use == InfoUse::INFO_INDEX)
+				{
+					memset(p, col, size);
+				}
+				else if(use.use == InfoUse::INFO_INDEX_LOW)
+				{
+					for(int r=0;r<size;r++)
+					{
+						p[r]=(p[r]&0xf0)|col;
+					}
+				}
+				else //(use.use == InfoUse::INFO_INDEX_HIGH)
+				{
+					for(int r=0;r<size;r++)
+					{
+						p[r]=(p[r]&0x0f)|(col<<4);
+					}
+				}
+			}
 		}
+
+		crippled[infoindex]=newmode;
 	}
 
 	BYTE col = info.col[infoindex];
@@ -533,12 +548,16 @@ void C64Interface::GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt)
 }
 
 
-void C64Interface::Optimize(void)
+void C64Interface::Optimize(CellInfo *info)
 {
 	CImage img;
 	RenderImage(img);
 	ZeroMemory(buffer,buffersize);
-	Import(img);
+
+	if(info)
+		SetCellInfo(0,0,GetCellCountX(),GetCellCountY(),info);
+
+	Import(img, true);
 }
 
 void C64Interface::RenderImage(CImage &img, int startx, int starty, int width, int height)
@@ -1591,7 +1610,7 @@ C64Interface *C64Interface::CreateFromImage(CImage *img, int count, tmode type)
 	for(int r=0; r<count; r++)
 	{
 		i->SetBackBuffer(r);
-		i->Import(img[r]);
+		i->Import(img[r], false);
 	}
 
 	return i;

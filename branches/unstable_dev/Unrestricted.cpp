@@ -100,7 +100,7 @@ void Unrestricted::GetCellInfo(int cx, int cy, int w, int h, CellInfo *info)
 	C64Interface::GetCellInfo(cx, cy, w, h, info);
 }
 
-void Unrestricted::Import(CImage &img)
+void Unrestricted::Import(CImage &img, bool foreceLocks)
 {
 	ClearBackBuffer();
 
@@ -116,5 +116,6 @@ void Unrestricted::Import(CImage &img)
 		}
 	}
 
-	*border = GuessBorderColor();
+	if(!foreceLocks)
+		*border = GuessBorderColor();
 }
