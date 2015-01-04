@@ -1409,7 +1409,7 @@ void CChildView::Saveas(C64Interface *i)
 				CAddressDlg addr;
 				addr.m_verified_address = m_pbm->GetMetaInt(nstrc(ex));
 				if(addr.DoModal()!=IDOK)return;
-				if(addr.m_verified_address<0 || addr.m_verified_address>65536)continue;
+				if(addr.m_verified_address<0 || addr.m_verified_address>=65536)continue;
 				m_pbm->SetMetaInt(nstrc(ex),addr.m_verified_address);
 				break;
 			}
