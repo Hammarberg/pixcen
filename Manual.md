@@ -1,0 +1,263 @@
+# Index #
+
+
+# Manual #
+
+## Graphics modes ##
+Currently supported graphics modes are:
+  * Bitmap
+  * Char
+  * Sprite
+  * Unrestricted
+Further, each mode can be divided into _multi-color_ or _single color_.
+
+#### Unrestricted mode ####
+This mode is **not** a native VIC2 graphics mode. It's included as an intermediate mode for preparing graphics or for making a draft. However, it can be used for pure color drawing (color cycling or other special effects) or selecting colors for raster bars.
+
+In this mode, the only difference between single- and multi-color is the width of the pixels.
+
+## New image ##
+By default an empty multi-color bitmap of standard size is created. This format is compatible with many popular C64 file formats as Koala, Advanced Art Studio and more.
+
+## Navigating the image ##
+If you manage to lose the image outside a border, or zoom too much, restore the view with **Home** key.
+
+To move around, hold middle (roll) button and move mouse or hold **space** and move mouse or use arrow keys.
+
+To zoom, roll middle button or use **+** and **-** on keyboard.
+
+## Drawing & colors ##
+To plot/draw, use left or right mouse button (primary and secondary color).
+
+To select new colors use right or left mouse on the palette or press **0**-**9**/**A**-**F** for quick selection of primary color.
+
+To swap primary and secondary colors use **X** key.
+
+To pick a new primary color from the image, hold **Shift** while clicking the left mouse button on a color.
+
+### Fill ###
+Fill is available under Tool or by the **G** button. Once selected the next mouse click will be the start point for the fill.
+
+## Palette window ##
+The palette (currently named VIC-II) shows your primary and secondary color selection. You can select primary/secondary color directly from the window with the left and right mouse buttons respectively. The primary color will be marked with a square and the secondary color will be marked with an X.
+
+The secondary color got two extra features: It will be used as the background fill when cutting out a selection. It will be used as the background mask when performing a masked paste
+
+## Color overflow ##
+All modes except unrestricted mode have a limit to the number of colors that can be used per cell or for the whole of the image.
+
+The settings in the menu under Mode -> Color overflow, will control some aspects of color overflow.
+
+_Ignore_ will not let you draw the conflicting color.
+
+_Replace_ will replace all occurrences of the color being targeted, this can be image wide if it happens to be a global but not locked color.
+
+_Closest_ will temporary use one of the exiting colors that most closely match the conflicting color.
+
+You can toggle between _Replace_ and _Ignore_ with **CTRL**+**W**.
+
+Also see [Cell window](Manual#Cell_window.md) for advanced information.
+
+## Undo & Redo ##
+**Undo is your friend!**
+
+Undo and redo history is kept in RAM for 100 iterations and even works over mode change.
+
+Undo and Redo is found under the Edit menu or by keyboard **CTRL**+**Z** and **CTRL**+**Y**.
+
+## Select ##
+Select is the first step required for many tools.
+
+To manually select an area, hit the **M** key and then drag with the mouse. Tip: If you want to select an area larger than your visible screen, you can use the arrow keys to move.
+
+To select everything, press **CTRL**+**A**.
+
+To select the current cell press **Shift**+**C**.
+
+To deselect or cancel any selection hit **ESC** or press **CTRL**+**D**.
+
+### Auto-select Cell ###
+Available as an option under the Edit menu. This feature is handy when working on block graphics like chars or sprites as it will automatically select the current cell upon mouse hovering. The auto-selection can temporary be overridden with any of the other select methods.
+
+### Snap selection to Cell ###
+Available as an option under the Edit menu. This feature will align any selection or paste operations to complete cells. Many operations can only be done successfully on complete cell boundaries.
+
+## Copy ##
+Available as an option under the Edit menu or by pressing **CTRL**+**C**.
+
+A copied section of the image is converted to RGB and placed on the Windows clipboard. This makes cross application copy and paste possible.
+
+## Cut ##
+Available as an option under the Edit menu or by pressing **CTRL**+**X**.
+
+Cut behaves like copy except that the secondary color is used to fill the the selected area.
+
+## Paste ##
+Available as an option under the Edit menu or by pressing **CTRL**+**V**.
+
+When invoked, a temporary layer is created. The pasted image is not merged until you press the left mouse button. This gives you the chance to place the image.
+
+If you want to abort the paste operation, simply hit **ESC** at this point.
+
+When clicking the left mouse button the temporary layer is merged with the background image. Depending on the graphics mode, the number of colors involved, color overflow settings and more, the merged result can be truncated. This is not an error but simply the restrictions of the C64 graphics formats or any other restriction enforced by settings. If you are unhappy with the results simply undo.
+
+### Masked paste ###
+Available as an option under the Edit menu or by pressing **CTRL**+**Shift**+**V**.
+
+Behaves like paste except that the secondary color is used as a background mask.
+
+Tip: This can be used to fake brushes until those are implemented.
+
+## Manipulating a selection ##
+Under the Selection menu or via several keyboard shortcuts it's possible to manipulate the current selection or the temporary image being pasted.
+
+Press **V** to flip vertically, **H** to flip selection horizontally or use
+**Shift**+**Arrow** to shift pixels in the desired direction.
+
+The rotations are restricted to selections of equal width en height but can always be performed on paste images. **Shift**+**R** to rotate clockwise or **CTRL**+**R** to rotate counter clockwise.
+
+## Preview window ##
+Available as an option under the View menu or by pressing **CTRL**+**P**.
+
+The preview window can be navigated and zoomed with the mouse in a similar way to the main view. You can also open multiple preview windows.
+
+A left mouse button click will center the main view to the equivalent position over the image. When holding the left mouse button while moving over the preview window, the main view will scroll along.
+
+### Pixel Aspect Ratio (PAR) ###
+Under View -> Preview pixel aspect ratio, you can change the PAR for the preview window(s). Default is PC(1:1) but this might not be a good representation of the image on the real thing. The pixels on the C64 are slightly taller than they are wide.
+
+## Cell window ##
+The cell window is a bit advanced and if you are a casual artist you probably only want to set the background/border color and not bother with the rest. If you are drawing graphics with specific restrictions or if you are a coder preparing graphics, then this is for you.
+
+There are two types of colors in the window:
+
+Indexed colors are represented by a square icons. These colors are unique per cell of the image. In a bitmap they represent color RAM and/or screen RAM. In character mode and sprite mode there is only one indexed color and that is color RAM or individual sprite color respectively. When you mouse over the image, you will notice the indexed colors might change with the location.
+
+Global colors are represented by round icons. These colors are shared across the image (in technical terms these are some or more of $D020-$D024).
+
+In order to manipulate indexed colors you must first do a [selection](Manual#Select.md) on an area covering one or more cells. For global colors, no selection is needed.
+
+All manipulation is done by right clicking an icon in the cell window. A popup menu will show a palette as well as options to cripple, decripple, lock and unlock. There are also some currently unused options for future expansion.
+
+### Cripple ###
+It's possible to cripple an indexed color into behave like a global color. Pixcen will treat a crippled color like it is a global color.
+
+### Lock ###
+Locked colors are marked with a red line crossing the icon. They are locked in the sense that when drawing, Pixcen will not under any circumstances try to change it. Otherwise, if the color is unused, Pixcen might decide to change it. Some colors like (global background) will be locked by default.
+
+### Background color ###
+In all modes except single color bitmap and unrestricted the _0_ mask in the cell window is global and represents the background color, switching background color is done by right clicking this icon and select a new color from the drop down palette.
+
+In single color bitmap mode or unrestricted mode, there is no global color for background. To switch the background color (on a preferably new and empty bitmap) you can use fill or a select all followed by a cut.
+
+### Border color ###
+The border color is always global and marked as _Bd_ in the cell window. By default it's set to light blue but some file formats preserve border color. Pixcen will preserve this color when possible. You also want to set the border color before exporting a [C64 executable](Manual#C64_Exe.md).
+
+## File formats ##
+
+### GPX ###
+This is the PC file format used by Pixcen. The format saves the full state of the current project including back buffers, undo history and any meta-data applicable. This is meant to be the day to day working format and it's not suitable for exporting data C64 as it's a compressed 32 bit format.
+
+### PNG/BMP/GIF/JPG ###
+Export and import of these native PC formats is supported via Windows GDI.
+
+Pixcen is designed to be able to export and re-import images without any loss but be aware that there could be bugs.
+
+A word of warning, JPG is a destructive format and should not be used for anything but pure export.
+
+### Koala ###
+
+### Advanced Art Studio ###
+
+### Cenimate ###
+[Cenimate](http://csdb.dk/release/?id=29012)
+
+### Paint Magic ###
+This is a crippled multi-color bitmap format. The color RAM is filled with one solid color and when loading a Paint Magic image, Pixcen will cripple color 3 automatically. This is also a requirement to be able to save as Paint Magic.
+
+Paint magic got a built in viewer routine that can be started with:
+LOAD "IMAGEFILE",8
+RUN
+
+### Art Studio ###
+
+### C64 Exe ###
+This format is export only and is only available under certain  conditions. For bitmap modes the resolutions must be full screen. For character mode the resolution must be full screen and the character count must not exceed 256.
+
+The produced file will be compressed with [Byte Boozer](http://csdb.dk/release/?id=109317) and can be executed directly on C64.
+
+## Binary & PRG formats ##
+The following low level export formats exists in two versions: binary and PRG. Binary is suitable for cross development as many cross development tools such as assemblers can include binary data directly (a binary file could also be treated as a SEQ or USR-file on C64). PRG is the more common native C64 format, it's a binary prefixed with a 16 bit load address. When exporting any of the p??? formats a dialog will ask for the address to prefix.
+
+### Bitmap RAM ###
+This format is currently export only and is always available. The bitmap RAM represents the raw bitmap per row of cells from left to right, top to bottom, 8 bytes per cell. Likewise, for sprites this means rows of sprites from left to right, top to bottom, 64 bytes per cell where the last byte always is zero. In character mode this is the non indexed bitmap just like bitmap mode and you might want to consider saving an indexed char map & indexed screen instead.
+
+In unrestricted mode this format is very different. Pixels are saved in scan lines from left to right, top to bottom, one byte per pixel. The byte is double nibbled, color 1 is represented as $11 and color 2 as $22, etc.
+
+### Screen RAM ###
+This format is currently export only and is available for bitmap mode. The screen RAM contains the color data for mask 01 and 10 in bitmap multi color mode or mask 0 and 1 in bitmap single color mode. The colors are encoded as high nibble and low nibble, one byte per cell from left to right, top to bottom. This data is commonly loaded at address $0400 on the C64.
+
+### Color RAM ###
+This format is currently export only and is available for all modes except unrestricted and single color bitmap. The color RAM contains the color data for mask 11 in bitmap/char multi color mode or mask 1 in single color char mode. The colors are encoded as low nibble with the high nibble always set to zero, one byte per cell from left to right, top to bottom. This data is commonly used at address $D800 on the C64.
+
+For sprite mode the color ram represents the individual sprite color set at $D027-$D02E.
+
+### Indexed char map & Index screen ###
+These formats are currently export only and available for char mode if the unique character count is no more than 256. The indexed map is a set of all unique characters represented in the bitmap while the index screen contains the index pointers to these unique chars. The map will be saved in chunks of 8 bytes in the order they appear in the original map with the possible exception if index $20 (offset $100) that will hold the first empty character discovered. The index screen will be saved from left to right, top to bottom. When exporting the indexed map and index screen it's important not to make any alterations to the image between the two exports as the generated data could become out of sync.
+
+# Credits #
+Programmed by John Hammarberg ([CRT/Censor Design](http://csdb.dk/scener/?id=7007))
+
+Icon by [cg](http://csdb.dk/scener/?id=25364)
+
+[Byte Boozer](http://csdb.dk/release/?id=109317) by [HCL](http://csdb.dk/scener/?id=8075)
+
+Includes [zlib](http://www.zlib.net/).
+
+Valuable feedback and/or early adopters:
+  * [Creeper](http://csdb.dk/scener/?id=413)
+  * [Magnar](http://csdb.dk/scener/?id=16913)
+  * [Lavazza](http://csdb.dk/scener/?id=24462)
+  * [Death](http://csdb.dk/scener/?id=2846)
+  * [Grasstust](http://csdb.dk/scener/?id=17087)
+  * [Shine](http://csdb.dk/scener/?id=24193)
+  * [Fat Frost](http://csdb.dk/scener/?id=16488)
+  * [Oswald](http://csdb.dk/scener/?id=8139)
+  * [Bamse](http://csdb.dk/scener/?id=22648)
+
+..and others..
+
+# Changelog #
+[r57](https://code.google.com/p/pixcen/source/detail?r=57)
+  * Fixed for [issue 29](https://code.google.com/p/pixcen/issues/detail?id=29), format identification issue for non standard Koala.
+  * Fix for [Issue 28](https://code.google.com/p/pixcen/issues/detail?id=28), wrong mask with multi-color sprites.
+
+[r54](https://code.google.com/p/pixcen/source/detail?r=54)
+  * Fixed for color overflow issues with paste.
+  * Turn pixel grid or cell grid on and off individually ([issue 19](https://code.google.com/p/pixcen/issues/detail?id=19)).
+  * Re-worked grid drawing (optimized) and prepared for shapes.
+
+[r49](https://code.google.com/p/pixcen/source/detail?r=49)
+  * Fixed severe bug ([Issue 21](https://code.google.com/p/pixcen/issues/detail?id=21)) in save where files ended up with 0 size.
+  * Fixed refresh bug after using fill with secondary color.
+
+[r44](https://code.google.com/p/pixcen/source/detail?r=44)
+  * Saving auto-select cell and snap selection as meta data in GPX format.
+  * File name in title. Reworked the default save target and dirty flags.
+  * Left click and/or holding left mouse button in preview window while moving will reposition/move the main view.
+
+[r39](https://code.google.com/p/pixcen/source/detail?r=39)
+  * Delete undo history added under tool menu.
+  * Color comparison is now using a more perceptual algorithm.
+  * Seven new palettes are added and available under mode. Palette setting is saved with GPX.
+  * Known palettes are searched for the best match when importing RGB images.
+  * Flood fill is available under tool menu.
+
+[r27](https://code.google.com/p/pixcen/source/detail?r=27)
+  * Upped version to 0.6.0.x to compensate for the lower revision number of the new repository.
+  * New version script/tool for Google code.
+  * Help section and download source code pointed to Google pages.
+  * Check for update is only active with a "releaseversion" build. Other builds are considered custom.
+  * Download of updated version can now handle 64 bit builds.
+  * Added a tool project (versioner) to generate version string for update checks.
+  * Fixed undo/redo bug on very large images.
