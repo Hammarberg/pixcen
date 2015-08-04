@@ -1,0 +1,11 @@
+*.sdf
+*.opensdf
+*.user
+*.obj
+*.tlog
+x64/
+Release/
+Debug/
+ReleaseRevision/
+ReleaseRevision/Pixcen.unsuccessfulbuild
+ReleaseRevision/Pixcen.lastbuildstate
