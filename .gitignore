@@ -8,3 +8,5 @@ Release/
 Debug/
 ReleaseRevision/
 ipch/
+*.suo
+Pixcen.aps
