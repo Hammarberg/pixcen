@@ -346,10 +346,13 @@
   <ItemGroup>
     <None Include="arrow.cur" />
     <None Include="ReadMe.txt" />
+    <None Include="res\bin1.bin" />
     <None Include="res\DropPalette.bmp" />
     <None Include="res\DropPalette.png" />
     <None Include="res\LockLock.bmp" />
     <None Include="res\LockUnlock.bmp" />
+    <None Include="res\mspixcen.kla" />
+    <None Include="res\mspixcen.koa" />
     <None Include="res\Pixcen.ico" />
     <None Include="res\Pixcen.rc2" />
     <None Include="res\Toolbar.bmp" />

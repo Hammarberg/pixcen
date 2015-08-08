@@ -144,7 +144,7 @@ public:
 
 	virtual void CustomCommand(int n){}
 
-protected:
+//protected:
 
 	virtual void Import(CImage &img){}
 	virtual void Save(nmemfile &file, LPCTSTR type);
