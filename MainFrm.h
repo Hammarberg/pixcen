@@ -103,6 +103,8 @@ protected:
 public:
 	afx_msg void OnHelpHelp();
 	afx_msg void OnHelpDownloadsourcecode();
+	afx_msg void OnHelpCsdbsupportforum();
+	afx_msg void OnHelpLemon64supportforum();
 };
 
 
