@@ -410,7 +410,7 @@ BOOL CMainFrame::DestroyWindow()
 
 afx_msg LRESULT CMainFrame::OnUmGraphix(WPARAM wParam, LPARAM lParam)
 {
-	unsigned short message = lParam&0xffff, extra = lParam >> 16;
+	unsigned short message = lParam&0xffff, extra = unsigned short(lParam >> 16);
 	UINT_PTR data = UINT_PTR(wParam);
 
 	Receive(message,data,extra);
