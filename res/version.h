@@ -1,6 +1,6 @@
 #define VERSION_A	0
 #define VERSION_B	6
-#define VERSION_C	0
+#define VERSION_C	1
 
 #ifdef RELEASEVERSION
 #include "revision.h"
