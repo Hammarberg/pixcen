@@ -11,3 +11,5 @@ ipch/
 *.suo
 Pixcen.aps
 upload.sh
+pixcen.zip
+pixcen64.zip
