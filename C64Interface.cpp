@@ -24,6 +24,10 @@
 #include <malloc.h>
 #include <unordered_set>
 
+#define MINIZ_NO_ARCHIVE_APIS
+#define MINIZ_NO_STDIO
+#include "miniz/miniz.c"
+
 const double C64Interface::parvalue[3]={1.0,0.9365,0.75};
 
 C64Interface::C64Interface()

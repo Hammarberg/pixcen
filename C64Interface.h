@@ -26,7 +26,6 @@
 #include "narray.h"
 #include "nstr.h"
 #include "nmemfile.h"
-#include "zlib/zlib.h"
 #include "autoptr.h"
 #include "bb.h"
 
