@@ -449,7 +449,7 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 		file.write(screen, 1000);
 		file << *border;
 		file << *background;
-		for(int r=0;r<15;r++)file << BYTE(0);
+		for(int r=0;r<14;r++)file << BYTE(0);
 		file.write(color, 1000);
 	}
 	else if(lstrcmpi(_T("pmg"),type)==0)
