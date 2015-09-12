@@ -158,8 +158,8 @@ public:
 	int GetCellCountX(void){return xsize/xcell;}
 	int GetCellCountY(void){return ysize/ycell;}
 
-	BYTE GetBackground(void){return *background;}
-	void SetBackground(BYTE c){*background = c;}
+	BYTE GetBackground(void){return *infouse[0].pp[0];}
+
 	int GuessBorderColor(void);
 	BYTE GetBorderColor(void){return *border;};
 

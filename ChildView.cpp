@@ -1837,6 +1837,8 @@ void CChildView::DeleteArea(bool history)
 {
 	if(m_MarkerCount == 2)
 	{
+		BYTE fillcol = history ? m_Col2 : m_pbm->GetBackground();
+
 		int x, y, w, h;
 		InterpretMarker(&x,&y,&w,&h);
 
@@ -1850,7 +1852,7 @@ void CChildView::DeleteArea(bool history)
 			for(x=m_CutX;x<m_CutX+m_CutW;x++)
 			{
 				if(x>m_pbm->GetSizeX())break;
-				m_pbm->SetPixel(x,y,m_Col2);
+				m_pbm->SetPixel(x,y, fillcol);
 			}
 		}
 
