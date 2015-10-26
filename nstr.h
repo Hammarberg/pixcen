@@ -622,7 +622,7 @@ NSTRCLASS NSTRTYPE &NSTRTYPE::operator=(int c)
 {
 	if(c)
 	{
-		NCHAR b[2]={c,0};
+		NCHAR b[2]={NCHAR(c),0};
 		(*this)=(const NCHAR *)b;
 	}
 	else
