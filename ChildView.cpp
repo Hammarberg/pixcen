@@ -3174,7 +3174,7 @@ void CChildView::OnFont1x2()
 void CChildView::OnUpdateFont2x2(CCmdUI *pCmdUI)
 {
 	int cellcount = m_pbm->GetCellCountX() * m_pbm->GetCellCountY();
-	pCmdUI->Enable(m_pbm->IsChar() && (m_pbm->GetCellCountX() & 1) == 0 && (m_pbm->GetCellCountY() & 1) && cellcount == 256 ? 1 : 0);
+	pCmdUI->Enable(m_pbm->IsChar() && (m_pbm->GetCellCountX() & 1) == 0 && (m_pbm->GetCellCountY() & 1) == 0 && cellcount == 256 ? 1 : 0);
 	pCmdUI->SetCheck(m_pbm->GetFontDisplay() == CommonFont::FONT_2X2 ? 1 : 0);
 }
 
