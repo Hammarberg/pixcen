@@ -1729,7 +1729,7 @@ void CChildView::OnModeMulti()
 			to = C64Interface::UNRESTRICTED;
 			break;
 		case C64Interface::CHAR:
-			to = C64Interface::MC_BITMAP;
+			to = C64Interface::MC_CHAR;
 			break;
 		case C64Interface::MC_CHAR:
 			to = C64Interface::CHAR;
