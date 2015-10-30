@@ -222,6 +222,14 @@ ON_COMMAND(ID_TOOL_FILL, &CChildView::OnToolFill)
 ON_COMMAND(ID_VIEW_CELLGRID, &CChildView::OnViewCellgrid)
 ON_UPDATE_COMMAND_UI(ID_VIEW_CELLGRID, &CChildView::OnUpdateViewCellgrid)
 ON_COMMAND(ID_HELP_LOADINTRO, &CChildView::OnHelpLoadintro)
+ON_UPDATE_COMMAND_UI(ID_FONT_1X1, &CChildView::OnUpdateFont1x1)
+ON_COMMAND(ID_FONT_1X1, &CChildView::OnFont1x1)
+ON_UPDATE_COMMAND_UI(ID_FONT_2X1, &CChildView::OnUpdateFont2x1)
+ON_COMMAND(ID_FONT_2X1, &CChildView::OnFont2x1)
+ON_UPDATE_COMMAND_UI(ID_FONT_1X2, &CChildView::OnUpdateFont1x2)
+ON_COMMAND(ID_FONT_1X2, &CChildView::OnFont1x2)
+ON_UPDATE_COMMAND_UI(ID_FONT_2X2, &CChildView::OnUpdateFont2x2)
+ON_COMMAND(ID_FONT_2X2, &CChildView::OnFont2x2)
 END_MESSAGE_MAP()
 
 
@@ -3113,4 +3121,67 @@ bool CChildView::LoadIntro(void)
 	}
 
 	return false;
+}
+
+
+void CChildView::OnUpdateFont1x1(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(m_pbm->IsChar() ? 1 : 0);
+	pCmdUI->SetCheck(m_pbm->GetFontDisplay() == CommonFont::FONT_1X1 ? 1 : 0);
+}
+
+
+void CChildView::OnFont1x1()
+{
+	m_pbm->SetFontDisplay(CommonFont::FONT_1X1);
+	Invalidate();
+	Mail(MSG_REFRESH);
+}
+
+
+void CChildView::OnUpdateFont2x1(CCmdUI *pCmdUI)
+{
+	int cellcount = m_pbm->GetCellCountX() * m_pbm->GetCellCountY();
+	pCmdUI->Enable(m_pbm->IsChar() && (m_pbm->GetCellCountX() & 1) == 0 && (cellcount == 256 || cellcount == 128) ? 1 : 0);
+	pCmdUI->SetCheck(m_pbm->GetFontDisplay() == CommonFont::FONT_2X1 ? 1 : 0);
+}
+
+
+void CChildView::OnFont2x1()
+{
+	m_pbm->SetFontDisplay(CommonFont::FONT_2X1);
+	Invalidate();
+	Mail(MSG_REFRESH);
+}
+
+
+void CChildView::OnUpdateFont1x2(CCmdUI *pCmdUI)
+{
+	int cellcount = m_pbm->GetCellCountX() * m_pbm->GetCellCountY();
+	pCmdUI->Enable(m_pbm->IsChar() && (m_pbm->GetCellCountY() & 1) == 0 && (cellcount == 256 || cellcount == 128) ? 1 : 0);
+	pCmdUI->SetCheck(m_pbm->GetFontDisplay() == CommonFont::FONT_1X2 ? 1 : 0);
+}
+
+
+void CChildView::OnFont1x2()
+{
+	m_pbm->SetFontDisplay(CommonFont::FONT_1X2);
+	Invalidate();
+	Mail(MSG_REFRESH);
+}
+
+
+void CChildView::OnUpdateFont2x2(CCmdUI *pCmdUI)
+{
+	int cellcount = m_pbm->GetCellCountX() * m_pbm->GetCellCountY();
+	pCmdUI->Enable(m_pbm->IsChar() && (m_pbm->GetCellCountX() & 1) == 0 && (m_pbm->GetCellCountY() & 1) && cellcount == 256 ? 1 : 0);
+	pCmdUI->SetCheck(m_pbm->GetFontDisplay() == CommonFont::FONT_2X2 ? 1 : 0);
+}
+
+
+void CChildView::OnFont2x2()
+{
+	m_pbm->SetFontDisplay(CommonFont::FONT_2X2);
+	Invalidate();
+	Mail(MSG_REFRESH);
 }

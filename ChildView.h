@@ -266,5 +266,13 @@ public:
 	afx_msg void OnUpdateViewCellgrid(CCmdUI *pCmdUI);
 	afx_msg void OnHelpLoadintro();
 	bool LoadIntro(void);
+	afx_msg void OnUpdateFont1x1(CCmdUI *pCmdUI);
+	afx_msg void OnFont1x1();
+	afx_msg void OnUpdateFont2x1(CCmdUI *pCmdUI);
+	afx_msg void OnFont2x1();
+	afx_msg void OnUpdateFont1x2(CCmdUI *pCmdUI);
+	afx_msg void OnFont1x2();
+	afx_msg void OnUpdateFont2x2(CCmdUI *pCmdUI);
+	afx_msg void OnFont2x2();
 };
 

@@ -149,6 +149,9 @@ public:
 	virtual void Save(nmemfile &file, LPCTSTR type);
 	virtual void Load(nmemfile &file, LPCTSTR type, int version);
 
+	virtual void SetFontDisplay(int mode) {}
+	virtual int GetFontDisplay(void){return 0;}
+
 public:
 
 	int GetSizeX(void){return xsize;}
@@ -515,6 +518,16 @@ protected:
 class CommonFont : public C64Interface
 {
 friend class C64Interface;
+
+public: 
+	enum tfontdisplay : int
+	{
+		FONT_1X1 = 0,
+		FONT_1X2,
+		FONT_2X1,
+		FONT_2X2
+	};
+
 protected:
 	CommonFont();
 	virtual ~CommonFont();
@@ -527,9 +540,16 @@ protected:
 	void Save(nmemfile &file, LPCTSTR type);
 	void Load(nmemfile &file, LPCTSTR type, int version);
 
+	void SetFontDisplay(int mode) override;
+	int GetFontDisplay(void) override {return fontdisplay;}
+
+	void TranslateFontDisplay(int &cx, int &cy);
+
 private:
 	CEvent quit;
 	HANDLE thread;
+
+	tfontdisplay fontdisplay;
 
 	virtual int GetCharCount(void){return charcount;}
 	static unsigned int __stdcall threadentry(void *in);

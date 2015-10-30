@@ -4,6 +4,7 @@
 
 CommonFont::CommonFont(void)
 {
+	fontdisplay = FONT_1X1;
 	charcount=0;
 	thread=(HANDLE)_beginthreadex(NULL,0,threadentry,(void *)this,0,NULL);
 }
@@ -129,6 +130,7 @@ void CommonFont::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
 
 void CommonFont::Save(nmemfile &file, LPCTSTR type)
 {
+
 	__super::Save(file,type);
 
 	if(lstrcmpi(_T("iscr"),type)==0)
@@ -172,6 +174,48 @@ void CommonFont::Save(nmemfile &file, LPCTSTR type)
 void CommonFont::Load(nmemfile &file, LPCTSTR type, int version)
 {
 	__super::Load(file,type,version);
+
+	fontdisplay = (tfontdisplay)GetMetaInt("fontdisplay");
+}
+
+void CommonFont::SetFontDisplay(int mode)
+{
+	SetMetaInt("fontdisplay", fontdisplay = (tfontdisplay)mode);
+}
+
+void CommonFont::TranslateFontDisplay(int &cx, int &cy)
+{
+	switch (fontdisplay)
+	{
+	case FONT_1X1:
+		break;
+	case FONT_1X2:
+		{
+			int c = cx + (cy / 2) * GetCellCountX();
+			cx = (c & 63) + (c/64) * 128 + (cy & 1) * 64;
+			cy = 0;
+		}
+	break;
+	case FONT_2X1:
+		{
+			int c = (cx / 2) + cy * GetCellCountX() / 2;
+			cx = (c & 63) + (c / 64) * 128 + (cx & 1) * 64;
+			cy = 0;
+		}
+		break;
+	case FONT_2X2:
+		{
+			int c = (cx / 2) + (cy / 2) * GetCellCountX() / 2;
+			cx = c  + (cx & 1) * 64 + (cy & 1) * 128;
+			cy = 0;
+		}
+		break;
+	default:
+		cx = 0;
+		cy = 0;
+		assert(false);
+	}
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -357,8 +401,10 @@ BYTE MCFont::GetPixel(int x, int y)
 {
 	ASSERT(x>=0 && x<xsize && y>=0 && y<ysize);
 
-	int cx = x/4;
-	int cy = y/8;
+	int cx = x / 4;
+	int cy = y / 8;
+
+	TranslateFontDisplay(cx, cy);
 
 	int d=(map[cy * xsize*2 + cx * 8 + (y%8)] >> (2*(3-(x%4)))) & 3;
 
@@ -388,6 +434,9 @@ void MCFont::SetPixel(int x, int y, BYTE col)
 
 	int cx = x/4;
 	int cy = y/8;
+
+	TranslateFontDisplay(cx, cy);
+
 	int ci = cy * (xsize/4) + cx;
 
 	int mask = ResolveMask2(ci, col, GetMask(x,y), true);
@@ -589,6 +638,8 @@ BYTE SFont::GetPixel(int x, int y)
 	int cx = x/8;
 	int cy = y/8;
 
+	TranslateFontDisplay(cx, cy);
+
 	int d=(map[cy * xsize + cx * 8 + (y%8)] >> (1*(7-(x%8)))) & 1;
 
 	BYTE b;
@@ -611,6 +662,9 @@ void SFont::SetPixel(int x, int y, BYTE col)
 
 	int cx = x/8;
 	int cy = y/8;
+
+	TranslateFontDisplay(cx, cy);
+
 	int ci = cy * (xsize/8) + cx;
 
 	int mask = ResolveMask1(ci, col, GetMask(x,y));
