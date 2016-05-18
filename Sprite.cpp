@@ -379,7 +379,7 @@ void MCSprite::Import(CImage &img)
 	if(num>=3)ext[1]=top[2];
 
 	PushLocks();
-	lock[0]=lock[1]=lock[2]=1;
+	lock[0]=lock[1]=lock[3]=1;
 	lock[3]=lock[4]=lock[5]=0;
 
 	help.ReduceColors(4, top, num<3?num:3);
