@@ -1725,12 +1725,6 @@ C64Interface *C64Interface::Allocate(tmode mode, int w, int h, int buffers)
 	case BITMAP:
 		i = new class Bitmap(w,h,buffers);
 		break;
-	case UNRESTRICTED:
-		i = new class Unrestricted(w,h,false,buffers);
-		break;
-	case W_UNRESTRICTED:
-		i = new class Unrestricted(w,h,true,buffers);
-		break;
 	case MC_CHAR:
 		i = new class MCFont(w,h,buffers);
 		break;

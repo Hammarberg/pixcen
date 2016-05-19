@@ -198,7 +198,7 @@ public:
 	static C64Interface *CreateFromImage(CImage *img, int count, tmode type);
 	static C64Interface *Allocate(tmode mode, int w, int h, int buffers=1);
 
-	C64Interface *CreateFromSelection(int x, int y, int w, int h);
+	virtual C64Interface *CreateFromSelection(int x, int y, int w, int h);
 
 	void Optimize(void);
 
@@ -511,6 +511,8 @@ protected:
 	bool CanOptimize(void){return false;}
 	void Import(CImage &img);
 	void Save(nmemfile &file, LPCTSTR type);
+
+	C64Interface *CreateFromSelection(int x, int y, int w, int h);
 
 	static void GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt);
 };

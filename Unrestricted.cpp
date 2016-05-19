@@ -27,12 +27,12 @@ Unrestricted::Unrestricted(int x, int y, bool wide, int backbuffers)
 	if(wide)
 	{
 		mode = W_UNRESTRICTED;
-		xcell=4;
+		offsetcell=xcell=4;
 	}
 	else
 	{
 		mode = UNRESTRICTED;
-		xcell=8;
+		offsetcell=xcell=8;
 	}
 
 	xsize=x;
@@ -117,4 +117,32 @@ void Unrestricted::Import(CImage &img)
 	}
 
 	*border = GuessBorderColor();
+}
+
+C64Interface *Unrestricted::CreateFromSelection(int x, int y, int w, int h)
+{
+	Unrestricted *i = NULL;
+
+	if(mode == UNRESTRICTED)
+	{
+		i = new class Unrestricted(w, h, false, 1);
+	}
+	else
+	{
+		assert(mode == W_UNRESTRICTED);
+		i = new class Unrestricted(w, h, true, 1);
+	}
+
+	for (int cy = 0; cy<h; cy++)
+	{
+		for (int cx = 0; cx<w; cx++)
+		{
+			i->map[w*cy + cx] = map[xsize*(y + cy) + (x + cx)];
+		}
+	}
+
+	//Other data, global colors, locks, etc, 64 bytes before map pointer
+	memcpy(i->map - 64, map - 64, 64);
+
+	return i;
 }
