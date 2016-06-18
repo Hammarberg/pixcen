@@ -1737,6 +1737,12 @@ C64Interface *C64Interface::Allocate(tmode mode, int w, int h, int buffers)
 	case MC_SPRITE:
 		i = new class MCSprite(w,h,buffers);
 		break;
+	case UNRESTRICTED:
+		i = new class Unrestricted(w, h, false, buffers);
+		break;
+	case W_UNRESTRICTED:
+		i = new class Unrestricted(w, h, true, buffers);
+		break;
 	default:
 		throw _T("Wooh, unknown format.");
 	};
