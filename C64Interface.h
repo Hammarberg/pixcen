@@ -161,7 +161,7 @@ public:
 	int GetCellCountX(void){return xsize/xcell;}
 	int GetCellCountY(void){return ysize/ycell;}
 
-	BYTE GetBackground(void){return *infouse[0].pp[0];}
+	BYTE GetBackground(void){return infouse[0].use != InfoUse::INFO_NO ? *infouse[0].pp[0] : 0;}
 
 	int GuessBorderColor(void);
 	BYTE GetBorderColor(void){return *border;};
