@@ -1805,6 +1805,19 @@ C64Interface *C64Interface::CreateFromSelection(int x, int y, int w, int h)
 	return i;
 }
 
+//Default slow implementation. All formats should override this
+void C64Interface::GetPixelBatch(BYTE *p, int xs, int ys, int w, int h)
+{
+	for (int y = ys; y < ys + h; y++)
+	{
+		for (int x = xs; x < xs + w; x++)
+		{
+			*p = GetPixel(x, y);
+			p++;
+		}
+	}
+}
+
 
 C64Interface::ImportHelper::ImportHelper(CImage &inimg, int x, int y, int xcellsize, int ycellsize, bool inwide) 
 	:img(inimg)

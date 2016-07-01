@@ -74,6 +74,8 @@ private:
 	int m_Grid;
 	int m_CellGrid;
 
+	narray<BYTE> m_BatchBuffer;
+
 	int m_Col1;
 	int m_Col2;
 	int m_ActivePaintCol;

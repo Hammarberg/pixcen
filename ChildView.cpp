@@ -450,9 +450,16 @@ void CChildView::OnPaint()
 		mx = ((rc.right - startx) / (scale * pw)) + 1;
 	}
 
+	if (m_BatchBuffer.count() < (mx - mxs))
+		m_BatchBuffer.count(mx - mxs);
+
+	BYTE *map = m_BatchBuffer.getarray();
+
 	for(y=mys;y<my;y++)
 	{
 		posy = starty + scale * y;
+
+		m_pbm->GetPixelBatch(map, mxs, y, mx - mxs, 1);
 
 		for(x=mxs;x<mx;x++)
 		{
@@ -466,12 +473,12 @@ void CChildView::OnPaint()
 
 				if(MaskedPaste && col == Col2)
 				{
-					col = pbm->GetPixel(x,y);
+					col = map[x - mxs];
 				}
 			}
 			else
 			{
-				col = pbm->GetPixel(x,y);
+				col = col = map[x - mxs];
 			}
 
 			dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);

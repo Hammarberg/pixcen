@@ -128,8 +128,9 @@ public:
 	virtual BYTE GetPixel(int x, int y) = NULL;
 	virtual void SetPixel(int x, int y, BYTE color) = NULL;
 
-
 	//Should overload
+	virtual void GetPixelBatch(BYTE *p, int x, int y, int w, int h);	//Default slow implementation
+
 	virtual void GetCellInfo(int cx, int cy, int w, int h, CellInfo *info);
 	virtual void SetCellInfo(int cx, int cy, int w, int h, CellInfo *info);
 
@@ -446,6 +447,7 @@ protected:
 
 	BYTE GetPixel(int x, int y);
 	void SetPixel(int x, int y, BYTE col);
+	void GetPixelBatch(BYTE *p, int x, int y, int w, int h) override;
 	int GetPixelWidth(void){return 2;}
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	bool CanOptimize(void){return true;}
@@ -458,6 +460,7 @@ protected:
 	static nstr IdentifyFile(nmemfile &file);
 
 private:
+	inline BYTE GetPixelInternal(int x, int y);
 
 	static int DecompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size);
 	static int CompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size);
@@ -477,6 +480,7 @@ protected:
 
 	BYTE GetPixel(int x, int y);
 	void SetPixel(int x, int y, BYTE col);
+	void GetPixelBatch(BYTE *p, int x, int y, int w, int h) override;
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	bool CanOptimize(void){return true;}
 	void Import(CImage &img);
@@ -488,6 +492,7 @@ protected:
 	static nstr IdentifyFile(nmemfile &file);
 
 private:
+	inline BYTE GetPixelInternal(int x, int y);
 
 	int GetMask(int x, int y);
 };
@@ -505,6 +510,7 @@ protected:
 
 	BYTE GetPixel(int x, int y);
 	void SetPixel(int x, int y, BYTE col);
+	void GetPixelBatch(BYTE *p, int x, int y, int w, int h) override;
 	void GetCellInfo(int cx, int cy, int w, int h, CellInfo *info);
 	int GetPixelWidth(void){return mode == W_UNRESTRICTED ? 2 : 1;}
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
@@ -515,6 +521,9 @@ protected:
 	C64Interface *CreateFromSelection(int x, int y, int w, int h);
 
 	static void GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt);
+
+private:
+	inline BYTE GetPixelInternal(int x, int y);
 };
 
 class CommonFont : public C64Interface

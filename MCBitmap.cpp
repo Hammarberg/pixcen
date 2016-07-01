@@ -546,33 +546,50 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 	}
 }
 
-BYTE MCBitmap::GetPixel(int x, int y)
+BYTE MCBitmap::GetPixelInternal(int x, int y)
 {
-	ASSERT(x>=0 && x<xsize && y>=0 && y<ysize);
+	ASSERT(x >= 0 && x<xsize && y >= 0 && y<ysize);
 
-	int cx = x/4;
-	int cy = y/8;
+	int cx = x / 4;
+	int cy = y / 8;
 
-	int d=(map[cy * xsize*2 + cx * 8 + (y%8)] >> (2*(3-(x%4)))) & 3;
+	int d = (map[cy * xsize * 2 + cx * 8 + (y % 8)] >> (2 * (3 - (x % 4)))) & 3;
 
 	BYTE b;
-	switch(d)
+	switch (d)
 	{
 	case 0:
 		b = *background;
 		break;
 	case 1:
-		b = screen[cy * (xsize/4) + cx] >> 4;
+		b = screen[cy * (xsize / 4) + cx] >> 4;
 		break;
 	case 2:
-		b = screen[cy * (xsize/4) + cx]  & 0x0f;
+		b = screen[cy * (xsize / 4) + cx] & 0x0f;
 		break;
 	case 3:
-		b = color[cy * (xsize/4) + cx];
+		b = color[cy * (xsize / 4) + cx];
 		break;
 	}
 
 	return b;
+}
+
+BYTE MCBitmap::GetPixel(int x, int y)
+{
+	return GetPixelInternal(x,y);
+}
+
+void MCBitmap::GetPixelBatch(BYTE *p, int xs, int ys, int w, int h)
+{
+	for (int y = ys; y < ys + h; y++)
+	{
+		for (int x = xs; x < xs + w; x++)
+		{
+			*p = GetPixelInternal(x, y);
+			p++;
+		}
+	}
 }
 
 void MCBitmap::SetPixel(int x, int y, BYTE col)
