@@ -426,21 +426,37 @@ void CChildView::OnPaint()
 
 	int posy,posx;
 
-	for(y=0;y<my;y++)
-	{
-		if((starty + scale * (y+1)) < 0)continue;
+	int mys;
 
+	if (starty < 0)
+		mys = (-starty) / scale;
+	else
+		mys = 0;
+
+	if (starty + scale * my > rc.bottom)
+	{
+		my = ((rc.bottom-starty) / scale) + 1;
+	}
+
+	int mxs;
+
+	if (startx < 0)
+		mxs = (-startx) / (scale * pw);
+	else
+		mxs = 0;
+
+	if (startx + scale * mx * pw > rc.right)
+	{
+		mx = ((rc.right - startx) / (scale * pw)) + 1;
+	}
+
+	for(y=mys;y<my;y++)
+	{
 		posy = starty + scale * y;
 
-		if(LONG(posy) >= rc.bottom)break;
-
-		for(x=0;x<mx;x++)
+		for(x=mxs;x<mx;x++)
 		{
-			if((startx + scale * (x+1) * pw) < 0)continue;
-
 			posx = startx + scale * x * pw;
-
-			if(LONG(posx) >= rc.right)break;
 
 			int col;
 					
@@ -464,11 +480,10 @@ void CChildView::OnPaint()
 
 	if(usegrid || usecellgrid)
 	{
-		for(x=0;x<=mx;x++)
+		for(x=mxs;x<=mx;x++)
 		{
 			posx = startx + scale * x * pw;
 
-			if(posx < 0)continue;
 			if(LONG(posx) >= rc.right)break;
 
 			if(usecellgrid && x%cw==0)
@@ -485,11 +500,10 @@ void CChildView::OnPaint()
 			}
 		}
 
-		for(y=0;y<my;y++)
+		for(y=mys;y<my;y++)
 		{
 			posy = starty + scale * y;
 
-			if(posy < 0)continue;
 			if(LONG(posy) >= rc.bottom)break;
 
 			if(usecellgrid && y%ch==0)

@@ -161,31 +161,44 @@ void CPreview::OnPaint()
 
 	int posy,posx;
 
-	for(y=0;y<my;y++)
+	int mys;
+
+	if (starty < 0)
+		mys = (-starty) / scale;
+	else
+		mys = 0;
+
+	if (starty + scale * my > rc.bottom)
+	{
+		my = ((rc.bottom - starty) / scale) + 1;
+	}
+
+	int mxs;
+
+	if (startx < 0)
+		mxs = (-startx) / (scale * pw);
+	else
+		mxs = 0;
+
+	if (startx + scale * mx * pw > rc.right)
+	{
+		mx = ((rc.right - startx) / (scale * pw)) + 1;
+	}
+
+	for(y=mys;y<my;y++)
 	{
 		posy = starty + scale * y;
 
-		if(int(posy)>=rc.bottom)break;
-
-		if(posy+scale > 0)
+		for(x=mxs;x<mx;x++)
 		{
-			for(x=0;x<mx;x++)
-			{
-				posx = startx + scale * x * pw;
+			posx = startx + scale * x * pw;
 
-				if(int(posx)>=rc.right)break;
-
-				if(posx+scale*pw > 0)
-				{
-					int col = pInterface->GetPixel(x,y);
-					dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
-				}
-			}
+			int col = pInterface->GetPixel(x,y);
+			dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
 		}
 	}
 
 	realdc.StretchBlt(0, 0, rc.right, int(rc.bottom*m_scaleY+0.5), &dc, 0, 0, rc.right, rc.bottom, SRCCOPY);
-	//realdc.BitBlt(0,0,rc.right,rc.bottom,&dc,0,0,SRCCOPY);
 }
 
 
