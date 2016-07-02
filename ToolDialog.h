@@ -50,4 +50,5 @@ public:
 
 	virtual BOOL OnInitDialog();
 	virtual BOOL DestroyWindow();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

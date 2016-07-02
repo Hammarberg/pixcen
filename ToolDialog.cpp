@@ -121,3 +121,17 @@ BOOL CToolDialog::DestroyWindow()
 
 	return CDialogEx::DestroyWindow();
 }
+
+
+BOOL CToolDialog::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN)
+	{
+		if (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE)
+		{
+			return TRUE;
+		}
+	}
+
+	return __super::PreTranslateMessage(pMsg);
+}
