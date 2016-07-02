@@ -337,6 +337,21 @@ protected:
 
 	void ResetHistory(void);
 
+	//A wrapper class to Get- and SetPixel straight into the DIB rather than detour via CDC
+	class CImageFast : public CImage
+	{
+	public:
+		COLORREF GetPixel(int x, int y)
+		{
+			return *((COLORREF *)GetPixelAddress(x, y));
+		}
+
+		void SetPixel(int x, int y, COLORREF color)
+		{
+			memcpy(GetPixelAddress(x, y), &color, 3);	//Assuming 24 bits
+		}
+	};
+
 	class ImportHelper
 	{
 	public:
@@ -358,7 +373,7 @@ protected:
 		}
 
 	private:
-		CImage &img;
+		CImageFast &img;
 
 		COLORREF GetImagePixel(int x, int y);
 

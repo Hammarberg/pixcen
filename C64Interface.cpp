@@ -545,7 +545,7 @@ void C64Interface::Optimize(void)
 	Import(img);
 }
 
-void C64Interface::RenderImage(CImage &img, int startx, int starty, int width, int height)
+void C64Interface::RenderImage(CImage &inimg, int startx, int starty, int width, int height)
 {
 	int pw = GetPixelWidth();
 	int xmax=GetSizeX(),ymax=GetSizeY(),x,y,px,py;
@@ -557,7 +557,9 @@ void C64Interface::RenderImage(CImage &img, int startx, int starty, int width, i
 	if(height != -1)
 		ymax = ymax < starty+height ? ymax : starty+height;
 
-	img.Create((xmax-startx)*pw,ymax-starty,24);
+	inimg.Create((xmax-startx)*pw,ymax-starty,24);
+
+	CImageFast &img = static_cast<CImageFast &>(inimg);
 
 	for(py=0,y=starty;y<ymax;y++,py++)
 	{
@@ -1820,7 +1822,7 @@ void C64Interface::GetPixelBatch(BYTE *p, int xs, int ys, int w, int h)
 
 
 C64Interface::ImportHelper::ImportHelper(CImage &inimg, int x, int y, int xcellsize, int ycellsize, bool inwide) 
-	:img(inimg)
+	:img(static_cast<CImageFast &>(inimg))
 {
 	xsize=x;
 	ysize=y;
