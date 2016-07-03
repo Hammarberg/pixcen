@@ -343,7 +343,7 @@ protected:
 	public:
 		COLORREF GetPixel(int x, int y)
 		{
-			return *((COLORREF *)GetPixelAddress(x, y));
+			return (*((COLORREF *)GetPixelAddress(x, y)))&0xffffff; //Assuming 24 bits
 		}
 
 		void SetPixel(int x, int y, COLORREF color)
