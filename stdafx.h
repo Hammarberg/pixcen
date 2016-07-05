@@ -71,9 +71,23 @@
 
 #include "res\version.h"
 
+#include "threadpool.h"
 
+extern threadpool *g_pThreadPool;
 
+typedef threadpool::waitable waitable;
 
+template<typename Function>
+waitable schedule(Function && fn)
+{
+	return g_pThreadPool->schedule(fn);
+}
+
+template<typename Function>
+void fire_and_forget(Function && fn)
+{
+	g_pThreadPool->fire_and_forget(fn);
+}
 
 #ifdef _UNICODE
 #if defined _M_IX86

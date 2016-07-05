@@ -130,6 +130,9 @@
       <Filter>Misc</Filter>
     </ClInclude>
     <ClInclude Include="Monomap.h" />
+    <ClInclude Include="threadpool.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\DropPalette.bmp">

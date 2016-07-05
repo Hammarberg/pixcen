@@ -438,6 +438,8 @@ void CChildView::OnPaint()
 		my = ((rc.bottom-starty) / scale) + 1;
 	}
 
+	int yw = my - mys;
+
 	int mxs;
 
 	if (startx < 0)
@@ -450,16 +452,50 @@ void CChildView::OnPaint()
 		mx = ((rc.right - startx) / (scale * pw)) + 1;
 	}
 
-	if (m_BatchBuffer.count() < (mx - mxs))
-		m_BatchBuffer.count(mx - mxs);
+	int xw = mx - mxs;
 
-	BYTE *map = m_BatchBuffer.getarray();
+	if (m_BatchBuffer[0].count() < (xw * 16))
+	{
+		m_BatchBuffer[0].count((xw * 16));
+		m_BatchBuffer[1].count((xw * 16));
+	}
 
-	for(y=mys;y<my;y++)
+	waitable batch;
+	int alt = 0;
+	unsigned char *map;
+
+	for (int sy=0, y = mys; y < my; y++, sy++)
 	{
 		posy = starty + scale * y;
 
-		m_pbm->GetPixelBatch(map, mxs, y, mx - mxs, 1);
+		if (sy % 16 == 0)
+		{
+			map = m_BatchBuffer[alt].getarray();
+			alt = 1 - alt;
+
+			if (batch)
+			{
+				batch->wait();
+			}
+			else
+			{
+				//First batch
+				int yleft = y + 16 <= my ? 16 : my - y;
+				m_pbm->GetPixelBatch(map, mxs, y, mx - mxs, yleft);
+			}
+
+			int yleft = y + 32 <= my ? 16 : my - (y + 16);
+			if (yleft)
+			{
+				batch = schedule([=]
+				{
+					m_pbm->GetPixelBatch(m_BatchBuffer[alt].getarray(), mxs, y + 16, mx - mxs, yleft);
+				});
+			}
+
+			sy = 0;
+		}
+
 
 		for(x=mxs;x<mx;x++)
 		{
@@ -473,12 +509,12 @@ void CChildView::OnPaint()
 
 				if(MaskedPaste && col == Col2)
 				{
-					col = map[x - mxs];
+					col = map[x - mxs + xw * sy];
 				}
 			}
 			else
 			{
-				col = col = map[x - mxs];
+				col = col = map[x - mxs + xw * sy];
 			}
 
 			dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);

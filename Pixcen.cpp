@@ -68,11 +68,14 @@ CGraphixApp::CGraphixApp()
 
 CGraphixApp theApp;
 
+threadpool *g_pThreadPool;
 
 // CGraphixApp initialization
 
 BOOL CGraphixApp::InitInstance()
 {
+	g_pThreadPool = new threadpool;
+
 	// InitCommonControlsEx() is required on Windows XP if an application
 	// manifest specifies use of ComCtl32.dll version 6 or later to enable
 	// visual styles.  Otherwise, any window creation will fail.
@@ -168,6 +171,8 @@ int CGraphixApp::ExitInstance()
 {
 	//TODO: handle additional resources you may have added
 	AfxOleTerm(FALSE);
+
+	delete g_pThreadPool;
 
 	return CWinAppEx::ExitInstance();
 }

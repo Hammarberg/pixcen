@@ -74,7 +74,7 @@ private:
 	int m_Grid;
 	int m_CellGrid;
 
-	narray<BYTE> m_BatchBuffer;
+	narray<BYTE> m_BatchBuffer[2];
 
 	int m_Col1;
 	int m_Col2;
