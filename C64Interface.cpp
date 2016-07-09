@@ -1646,11 +1646,16 @@ C64Interface *C64Interface::Load(LPCTSTR pszFileName, LPCTSTR type, tmode mode, 
 
 	if(lstrcmpi(_T("bmp"),type)==0 || lstrcmpi(_T("png"),type)==0 || lstrcmpi(_T("jpg"),type)==0 || lstrcmpi(_T("gif"),type)==0)
 	{
-		CImage img;
+		CImage img, img24;
 		if(img.Load(pszFileName) != 0)
 			throw _T("Error opening file");
 
-		i = CreateFromImage(&img, 1, mode);
+		//Make sure the image is 24 bit
+		img24.Create(img.GetWidth(), img.GetHeight(), 24);
+		img.BitBlt(img24.GetDC(), 0, 0, img.GetWidth(), img.GetHeight(), 0, 0);
+		img24.ReleaseDC();
+
+		i = CreateFromImage(&img24, 1, mode);
 
 		i->file_name = pszFileName;
 
