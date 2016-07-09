@@ -343,12 +343,16 @@ protected:
 	public:
 		COLORREF GetPixel(int x, int y)
 		{
-			return (*((COLORREF *)GetPixelAddress(x, y)))&0xffffff; //Assuming 24 bits
+			unsigned char *p = (unsigned char *)GetPixelAddress(x, y);
+			return p[0] << 16 | p[1] << 8 | p[2];
 		}
 
 		void SetPixel(int x, int y, COLORREF color)
 		{
-			memcpy(GetPixelAddress(x, y), &color, 3);	//Assuming 24 bits
+			unsigned char *p = (unsigned char *)GetPixelAddress(x, y);
+			p[0] = (color >> 16) & 255;
+			p[1] = (color >> 8) & 255;
+			p[2] = color & 255;
 		}
 	};
 
