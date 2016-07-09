@@ -548,8 +548,7 @@ void C64Interface::Optimize(void)
 void C64Interface::RenderImage(CImage &inimg, int startx, int starty, int width, int height)
 {
 	int pw = GetPixelWidth();
-	int xmax=GetSizeX(),ymax=GetSizeY(),x,y,px,py;
-	COLORREF c;
+	int xmax=GetSizeX(),ymax=GetSizeY();
 
 	if(width != -1)
 		xmax = xmax < startx+width ? xmax : startx+width;
@@ -561,22 +560,24 @@ void C64Interface::RenderImage(CImage &inimg, int startx, int starty, int width,
 
 	CImageFast &img = static_cast<CImageFast &>(inimg);
 
-	for(py=0,y=starty;y<ymax;y++,py++)
+	paralell_for(ymax - starty, [starty, startx, xmax, &img, pw, this](int py)
 	{
-		for(px=0,x=startx;x<xmax;x++,px++)
+		int y = py + starty;
+		int px, x;
+		for (px = 0, x = startx; x<xmax; x++, px++)
 		{
-			c=GetPixelCR(x,y);
-			if(pw!=2)
+			COLORREF c = GetPixelCR(x, y);
+			if (pw != 2)
 			{
-				img.SetPixel(px,py,c);
+				img.SetPixel(px, py, c);
 			}
 			else
 			{
-				img.SetPixel(px*2,py,c);
-				img.SetPixel(px*2+1,py,c);
+				img.SetPixel(px * 2, py, c);
+				img.SetPixel(px * 2 + 1, py, c);
 			}
 		}
-	}
+	});
 }
 
 int C64Interface::GuessBorderColor(void)

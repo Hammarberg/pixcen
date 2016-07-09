@@ -89,6 +89,12 @@ void fire_and_forget(Function && fn)
 	g_pThreadPool->fire_and_forget(fn);
 }
 
+template<typename Function>
+void paralell_for(int to, Function && fn)
+{
+	g_pThreadPool->paralell_for(to, fn);
+}
+
 #ifdef _UNICODE
 #if defined _M_IX86
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")

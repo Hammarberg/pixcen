@@ -75,6 +75,7 @@ public:
 		{
 			threadlist.push_back(std::thread(&threadpool::run, this));
 			--max;
+			evcache.push_back(new ev);
 		}
 	}
 
@@ -93,6 +94,12 @@ public:
 		for (size_t n = 0; n < threadlist.size(); n++)
 		{
 			threadlist[n].join();
+		}
+
+		while (evcache.size())
+		{
+			delete evcache.back();
+			evcache.pop_back();
 		}
 	}
 
@@ -141,6 +148,34 @@ public:
 		cv.notify_one();
 
 		return w;
+	}
+
+	template<typename Function>
+	void paralell_for(int to, Function && fn)
+	{
+		int s = int(threadlist.size());
+		int slice = to / s;
+
+		waitable *w = new waitable[s];
+
+		for (int r = 0; r < s; r++)
+		{
+			int f = r * slice;
+			int t = s != s - 1 ? f+slice : to;
+
+			w[r] = schedule([f,t,&fn]
+			{
+				for (int r = f; r < t; r++)
+				{
+					fn(r);
+				}
+			});
+		}
+
+		for (int r = 0; r < s; r++)
+			w[r]->wait();
+
+		delete[] w;
 	}
 
 private:
