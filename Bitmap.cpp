@@ -321,18 +321,10 @@ void Bitmap::Import(CImage &img)
 {
 	ClearBackBuffer();
 
-	ImportHelper help(img, xsize, ysize, xcell, ycell, false);
-
-	help.ReduceColors(2, NULL, 0);
-
-	int x,y;
-
-	for(y=0;y<ysize;y++)
 	{
-		for(x=0;x<xsize;x++)
-		{
-			SetPixel(x, y, help.GetPixel(x,y));
-		}
+		ImportHelper help(this, img, false);
+
+		help.ReduceColors(2, NULL, 0);
 	}
 
 	*border = GuessBorderColor();

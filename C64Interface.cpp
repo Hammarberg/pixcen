@@ -1827,13 +1827,14 @@ void C64Interface::GetPixelBatch(BYTE *p, int xs, int ys, int w, int h)
 }
 
 
-C64Interface::ImportHelper::ImportHelper(CImage &inimg, int x, int y, int xcellsize, int ycellsize, bool inwide) 
+C64Interface::ImportHelper::ImportHelper(C64Interface *pp, CImage &inimg, bool inwide)
 	:img(static_cast<CImageFast &>(inimg))
+	,parent(pp)
 {
-	xsize=x;
-	ysize=y;
-	xcs=xcellsize;
-	ycs=ycellsize;
+	xsize=parent->GetSizeX();
+	ysize=parent->GetSizeY();
+	xcs=parent->GetCellSizeX();
+	ycs=parent->GetCellSizeY();
 	wide=inwide;
 
 	p=new BYTE[xsize*ysize];
@@ -1845,6 +1846,7 @@ C64Interface::ImportHelper::ImportHelper(CImage &inimg, int x, int y, int xcells
 
 	bool many = false;
 
+	int x, y;
 	for(y=0;y<ysize;y++)
 	{
 		for(x=0;x<xsize;x++)
@@ -1884,13 +1886,13 @@ C64Interface::ImportHelper::ImportHelper(CImage &inimg, int x, int y, int xcells
 	
 	int old = SetPalette(palette);
 
-	for(y=0;y<ysize;y++)
+	paralell_for(ysize, [this, prgbmap](int y)
 	{
-		for(x=0;x<xsize;x++)
+		for (int x = 0; x<xsize; x++)
 		{
 			p[y * xsize + x] = ToC64Index(prgbmap[y * xsize + x]);
 		}
-	}
+	});
 
 	delete [] prgbmap;
 
@@ -1901,12 +1903,26 @@ C64Interface::ImportHelper::ImportHelper(CImage &inimg, int x, int y, int xcells
 
 C64Interface::ImportHelper::~ImportHelper()
 {
+	paralell_for(ysize / ycs, [this](int yc)
+	{
+		int ys = yc * ycs;
+		int ye = ysize < ((yc + 1) * ycs) ? ysize : ((yc + 1) * ycs);
+
+		for (int y = ys; y<ye; y++)
+		{
+			for (int x = 0; x<xsize; x++)
+			{
+				parent->SetPixel(x, y, GetPixel(x, y));
+			}
+		}
+
+	});
+
 	delete [] p;
 }
 
 COLORREF C64Interface::ImportHelper::GetImagePixel(int x, int y)
 {
-
 	if(wide)
 	{
 		x*=2;
@@ -2004,43 +2020,41 @@ int C64Interface::ImportHelper::CountTopColorsPerCell(BYTE *col, int ceil)
 
 void C64Interface::ImportHelper::ReduceColors(int maxcolor, BYTE *force, int forcecount)
 {
-	int cx,cy,x,y,r;
-	BYTE col[16];
-	BYTE use[16];
-	ZeroMemory(use,16);
-
 	int old = SetPalette(palette);
 
-	for(cy=0;cy<ysize/ycs;cy++)
+	paralell_for(ysize / ycs, [this, maxcolor, force, forcecount](int cy)
 	{
-		for(cx=0;cx<xsize/xcs;cx++)
+		for (int cx = 0; cx<xsize / xcs; cx++)
 		{
-			int num=CountTopColors(cx,cy,1,1,col);
+			BYTE col[16];
+			BYTE use[16];
+			ZeroMemory(use, 16);
 
-			memcpy(use,force,forcecount);
+			int num = CountTopColors(cx, cy, 1, 1, col);
+
+			memcpy(use, force, forcecount);
 			int fc = forcecount;
 
-			r = 0;
-			for(r=0;r<num && fc != maxcolor;r++)
+			for (int r = 0; r<num && fc != maxcolor; r++)
 			{
-				if(!find(col[r], use, fc))
+				if (!find(col[r], use, fc))
 				{
-					use[fc]=col[r];
+					use[fc] = col[r];
 					fc++;
 				}
 			}
 
-			for(y=0;y<ycs;y++)
+			for (int y = 0; y<ycs; y++)
 			{
-				for(x=0;x<xcs;x++)
+				for (int x = 0; x<xcs; x++)
 				{
-					COLORREF c = GetImagePixel(cx*xcs+x,cy*ycs+y);
+					COLORREF c = GetImagePixel(cx*xcs + x, cy*ycs + y);
 					int mi = ClosestMatch(c, use, fc);
-					SetPixel(cx*xcs+x,cy*ycs+y,use[mi]);
+					SetPixel(cx*xcs + x, cy*ycs + y, use[mi]);
 				}
 			}
 		}
-	}
+	});
 
 	SetPalette(old);
 }

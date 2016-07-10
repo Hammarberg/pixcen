@@ -174,23 +174,15 @@ void Sprite::Import(CImage &img)
 {
 	ClearBackBuffer();
 
-	ImportHelper help(img, xsize, ysize, xcell, ycell, false);
-
-	BYTE top[16];
-	int num = help.CountTopColorsPerCell(top);
-
-	*background = top[0];
-
-	help.ReduceColors(2, top, num<1?num:1);
-
-	int x,y;
-
-	for(y=0;y<ysize;y++)
 	{
-		for(x=0;x<xsize;x++)
-		{
-			SetPixel(x, y, help.GetPixel(x,y));
-		}
+		ImportHelper help(this, img, false);
+
+		BYTE top[16];
+		int num = help.CountTopColorsPerCell(top);
+
+		*background = top[0];
+
+		help.ReduceColors(2, top, num < 1 ? num : 1);
 	}
 
 	*border = GuessBorderColor();
@@ -369,31 +361,23 @@ void MCSprite::Import(CImage &img)
 {
 	ClearBackBuffer();
 
-	ImportHelper help(img, xsize, ysize, xcell, ycell, true);
-
-	BYTE top[16];
-	int num = help.CountTopColorsPerCell(top);
-
-	*background = top[0];
-	if(num>=2)ext[0]=top[1];
-	if(num>=3)ext[1]=top[2];
-
-	PushLocks();
-	lock[0]=lock[1]=lock[3]=1;
-	lock[3]=lock[4]=lock[5]=0;
-
-	help.ReduceColors(4, top, num<3?num:3);
-
-	int x,y;
-
-	for(y=0;y<ysize;y++)
 	{
-		for(x=0;x<xsize;x++)
-		{
-			SetPixel(x, y, help.GetPixel(x,y));
-		}
-	}
+		ImportHelper help(this, img, true);
 
+		BYTE top[16];
+		int num = help.CountTopColorsPerCell(top);
+
+		*background = top[0];
+		if (num >= 2)ext[0] = top[1];
+		if (num >= 3)ext[1] = top[2];
+
+		PushLocks();
+		lock[0] = lock[1] = lock[3] = 1;
+		lock[3] = lock[4] = lock[5] = 0;
+
+		help.ReduceColors(4, top, num < 3 ? num : 3);
+
+	}
 	PopLocks();
 
 	*border = GuessBorderColor();

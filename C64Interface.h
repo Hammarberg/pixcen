@@ -359,11 +359,8 @@ protected:
 	class ImportHelper
 	{
 	public:
-		ImportHelper(CImage &img, int x, int y, int xcellsize, int ycellsize, bool wide);
+		ImportHelper(C64Interface *p, CImage &img, bool wide);
 		~ImportHelper();
-
-		BYTE GetPixel(int x, int y){return p[y*xsize+x];}
-		void SetPixel(int x, int y, BYTE c){p[y*xsize+x]=c;}
 
 		int CountColors(int cx, int cy, int w, int h, int *colcount);
 		int CountTopColors(int cx, int cy, int w, int h, BYTE *col);
@@ -381,7 +378,12 @@ protected:
 
 		COLORREF GetImagePixel(int x, int y);
 
+		BYTE GetPixel(int x, int y) { return p[y*xsize + x]; }
+		void SetPixel(int x, int y, BYTE c) { p[y*xsize + x] = c; }
+
 		int xsize, ysize, xcs, ycs;
+
+		C64Interface *parent;
 
 		bool wide;
 

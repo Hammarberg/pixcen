@@ -121,16 +121,8 @@ void Unrestricted::Import(CImage &img)
 {
 	ClearBackBuffer();
 
-	ImportHelper help(img, xsize, ysize, xcell, ycell, mode == W_UNRESTRICTED ? true : false);
-
-	int x,y;
-
-	for(y=0;y<ysize;y++)
 	{
-		for(x=0;x<xsize;x++)
-		{
-			SetPixel(x, y, help.GetPixel(x,y));
-		}
+		ImportHelper help(this, img, mode == W_UNRESTRICTED ? true : false);
 	}
 
 	*border = GuessBorderColor();
