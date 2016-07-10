@@ -153,30 +153,33 @@ public:
 	template<typename Function>
 	void paralell_for(int to, Function && fn)
 	{
-		int tnum = get_thread_num();
-		int s = to < tnum ? to : tnum;
-		int slice = to / s;
-
-		waitable *w = new waitable[s];
-
-		for (int r = 0; r < s; r++)
+		if (to)
 		{
-			int f = r * slice;
-			int t = s != s - 1 ? f+slice : to;
+			int tnum = get_thread_num();
+			int s = to < tnum ? to : tnum;
+			int slice = to / s;
 
-			w[r] = schedule([f,t,&fn]
+			waitable *w = new waitable[s];
+
+			for (int r = 0; r < s; r++)
 			{
-				for (int r = f; r < t; r++)
+				int f = r * slice;
+				int t = r != s - 1 ? f + slice : to;
+
+				w[r] = schedule([f, t, &fn]
 				{
-					fn(r);
-				}
-			});
+					for (int r = f; r < t; r++)
+					{
+						fn(r);
+					}
+				});
+			}
+
+			for (int r = 0; r < s; r++)
+				w[r]->wait();
+
+			delete[] w;
 		}
-
-		for (int r = 0; r < s; r++)
-			w[r]->wait();
-
-		delete[] w;
 	}
 
 	int get_thread_num() {return int(threadlist.size());}

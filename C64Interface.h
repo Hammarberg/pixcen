@@ -230,6 +230,75 @@ public:
 	void SetMetaStr(LPCSTR tag, nstr value){meta[tag]=value;}
 	nstr GetMetaStr(LPCSTR tag){return meta[tag];}
 
+	//Specialized threaded for, for cell boundary
+	template<typename Function>
+	void paralell_for_ycell(int from, int to, Function &&fn)
+	{
+		int csy = GetCellSizeY();
+		int afrom = (from % csy) ? from + (csy - (from % csy)) : from;
+
+		if (afrom >= to)
+		{
+			while (from < to)
+			{
+				fn(from);
+				from++;
+			}
+			return;
+		}
+
+		int ato = (to % csy) ? to - (to % csy) : to;
+		if (ato < afrom)ato = afrom;
+		int s;
+		waitable *w = nullptr;
+
+		int cells = (ato - afrom) / csy;
+		if (cells)
+		{
+			int tnum = g_pThreadPool->get_thread_num();
+			s = cells < tnum ? cells : tnum;
+
+			int slice = (cells / s) * csy;
+
+			w = new waitable[s];
+
+			for (int r = 0; r < s; r++)
+			{
+				int f = r * slice + afrom;
+				int t = r != s - 1 ? f + slice : ato;
+
+				w[r] = schedule([f, t, &fn]
+				{
+					for (int r = f; r < t; r++)
+					{
+						fn(r);
+					}
+				});
+			}
+		}
+
+		while (from < afrom)
+		{
+			fn(from);
+			from++;
+		}
+
+		while (ato < to)
+		{
+			fn(ato);
+			ato++;
+		}
+
+		if (w)
+		{
+			for (int r = 0; r < s; r++)
+				w[r]->wait();
+
+			delete[] w;
+		}
+
+	}
+
 protected:
 
 	BYTE *crippled;
@@ -372,40 +441,6 @@ protected:
 		{
 			return highindex(list, count);
 		}
-
-		/*
-		//Specialized threaded for, for cell boundary
-		template<typename Function>
-		paralell_for_ycell(int from, int to, Function &&fn)
-		{
-			int slice = GetCellSizeY();
-			int afrom = from + (slice - (from % slice));
-			int ato = to - (to % slice);
-
-			int s = g_pThreadPool->get_thread_num();
-
-			waitable *w = new waitable[s];
-
-			for (int r = 0; r < s; r++)
-			{
-				int f = r * slice;
-				int t = s != s - 1 ? f + slice : to;
-
-				w[r] = schedule([f, t, &fn]
-				{
-					for (int r = f; r < t; r++)
-					{
-						fn(r);
-					}
-				});
-			}
-
-			for (int r = 0; r < s; r++)
-				w[r]->wait();
-
-			delete[] w;
-		}
-		*/
 
 	private:
 		CImageFast &img;
