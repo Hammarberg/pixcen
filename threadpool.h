@@ -153,7 +153,8 @@ public:
 	template<typename Function>
 	void paralell_for(int to, Function && fn)
 	{
-		int s = int(threadlist.size());
+		int tnum = get_thread_num();
+		int s = to < tnum ? to : tnum;
 		int slice = to / s;
 
 		waitable *w = new waitable[s];
@@ -177,6 +178,8 @@ public:
 
 		delete[] w;
 	}
+
+	int get_thread_num() {return int(threadlist.size());}
 
 private:
 

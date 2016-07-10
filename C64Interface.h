@@ -373,6 +373,40 @@ protected:
 			return highindex(list, count);
 		}
 
+		/*
+		//Specialized threaded for, for cell boundary
+		template<typename Function>
+		paralell_for_ycell(int from, int to, Function &&fn)
+		{
+			int slice = GetCellSizeY();
+			int afrom = from + (slice - (from % slice));
+			int ato = to - (to % slice);
+
+			int s = g_pThreadPool->get_thread_num();
+
+			waitable *w = new waitable[s];
+
+			for (int r = 0; r < s; r++)
+			{
+				int f = r * slice;
+				int t = s != s - 1 ? f + slice : to;
+
+				w[r] = schedule([f, t, &fn]
+				{
+					for (int r = f; r < t; r++)
+					{
+						fn(r);
+					}
+				});
+			}
+
+			for (int r = 0; r < s; r++)
+				w[r]->wait();
+
+			delete[] w;
+		}
+		*/
+
 	private:
 		CImageFast &img;
 
