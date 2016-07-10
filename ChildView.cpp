@@ -1911,15 +1911,17 @@ void CChildView::DeleteArea(bool history)
 
 		if(history)m_pbm->BeginHistory();
 
-		for(y=m_CutY;y<m_CutY+m_CutH;y++)
+		m_pbm->paralell_for_ycell(m_CutY, m_CutY + m_CutH, [this, fillcol](int y)
 		{
-			if(y>m_pbm->GetSizeY())break;
-			for(x=m_CutX;x<m_CutX+m_CutW;x++)
+			if (y <= m_pbm->GetSizeY())
 			{
-				if(x>m_pbm->GetSizeX())break;
-				m_pbm->SetPixel(x,y, fillcol);
+				for (int x = m_CutX; x < m_CutX + m_CutW; x++)
+				{
+					if (x > m_pbm->GetSizeX())break;
+					m_pbm->SetPixel(x, y, fillcol);
+				}
 			}
-		}
+		});
 
 		Mail(MSG_REFRESH);
 
@@ -2418,13 +2420,13 @@ void CChildView::OnSelectionRotatecw()
 		m_PasteSizeY = ny;
 	}
 
-	for(int y=0;y<ny;y++)
+	m_pbm->paralell_for_ycell(0, ny, [this, p, nx](int y)
 	{
-		for(int x=0;x<nx;x++)
+		for (int x = 0; x<nx; x++)
 		{
-			SelectionSetPixel(m_Paste,x,y,p[y * nx + x]);
+			SelectionSetPixel(m_Paste, x, y, p[y * nx + x]);
 		}
-	}
+	});
 
 	if(!m_Paste)
 	{
@@ -2482,13 +2484,13 @@ void CChildView::OnSelectionRotateccw()
 		m_PasteSizeY = ny;
 	}
 
-	for(int y=0;y<ny;y++)
+	m_pbm->paralell_for_ycell(0, ny, [this, p, nx](int y)
 	{
-		for(int x=0;x<nx;x++)
+		for (int x = 0; x<nx; x++)
 		{
-			SelectionSetPixel(m_Paste,x,y,p[y * nx + x]);
+			SelectionSetPixel(m_Paste, x, y, p[y * nx + x]);
 		}
-	}
+	});
 
 	if(!m_Paste)
 	{
@@ -2536,13 +2538,13 @@ void CChildView::OnSelectionFliphorizontally()
 		DeleteArea(false);
 	}
 
-	for(int y=0;y<sy;y++)
+	m_pbm->paralell_for_ycell(0, sy, [this, p, sx](int y)
 	{
-		for(int x=0;x<sx;x++)
+		for (int x = 0; x<sx; x++)
 		{
-			SelectionSetPixel(m_Paste,x,y,p[y * sx + x]);
+			SelectionSetPixel(m_Paste, x, y, p[y * sx + x]);
 		}
-	}
+	});
 
 	if(!m_Paste)
 	{
@@ -2590,13 +2592,13 @@ void CChildView::OnSelectionFlipvertically()
 		DeleteArea(false);
 	}
 
-	for(int y=0;y<sy;y++)
+	m_pbm->paralell_for_ycell(0, sy, [this, p, sx](int y)
 	{
-		for(int x=0;x<sx;x++)
+		for (int x = 0; x<sx; x++)
 		{
-			SelectionSetPixel(m_Paste,x,y,p[y * sx + x]);
+			SelectionSetPixel(m_Paste, x, y, p[y * sx + x]);
 		}
-	}
+	});
 
 	if(!m_Paste)
 	{
@@ -2645,13 +2647,13 @@ void CChildView::OnSelectionShiftleft()
 		DeleteArea(false);
 	}
 
-	for(int y=0;y<sy;y++)
+	m_pbm->paralell_for_ycell(0, sy, [this, p, sx](int y)
 	{
-		for(int x=0;x<sx;x++)
+		for (int x = 0; x<sx; x++)
 		{
-			SelectionSetPixel(m_Paste,x,y,p[y * sx + x]);
+			SelectionSetPixel(m_Paste, x, y, p[y * sx + x]);
 		}
-	}
+	});
 
 	if(!m_Paste)
 	{
@@ -2700,13 +2702,13 @@ void CChildView::OnSelectionShiftright()
 		DeleteArea(false);
 	}
 
-	for(int y=0;y<sy;y++)
+	m_pbm->paralell_for_ycell(0, sy, [this, p, sx](int y)
 	{
-		for(int x=0;x<sx;x++)
+		for (int x = 0; x<sx; x++)
 		{
-			SelectionSetPixel(m_Paste,x,y,p[y * sx + x]);
+			SelectionSetPixel(m_Paste, x, y, p[y * sx + x]);
 		}
-	}
+	});
 
 	if(!m_Paste)
 	{
@@ -2755,13 +2757,13 @@ void CChildView::OnSelectionShiftup()
 		DeleteArea(false);
 	}
 
-	for(int y=0;y<sy;y++)
+	m_pbm->paralell_for_ycell(0, sy, [this, p, sx](int y)
 	{
-		for(int x=0;x<sx;x++)
+		for (int x = 0; x<sx; x++)
 		{
-			SelectionSetPixel(m_Paste,x,y,p[y * sx + x]);
+			SelectionSetPixel(m_Paste, x, y, p[y * sx + x]);
 		}
-	}
+	});
 
 	if(!m_Paste)
 	{
@@ -2810,13 +2812,13 @@ void CChildView::OnSelectionShiftdown()
 		DeleteArea(false);
 	}
 
-	for(int y=0;y<sy;y++)
+	m_pbm->paralell_for_ycell(0, sy, [this, p, sx](int y)
 	{
-		for(int x=0;x<sx;x++)
+		for (int x = 0; x<sx; x++)
 		{
-			SelectionSetPixel(m_Paste,x,y,p[y * sx + x]);
+			SelectionSetPixel(m_Paste, x, y, p[y * sx + x]);
 		}
-	}
+	});
 
 	if(!m_Paste)
 	{
