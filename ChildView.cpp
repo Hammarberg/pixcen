@@ -69,8 +69,8 @@ CChildView::CChildView()
 	m_Col1 = 1;	//White
 	m_Col2 = 0;	//Black
 
-	m_fLine.CreatePen(PS_SOLID,1,COLORREF(0x00108010));
-	m_cLine.CreatePen(PS_SOLID,2,COLORREF(0x00408040));
+	m_fLine.CreatePen(PS_SOLID,1,COLORREF(0x00101010));
+	m_cLine.CreatePen(PS_SOLID,2,COLORREF(0x00404040));
 	m_sLine[0].CreatePen(PS_DOT,1,COLORREF(0x00e0e0e0));
 	m_sLine[1].CreatePen(PS_DASH,1,COLORREF(0x00202020));
 
