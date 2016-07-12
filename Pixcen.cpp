@@ -112,8 +112,7 @@ BOOL CGraphixApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Censor Pixcen"));
 
-
-	const int REGVER=18;
+	const int REGVER=19;
 
 	int regver=GetProfileInt(_T("Version"),_T("RegVer"),0);
 

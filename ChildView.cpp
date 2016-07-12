@@ -31,6 +31,7 @@
 #include "NewDlg.h"
 #include "AddressDlg.h"
 #include "Monomap.h"
+#include "GridColorDlg.h"
 #include "resource.h"
 #include <vector>
 
@@ -69,8 +70,14 @@ CChildView::CChildView()
 	m_Col1 = 1;	//White
 	m_Col2 = 0;	//Black
 
-	m_fLine.CreatePen(PS_SOLID,1,COLORREF(0x00101010));
-	m_cLine.CreatePen(PS_SOLID,2,COLORREF(0x00404040));
+	AfxGetApp()->WriteProfileInt(_T("Intro"), _T("Shown"), 1);
+
+	m_GridColorPixel = (COLORREF)AfxGetApp()->GetProfileInt(_T("GridColor"), _T("Pixel"), COLORREF(0x00101010));
+	m_GridColorCell  = (COLORREF)AfxGetApp()->GetProfileInt(_T("GridColor"), _T("Cell"), COLORREF(0x00404040));
+
+	m_fLine.CreatePen(PS_SOLID,1, m_GridColorPixel);
+	m_cLine.CreatePen(PS_SOLID,2, m_GridColorCell);
+
 	m_sLine[0].CreatePen(PS_DOT,1,COLORREF(0x00e0e0e0));
 	m_sLine[1].CreatePen(PS_DASH,1,COLORREF(0x00202020));
 
@@ -230,6 +237,7 @@ ON_UPDATE_COMMAND_UI(ID_FONT_1X2, &CChildView::OnUpdateFont1x2)
 ON_COMMAND(ID_FONT_1X2, &CChildView::OnFont1x2)
 ON_UPDATE_COMMAND_UI(ID_FONT_2X2, &CChildView::OnUpdateFont2x2)
 ON_COMMAND(ID_FONT_2X2, &CChildView::OnFont2x2)
+ON_COMMAND(ID_VIEW_GRIDCOLORS, &CChildView::OnViewGridcolors)
 END_MESSAGE_MAP()
 
 
@@ -3243,4 +3251,34 @@ void CChildView::OnFont2x2()
 	m_pbm->SetFontDisplay(CommonFont::FONT_2X2);
 	Invalidate();
 	Mail(MSG_REFRESH);
+}
+
+
+void CChildView::OnViewGridcolors()
+{
+	// TODO: Add your command handler code here
+	CGridColorDlg dlg;
+
+	dlg.m_PixelColor.SetColor(m_GridColorPixel);
+	dlg.m_CellColor.SetColor(m_GridColorCell);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		//dlg.m_CellColor.
+		AfxGetApp()->WriteProfileInt(_T("GridColor"), _T("Pixel"), COLORREF(0x00101010));
+
+		m_GridColorPixel = dlg.m_PixelColor.GetColor();
+		m_GridColorCell = dlg.m_CellColor.GetColor();
+
+		AfxGetApp()->WriteProfileInt(_T("GridColor"), _T("Pixel"), m_GridColorPixel);
+		AfxGetApp()->WriteProfileInt(_T("GridColor"), _T("Cell"), m_GridColorCell);
+
+		m_fLine.DeleteObject();
+		m_cLine.DeleteObject();
+
+		m_fLine.CreatePen(PS_SOLID, 1, m_GridColorPixel);
+		m_cLine.CreatePen(PS_SOLID, 2, m_GridColorCell);
+
+		Invalidate(FALSE);
+	}
 }

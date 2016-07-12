@@ -394,6 +394,7 @@
     <ClInclude Include="ChildView.h" />
     <ClInclude Include="Col.h" />
     <ClInclude Include="ColorCtrl.h" />
+    <ClInclude Include="GridColorDlg.h" />
     <ClInclude Include="Monomap.h" />
     <ClInclude Include="NewDlg.h" />
     <ClInclude Include="Pixcen.h" />
@@ -420,6 +421,7 @@
     <ClCompile Include="Col.cpp" />
     <ClCompile Include="ColorCtrl.cpp" />
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="GridColorDlg.cpp" />
     <ClCompile Include="MCBitmap.cpp" />
     <ClCompile Include="NewDlg.cpp" />
     <ClCompile Include="Pixcen.cpp" />

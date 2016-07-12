@@ -82,6 +82,9 @@ private:
 
 	bool m_ColorPick;
 
+	COLORREF m_GridColorPixel;
+	COLORREF m_GridColorCell;
+
 	CPen m_fLine;
 	CPen m_cLine;
 	CPen m_sLine[2];
@@ -276,5 +279,6 @@ public:
 	afx_msg void OnFont1x2();
 	afx_msg void OnUpdateFont2x2(CCmdUI *pCmdUI);
 	afx_msg void OnFont2x2();
+	afx_msg void OnViewGridcolors();
 };
 

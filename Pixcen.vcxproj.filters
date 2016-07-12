@@ -67,6 +67,9 @@
     <ClCompile Include="C64Col.cpp">
       <Filter>Misc</Filter>
     </ClCompile>
+    <ClCompile Include="GridColorDlg.cpp">
+      <Filter>OtherGUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bb.h">
@@ -132,6 +135,9 @@
     <ClInclude Include="Monomap.h" />
     <ClInclude Include="threadpool.h">
       <Filter>Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="GridColorDlg.h">
+      <Filter>OtherGUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
