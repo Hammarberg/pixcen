@@ -115,7 +115,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseRevision|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -123,7 +123,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseRevision|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -273,7 +273,7 @@
     </ResourceCompile>
     <PreBuildEvent>
       <Command>prebuild.bat</Command>
-      <Message>Injecting SVN revision number</Message>
+      <Message>Injecting GIT revision number</Message>
     </PreBuildEvent>
     <CustomBuildStep>
       <Command>
@@ -361,7 +361,7 @@
     </ResourceCompile>
     <PreBuildEvent>
       <Command>prebuild.bat</Command>
-      <Message>Injecting SVN revision number</Message>
+      <Message>Injecting GIT revision number</Message>
     </PreBuildEvent>
     <CustomBuildStep>
       <Command>

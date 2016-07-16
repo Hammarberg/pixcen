@@ -9,14 +9,15 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	int a,b,c,d;
 
-	FILE *fp=fopen("res\\version.h","r");
-	fscanf(fp,"#define VERSION_A\t%d\n",&a);
-	fscanf(fp,"#define VERSION_B\t%d\n",&b);
-	fscanf(fp,"#define VERSION_C\t%d\n",&c);
+	FILE *fp=fopen("res\\revision.tmp","r");
+	fscanf(fp, "%d.%d.%d-%d-", &a, &b, &c, &d);
 	fclose(fp);
 
-	fp=fopen("res\\revision.h","r");
-	fscanf(fp,"#define VERSION_D %d\n",&d);
+	fp = fopen("res\\revision.h", "w");
+	fprintf(fp,"#define VERSION_A\t%d\n",a);
+	fprintf(fp,"#define VERSION_B\t%d\n",b);
+	fprintf(fp,"#define VERSION_C\t%d\n",c);
+	fprintf(fp,"#define VERSION_D\t%d\n",d);
 	fclose(fp);
 
 	fp=fopen("res\\ver","w");

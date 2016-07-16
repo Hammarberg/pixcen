@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Pixcen", "Pixcen.vcxproj", "{E2C15BD1-78D5-432F-AEBB-F66BB99D0AD9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EF6EE07C-0215-4B04-9C58-17362A690A72} = {EF6EE07C-0215-4B04-9C58-17362A690A72}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "versioner", "versioner\versioner.vcxproj", "{EF6EE07C-0215-4B04-9C58-17362A690A72}"
 EndProject
@@ -38,6 +41,7 @@ Global
 		{EF6EE07C-0215-4B04-9C58-17362A690A72}.ReleaseRevision|Win32.ActiveCfg = Release|Win32
 		{EF6EE07C-0215-4B04-9C58-17362A690A72}.ReleaseRevision|Win32.Build.0 = Release|Win32
 		{EF6EE07C-0215-4B04-9C58-17362A690A72}.ReleaseRevision|x64.ActiveCfg = Release|Win32
+		{EF6EE07C-0215-4B04-9C58-17362A690A72}.ReleaseRevision|x64.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

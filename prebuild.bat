@@ -1,2 +1,1 @@
-SubWCRev .\ Res\template_revision.txt Res\revision.h
-versioner
+git describe --tags --long >res\revision.tmp

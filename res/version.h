@@ -1,12 +1,4 @@
-#define VERSION_A	0
-#define VERSION_B	6
-#define VERSION_C	1
-
-#ifdef RELEASEVERSION
 #include "revision.h"
-#else
-#define VERSION_D 0
-#endif
 
 #define STRINGME2(X) #X
 #define STRINGME(X) STRINGME2(X)
