@@ -22,13 +22,13 @@
 #pragma once
 
 #include "atlimage.h"
+#include "ImageFast.h"
 #include "C64Col.h"
 #include "narray.h"
 #include "nstr.h"
 #include "nmemfile.h"
 #include "autoptr.h"
 #include "bb.h"
-
 #include <map>
 
 #define CURRENT_GPX_FILE_VERSION 4
@@ -405,25 +405,6 @@ protected:
 	void PopLocks(void){memcpy(lock, savelock, 6);}
 
 	void ResetHistory(void);
-
-	//A wrapper class to Get- and SetPixel straight into the DIB rather than detour via CDC
-	class CImageFast : public CImage
-	{
-	public:
-		COLORREF GetPixel(int x, int y)
-		{
-			unsigned char *p = (unsigned char *)GetPixelAddress(x, y);
-			return p[0] << 16 | p[1] << 8 | p[2];
-		}
-
-		void SetPixel(int x, int y, COLORREF color)
-		{
-			unsigned char *p = (unsigned char *)GetPixelAddress(x, y);
-			p[0] = (color >> 16) & 255;
-			p[1] = (color >> 8) & 255;
-			p[2] = color & 255;
-		}
-	};
 
 	class ImportHelper
 	{

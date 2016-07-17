@@ -139,6 +139,9 @@
     <ClInclude Include="GridColorDlg.h">
       <Filter>OtherGUI</Filter>
     </ClInclude>
+    <ClInclude Include="ImageFast.h">
+      <Filter>Misc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\DropPalette.bmp">

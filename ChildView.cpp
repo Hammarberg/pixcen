@@ -105,6 +105,7 @@ CChildView::CChildView()
 	m_ColorPick = false;
 
 	m_pBackBufferDC = NULL;
+	m_pBackBufferImage = NULL;
 
 	m_Fill = false;
 
@@ -116,6 +117,7 @@ CChildView::~CChildView()
 	delete m_pBackBufferDC;
 	delete m_pbm;
 	delete m_pPasteBuffer;
+	delete m_pBackBufferImage;
 	if(m_pselection)delete m_pselection;
 }
 
@@ -339,6 +341,18 @@ void CChildView::OnPaint()
 		m_pBackBufferDC->CreateCompatibleDC(&realdc);
 	}
 
+	if (m_pBackBufferImage && (m_pbm->GetSizeX() != m_pBackBufferImage->GetWidth() || m_pbm->GetSizeY() != m_pBackBufferImage->GetHeight()))
+	{
+		delete m_pBackBufferImage;
+		m_pBackBufferImage = NULL;
+	}
+
+	if (!m_pBackBufferImage)
+	{
+		m_pBackBufferImage = new CImageFast();
+		m_pBackBufferImage->Create(m_pbm->GetSizeX(), m_pbm->GetSizeY(), 24);
+	}
+
 	C64Interface *pbm = m_pbm;
 
 	CBitmap *bitmap;
@@ -358,7 +372,7 @@ void CChildView::OnPaint()
 
 	int scale = 1+m_Zoom/ZOOMVALUE;
 
-	int x,y,mx=pbm->GetSizeX(),my=pbm->GetSizeY(),pw=pbm->GetPixelWidth();
+	int mx=pbm->GetSizeX(),my=pbm->GetSizeY(),pw=pbm->GetPixelWidth();
 	int bmx = scale * mx * pw;
 	int bmy = scale * my;
 	int cw=pbm->GetCellSizeX();
@@ -368,7 +382,7 @@ void CChildView::OnPaint()
 
 	//Change border color slightly from palette
 	BYTE *bd=(BYTE *)&border;
-	for(x=3;x>=1;x--)
+	for(int x=3;x>=1;x--)
 	{
 		if(bd[x]>=0xf0)bd[x]-=0x10;
 		else bd[x]+=0x10;
@@ -432,8 +446,6 @@ void CChildView::OnPaint()
 	int PasteSizeX = m_PasteSizeX;
 	int PasteSizeY = m_PasteSizeY;
 
-	int posy,posx;
-
 	int mys;
 
 	if (starty < 0)
@@ -462,78 +474,49 @@ void CChildView::OnPaint()
 
 	int xw = mx - mxs;
 
-	if (m_BatchBuffer[0].count() < (xw * 16))
+	paralell_for(my - mys, [=](int sy)
 	{
-		m_BatchBuffer[0].count((xw * 16));
-		m_BatchBuffer[1].count((xw * 16));
-	}
+		int y = mys + sy;
 
-	waitable batch;
-	int alt = 0;
-	unsigned char *map;
+		int posy = starty + scale * y;
 
-	for (int sy=0, y = mys; y < my; y++, sy++)
-	{
-		posy = starty + scale * y;
-
-		if (sy % 16 == 0)
+		for (int sx = 0, x = mxs; x<mx; x++, sx++)
 		{
-			map = m_BatchBuffer[alt].getarray();
-			alt = 1 - alt;
-
-			if (batch)
-			{
-				batch->wait();
-			}
-			else
-			{
-				//First batch
-				int yleft = y + 16 <= my ? 16 : my - y;
-				m_pbm->GetPixelBatch(map, mxs, y, mx - mxs, yleft);
-			}
-
-			int yleft = y + 32 <= my ? 16 : my - (y + 16);
-			if (yleft)
-			{
-				batch = schedule([=]
-				{
-					m_pbm->GetPixelBatch(m_BatchBuffer[alt].getarray(), mxs, y + 16, mx - mxs, yleft);
-				});
-			}
-
-			sy = 0;
-		}
-
-
-		for(x=mxs;x<mx;x++)
-		{
-			posx = startx + scale * x * pw;
+			int posx = startx + scale * x * pw;
 
 			int col;
-					
-			if(Paste && y>=PastePoint.y && y<PastePoint.y+PasteSizeY && x>=PastePoint.x && x<PastePoint.x+PasteSizeX)
-			{
-				col = m_pPasteBuffer[(y-PastePoint.y)*PasteSizeX + (x-PastePoint.x)];
 
-				if(MaskedPaste && col == Col2)
+			if (Paste && y >= PastePoint.y && y<PastePoint.y + PasteSizeY && x >= PastePoint.x && x<PastePoint.x + PasteSizeX)
+			{
+				if (MaskedPaste && col == Col2)
 				{
-					col = map[x - mxs + xw * sy];
+					//col = map[x - mxs + xw * sy];
+					col = m_pbm->GetPixel(x, y);
+				}
+				else
+				{
+					col = m_pPasteBuffer[(y - PastePoint.y)*PasteSizeX + (x - PastePoint.x)];
 				}
 			}
 			else
 			{
-				col = col = map[x - mxs + xw * sy];
+				//col = col = map[x - mxs + xw * sy];
+				col = m_pbm->GetPixel(x, y);
 			}
 
-			dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
+			//dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
+			m_pBackBufferImage->SetPixel(x, y, g_Vic2[col]);
 		}
-	}
+
+	});
+
+	m_pBackBufferImage->StretchBlt(dc, startx, starty, endx-startx, endy-starty, 0, 0, pbm->GetSizeX(), pbm->GetSizeY());
 
 	if(usegrid || usecellgrid)
 	{
-		for(x=mxs;x<=mx;x++)
+		for(int x=mxs;x<=mx;x++)
 		{
-			posx = startx + scale * x * pw;
+			int posx = startx + scale * x * pw;
 
 			if(LONG(posx) >= rc.right)break;
 
@@ -551,9 +534,9 @@ void CChildView::OnPaint()
 			}
 		}
 
-		for(y=mys;y<my;y++)
+		for(int y=mys;y<my;y++)
 		{
-			posy = starty + scale * y;
+			int posy = starty + scale * y;
 
 			if(LONG(posy) >= rc.bottom)break;
 

@@ -74,8 +74,6 @@ private:
 	int m_Grid;
 	int m_CellGrid;
 
-	narray<BYTE> m_BatchBuffer[2];
-
 	int m_Col1;
 	int m_Col2;
 	int m_ActivePaintCol;
@@ -127,6 +125,9 @@ private:
 
 
 	void SetViewSpecificMetaData(void);
+
+	CDC *m_pBackBufferDC;
+	CImageFast *m_pBackBufferImage;
 
 protected:
 	void ZoomCommand(short zDelta, CPoint &pt);
@@ -248,7 +249,6 @@ public:
 	afx_msg void OnOverflowReplace();
 	afx_msg void OnColoroverflowToggleignore();
 
-	CDC *m_pBackBufferDC;
 	afx_msg void OnViewRestoremainview();
 	afx_msg void OnUpdatePreviewpixelaspectratioPc(CCmdUI *pCmdUI);
 	afx_msg void OnPreviewpixelaspectratioPc();

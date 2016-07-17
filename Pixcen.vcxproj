@@ -394,6 +394,7 @@
     <ClInclude Include="ChildView.h" />
     <ClInclude Include="Col.h" />
     <ClInclude Include="ColorCtrl.h" />
+    <ClInclude Include="ImageFast.h" />
     <ClInclude Include="GridColorDlg.h" />
     <ClInclude Include="Monomap.h" />
     <ClInclude Include="NewDlg.h" />
