@@ -135,11 +135,13 @@ void C64Interface::EndHistory(void)
 	undo.count(4);	//Reserve for size
 	redo.count(4);
 
+	int local_buffersize = buffersize; //Copy to local for optimizer
+
 	for(int r=0,t;;)
 	{
 		skipcount = 0;
 
-		for(;r<buffersize&&skipcount<0xffff;r++,skipcount++)
+		for(;r<local_buffersize&&skipcount<0xffff;r++,skipcount++)
 		{
 			if(buffer[r]!=tbuffer[r])break;
 		}
@@ -153,7 +155,7 @@ void C64Interface::EndHistory(void)
 
 		changedcount = 0;
 
-		for(t=r;t<buffersize&&changedcount<0xffff;t++,changedcount++)
+		for(t=r;t<local_buffersize&&changedcount<0xffff;t++,changedcount++)
 		{
 			if(buffer[t]==tbuffer[t])break;
 		}
