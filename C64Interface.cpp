@@ -153,7 +153,7 @@ void C64Interface::EndHistory(void)
 
 		changedcount = 0;
 
-		for(t=r;t<buffersize;t++,changedcount++)
+		for(t=r;t<buffersize&&changedcount<0xffff;t++,changedcount++)
 		{
 			if(buffer[t]==tbuffer[t])break;
 		}
