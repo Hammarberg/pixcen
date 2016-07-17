@@ -1919,17 +1919,20 @@ void CChildView::DeleteArea(bool history)
 
 		if(history)m_pbm->BeginHistory();
 
-		m_pbm->paralell_for_ycell(m_CutY, m_CutY + m_CutH, [this, fillcol](int y)
+		for (int v = 0; v < (history ? 2 : 1); v++)
 		{
-			if (y <= m_pbm->GetSizeY())
+			m_pbm->paralell_for_ycell(m_CutY, m_CutY + m_CutH, [this, fillcol](int y)
 			{
-				for (int x = m_CutX; x < m_CutX + m_CutW; x++)
+				if (y <= m_pbm->GetSizeY())
 				{
-					if (x > m_pbm->GetSizeX())break;
-					m_pbm->SetPixel(x, y, fillcol);
+					for (int x = m_CutX; x < m_CutX + m_CutW; x++)
+					{
+						if (x > m_pbm->GetSizeX())break;
+						m_pbm->SetPixel(x, y, fillcol);
+					}
 				}
-			}
-		});
+			});
+		}
 
 		Mail(MSG_REFRESH);
 
