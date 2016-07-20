@@ -1,0 +1,2 @@
+If this 64 bit build won't run on XP, use the 32 bit build instead.
+http://censordesign.com/pixcen/pixcen.zip
