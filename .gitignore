@@ -17,3 +17,5 @@ Pixcen.VC.opendb
 res/revision.tmp
 res/ver
 *.sha1
+*.db
+Pixcen.VC.VC.opendb
