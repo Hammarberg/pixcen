@@ -59,7 +59,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CFrameWndEx)
 	ON_MESSAGE(UM_UPDATE_VERSION, &CMainFrame::OnUmUpdateVersion)
 	ON_COMMAND(ID_HELP_HELP, &CMainFrame::OnHelpHelp)
 	ON_COMMAND(ID_HELP_DOWNLOADSOURCECODE, &CMainFrame::OnHelpDownloadsourcecode)
-	ON_COMMAND(ID_HELP_CSDBSUPPORTFORUM, &CMainFrame::OnHelpCsdbsupportforum)
+	ON_COMMAND(ID_HELP_FACEBOOK, &CMainFrame::OnHelpFacebook)
 	ON_COMMAND(ID_HELP_LEMON64SUPPORTFORUM, &CMainFrame::OnHelpLemon64supportforum)
 END_MESSAGE_MAP()
 
@@ -588,9 +588,9 @@ void CMainFrame::OnHelpDownloadsourcecode()
 }
 
 
-void CMainFrame::OnHelpCsdbsupportforum()
+void CMainFrame::OnHelpFacebook()
 {
-	ShellExecute(NULL,L"open",L"http://csdb.dk/forums/?csdbentrytype=release&csdbentry=122077&entrytopic=1",NULL,NULL,SW_SHOWNORMAL);
+	ShellExecute(NULL,L"open",L"https://www.facebook.com/groups/pixcen/",NULL,NULL,SW_SHOWNORMAL);
 }
 
 
