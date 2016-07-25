@@ -1905,19 +1905,12 @@ C64Interface::ImportHelper::ImportHelper(C64Interface *pp, CImage &inimg, bool i
 
 C64Interface::ImportHelper::~ImportHelper()
 {
-	paralell_for(ysize / ycs, [this](int yc)
+	parent->paralell_for_ycell(0, ysize, [this](int y)
 	{
-		int ys = yc * ycs;
-		int ye = ysize < ((yc + 1) * ycs) ? ysize : ((yc + 1) * ycs);
-
-		for (int y = ys; y<ye; y++)
+		for (int x = 0; x<xsize; x++)
 		{
-			for (int x = 0; x<xsize; x++)
-			{
-				parent->SetPixel(x, y, GetPixel(x, y));
-			}
+			parent->SetPixel(x, y, GetPixel(x, y));
 		}
-
 	});
 
 	delete [] p;
