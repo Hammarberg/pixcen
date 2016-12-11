@@ -90,8 +90,8 @@ void MCBitmap::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
 		fmt.add(new SaveFormat(_T("Advanced Art Studio 2"),_T("ocp"),true));
 		fmt.add(new SaveFormat(_T("Cenimate"),_T("cen"),true));
 		if(crippled[3])fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true));
+		fmt.add(new SaveFormat(_T("Magic Formel"), _T("mg"), true));
 		fmt.add(new SaveFormat(_T("C64 Exe"),_T("prg"),false));
-
 	}
 }
 
@@ -101,8 +101,8 @@ void MCBitmap::GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt)
 	fmt.add(new SaveFormat(_T("Cenimate"),_T("cen"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Advanced Art Studio"),_T("ocp"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true,160,200,MC_BITMAP));
+	fmt.add(new SaveFormat(_T("Magic Formel"), _T("mg"), true, 160, 200, MC_BITMAP));
 }
-
 
 int MCBitmap::DecompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size)
 {
@@ -201,6 +201,10 @@ nstr MCBitmap::IdentifyFile(nmemfile &file)
 	{
 		ex = _T("pmg");
 	}
+	else if (file.len() == 11266 && addr == 0x3000)
+	{
+		ex = _T("mg");
+	}
 	else if(addr == 0x6000)
 	{
 		BYTE buffer[10001];
@@ -280,6 +284,33 @@ void MCBitmap::Load(nmemfile &file, LPCTSTR type, int version)
 		//Clean up masks
 		*background &= 0x0f;
 		for(int r=0;r<1000;r++)
+			color[r] &= 0x0f;
+
+		*border = GuessBorderColor();
+
+	}
+	else if (lstrcmpi(_T("mg"), type) == 0)
+	{
+		if (file.len() != 11266)
+		{
+			throw _T("Invalid Magic Formel file size");
+		}
+
+		unsigned short addr;
+		file >> addr;
+
+		file.read(map, 8000);
+		file.read(175);
+		file.read(background, 1);
+		file.read(16);
+		file.read(screen, 1000);
+		file.read(24);
+		file.read(color, 1000);
+		file.read(24);
+
+		//Clean up masks
+		*background &= 0x0f;
+		for (int r = 0; r<1000; r++)
 			color[r] &= 0x0f;
 
 		*border = GuessBorderColor();
