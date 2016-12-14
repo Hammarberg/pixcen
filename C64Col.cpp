@@ -180,6 +180,25 @@ static const COLORREF s_Pallete[][16]={
 		RGB2REF(0x7373FF),
 		RGB2REF(0xB5B5B5),
 	},
+	//colodore
+	{
+		RGB2REF(0x000000),
+		RGB2REF(0xffffff),
+		RGB2REF(0x813338),
+		RGB2REF(0x75cec8),
+		RGB2REF(0x8e3c97),
+		RGB2REF(0x56ac4d),
+		RGB2REF(0x2e2c9b),
+		RGB2REF(0xedf171),
+		RGB2REF(0x8e5029),
+		RGB2REF(0x553800),
+		RGB2REF(0xc46c71),
+		RGB2REF(0x4a4a4a),
+		RGB2REF(0x7b7b7b),
+		RGB2REF(0xa9ff9f),
+		RGB2REF(0x706deb),
+		RGB2REF(0xb2b2b2),
+	},
 };
 
 static const TCHAR s_PaletteName[][16]={
@@ -191,6 +210,7 @@ static const TCHAR s_PaletteName[][16]={
 	_T("frodo"),
 	_T("godot"),
 	_T("pc64"),
+	_T("colodore"),
 	_T("")
 };
 
