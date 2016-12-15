@@ -90,7 +90,7 @@ void MCBitmap::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
 		fmt.add(new SaveFormat(_T("Advanced Art Studio 2"),_T("ocp"),true));
 		fmt.add(new SaveFormat(_T("Cenimate"),_T("cen"),true));
 		if(crippled[3])fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true));
-		fmt.add(new SaveFormat(_T("Magic Formel"), _T("mg"), true));
+		fmt.add(new SaveFormat(_T("Multigraf"), _T("mg"), true));
 		fmt.add(new SaveFormat(_T("C64 Exe"),_T("prg"),false));
 	}
 }
@@ -101,7 +101,7 @@ void MCBitmap::GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt)
 	fmt.add(new SaveFormat(_T("Cenimate"),_T("cen"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Advanced Art Studio"),_T("ocp"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true,160,200,MC_BITMAP));
-	fmt.add(new SaveFormat(_T("Magic Formel"), _T("mg"), true, 160, 200, MC_BITMAP));
+	fmt.add(new SaveFormat(_T("Multigraf"), _T("mg"), true, 160, 200, MC_BITMAP));
 }
 
 int MCBitmap::DecompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size)
@@ -460,6 +460,25 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 		for(int r=0;r<24;r++)file << BYTE(0);
 		file.write(map, 8000);
 		file << *background;
+	}
+	else if (lstrcmpi(_T("mg"), type) == 0)
+	{
+		if (xsize != 160 || ysize != 200)
+			throw _T("Buffers are not in standard multi-color format");
+
+		file << unsigned short(0x3000);
+
+		file.write(map, 8000);
+		for (int r = 0; r<175; r++)file << BYTE(0);
+		file << *background;
+		static const BYTE multigraf[16] = { 0x4D, 0x55, 0x4C, 0x54, 0x49, 0x47, 0x52, 0x41, 0x46, 0x20, 0x56, 0x31, 0x2E, 0x33, 0x30, 0x00 };
+		for (int r = 0; r<16; r++)file << multigraf[r];
+		file.write(screen, 1000);
+		for (int r = 0; r<24; r++)file << BYTE(0);
+		file.write(color, 1000);
+		for (int r = 0; r<24; r++)file << BYTE(0);
+		for (int r = 0; r<1024; r++)file << BYTE(0);	//Just fill the extra 1K for now
+
 	}
 	else if(lstrcmpi(_T("ocp"),type)==0)
 	{
