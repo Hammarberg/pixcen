@@ -87,6 +87,7 @@ void MCBitmap::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
 	{
 		fmt.add(new SaveFormat(_T("Koala"),_T("kla;koa"),true));
 		fmt.add(new SaveFormat(_T("Koala compressed"),_T("gg"),true));
+		fmt.add(new SaveFormat(_T("Zoomatic"), _T("zom"), true));
 		fmt.add(new SaveFormat(_T("Advanced Art Studio 2"),_T("ocp"),true));
 		fmt.add(new SaveFormat(_T("Cenimate"),_T("cen"),true));
 		if(crippled[3])fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true));
@@ -98,6 +99,7 @@ void MCBitmap::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
 void MCBitmap::GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt)
 {
 	fmt.add(new SaveFormat(_T("Koala"),_T("kla;koa;gg"),true,160,200,MC_BITMAP));
+	fmt.add(new SaveFormat(_T("Zoomatic"), _T("zom"), true, 160, 200, MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Cenimate"),_T("cen"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Advanced Art Studio"),_T("ocp"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true,160,200,MC_BITMAP));
@@ -178,6 +180,139 @@ int MCBitmap::CompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buf
 	return w;
 }
 
+int MCBitmap::DecompressZoomaticStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size)
+{
+	//Plenty of sanity checks as usual
+	int r = stream_size, w = buffer_size;
+
+	--r; if (r < 0) return -1;
+	BYTE code = stream[r];
+
+	while (r > 0)
+	{
+		--r;
+		BYTE b = stream[r];
+
+		if (b == code)
+		{
+			--r; if (r < 0) return -1;
+			int l = stream[r];
+			if (!l) l = 256;
+			--r; if (r < 0) return -1;
+			b = stream[r];
+			while (l)
+			{
+				w--; if (w < 0) return -1;
+				buffer[w] = b;
+				l--;
+			}
+		}
+		else
+		{
+			w--; if (w < 0) return -1;
+			buffer[w] = b;
+		}
+	}
+
+	return w == 0 ? 10001 : -1;
+}
+
+int MCBitmap::CompressZoomaticStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size)
+{
+	// Get the least used byte, can be more optimal for this type of RLE but does the job
+	int codes[256];
+	ZeroMemory(codes, sizeof(codes));
+	for (int r = 0; r < stream_size; r++)codes[stream[r]]++;
+	int lowest = INT_MAX;
+	BYTE code = 0;
+	for (int r = 0; r < 256; r++)
+	{
+		if (codes[r] < lowest)
+		{
+			code = BYTE(r);
+			lowest = codes[r];
+		}
+	}
+
+	// Packing it forward
+	int r = 0, w = 0;
+
+	// Get the first byte
+	BYTE lb = stream[r];
+	r++;
+	int count = 1;
+
+	while (r < stream_size)
+	{
+		BYTE b = stream[r];
+		r++;
+
+		if (!count)
+		{
+			lb = b;
+			count = 1;
+		}
+		else if (b == lb)
+		{
+			count++;
+			if (count == 256)
+			{
+				if (w + 3 > buffer_size)return -1;
+				w = CompressZoomaticStreamFlush(buffer, w, lb, count, code);
+				count = 0;
+			}
+		}
+		else
+		{
+			if (w + 3 > buffer_size)return -1;
+			w = CompressZoomaticStreamFlush(buffer, w, lb, count, code);
+
+			lb = b;
+			count = 1;
+		}
+
+	}
+
+	// Flush last
+	if (count)
+	{
+		if (w + 3 > buffer_size)return -1;
+		w = CompressZoomaticStreamFlush(buffer, w, lb, count, code);
+	}
+	
+	if (w == buffer_size)return -1;
+	buffer[w] = code;
+	w++;
+
+	return w;
+}
+
+int MCBitmap::CompressZoomaticStreamFlush(BYTE *buffer, int w, BYTE b, int count, BYTE code)
+{
+	if (count <= 3 && b != code)
+	{
+		// Literal
+		while (count)
+		{
+			buffer[w] = b;
+			w++;
+			count--;
+		}
+	}
+	else
+	{
+		// RLE
+		buffer[w] = b;
+		w++;
+		buffer[w] = BYTE(count);
+		w++;
+		buffer[w] = code;
+		w++;
+	}
+
+	return w;
+}
+
 nstr MCBitmap::IdentifyFile(nmemfile &file)
 {
 	nstr ex;
@@ -211,6 +346,10 @@ nstr MCBitmap::IdentifyFile(nmemfile &file)
 		if(DecompressKoalaStream(((BYTE *)file)+2, int(file.len()-2), buffer, 10001) == 10001)
 		{
 			ex = _T("gg");
+		}
+		else if (DecompressZoomaticStream(((BYTE *)file) + 2, int(file.len() - 2), buffer, 10001) == 10001)
+		{
+			ex = _T("zom");
 		}
 	}
 
@@ -263,6 +402,26 @@ void MCBitmap::Load(nmemfile &file, LPCTSTR type, int version)
 			color[r] &= 0x0f;
 
 		*border = GuessBorderColor();
+	}
+	else if (lstrcmpi(_T("zom"), type) == 0)
+	{
+		BYTE buffer[10001];	//Decompress will skip PRG header
+		if (DecompressZoomaticStream(((BYTE *)file) + 2, int(file.len() - 2), buffer, 10001) != 10001)
+		{
+			throw _T("Invalid Zoomatic stream");
+		}
+
+		memcpy(map, buffer, 8000);
+		memcpy(screen, buffer + 8000, 1000);
+		memcpy(color, buffer + 9000, 1000);
+
+		*background = buffer[10000] & 0x0f;
+		*border = buffer[10000] >> 4;
+
+		//Clean up masks
+		for (int r = 0; r<1000; r++)
+			color[r] &= 0x0f;
+
 	}
 	else if(lstrcmpi(_T("cen"),type)==0)
 	{
@@ -446,6 +605,29 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 
 		file << unsigned short(0x6000);
 		file.write(buffer,size);
+	}
+	else if (lstrcmpi(_T("zom"), type) == 0)
+	{
+		if (xsize != 160 || ysize != 200)
+			throw _T("Buffers are not in standard multi-color format");
+
+		BYTE src[10001];
+
+		memcpy(src, map, 8000);
+		memcpy(src + 8000, screen, 1000);
+		memcpy(src + 9000, color, 1000);
+		src[10000] = (*background) | (*border << 4);
+
+		BYTE buffer[30003];
+		int size = CompressZoomaticStream(src, 10001, buffer, 30003);
+
+		if (size == -1)
+		{
+			throw _T("Failed compressing Zoomatic");
+		}
+
+		file << unsigned short(0x6000);
+		file.write(buffer, size);
 	}
 	else if(lstrcmpi(_T("cen"),type)==0)
 	{

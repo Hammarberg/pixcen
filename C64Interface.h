@@ -536,6 +536,10 @@ private:
 	static int DecompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size);
 	static int CompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size);
 
+	static int DecompressZoomaticStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size);
+	static int CompressZoomaticStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size);
+	static int CompressZoomaticStreamFlush(BYTE *buffer, int w, BYTE b, int count, BYTE code);
+
 	int GetMask(int x, int y);
 };
 
