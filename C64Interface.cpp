@@ -329,10 +329,10 @@ void C64Interface::SetMaskInfo(int cx, int cy, int w, int h, int infoindex, Cell
 		lock[infoindex]=1-lock[infoindex];
 
 	if(info.crippled[infoindex]!=-1)
-	{
-		BYTE *p = *use.pp;
+	{		
 		if(crippled[infoindex]==0 && use.use!=InfoUse::INFO_NO && use.use!=InfoUse::INFO_VALUE)
 		{
+			BYTE *p = *use.pp;
 			bool high = use.use == InfoUse::INFO_INDEX_HIGH ? true : false;
 
 			int size = GetCellCountX()*GetCellCountY();
@@ -580,6 +580,52 @@ void C64Interface::RenderImage(CImage &inimg, int startx, int starty, int width,
 			}
 		}
 	});
+}
+
+void C64Interface::RenderColourUsageImage(CImage &inimg, int startx, int starty, int width, int height)
+{
+	int pw = GetPixelWidth();
+	int xmax = GetSizeX(), ymax = GetSizeY();
+
+	if (width != -1)
+		xmax = xmax < startx + width ? xmax : startx + width;
+
+	if (height != -1)
+		ymax = ymax < starty + height ? ymax : starty + height;
+
+	inimg.Create((xmax - startx)*pw, ymax - starty, 24);
+
+	CImageFast &img = static_cast<CImageFast &>(inimg);
+
+	startx /= GetCellSizeX();
+	starty /= GetCellSizeY();
+	xmax /= GetCellSizeX();
+	ymax /= GetCellSizeY();
+
+	paralell_for(ymax - starty, [starty, startx, xmax, &img, pw, this](int py)
+	{
+		const int colourBlockHeight = GetCellSizeY() / 2;
+		const int colourBlockWidth = GetCellSizeX() / 2 * GetPixelWidth();
+		
+		int pdy = (starty+py)*GetCellSizeY();
+		int y = py + starty;
+		for (int px = startx; px < xmax; ++px)
+		{
+			CellInfo info;
+			GetCellInfo(px, y, 1, 1, &info);
+			int pdx = px*(GetCellSizeX()* GetPixelWidth());
+			for (int dy = 0; dy < colourBlockHeight; ++dy)
+			{
+				for (int dx = 0; dx < colourBlockWidth; ++dx)
+				{
+					img.SetPixel(pdx + dx, pdy + dy, g_Vic2[info.col[0]]);
+					img.SetPixel(pdx + dx + colourBlockWidth, pdy + dy, g_Vic2[info.col[1]]);
+					img.SetPixel(pdx + dx, pdy + dy + colourBlockHeight, g_Vic2[info.col[2]]);
+					img.SetPixel(pdx + dx + colourBlockWidth, pdy + dy + colourBlockHeight, g_Vic2[info.col[3]]);
+				}
+			}
+		}
+ 	});
 }
 
 int C64Interface::GuessBorderColor(void)
