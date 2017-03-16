@@ -28,6 +28,7 @@
 #define REF2B(x) ((x) >> 16)
 
 extern const COLORREF *g_Vic2;
+extern const TCHAR s_VICColourName[][16];
 
 int ClosestMatch(COLORREF c , const COLORREF *list, int num);
 BYTE ToC64Index(COLORREF c);
