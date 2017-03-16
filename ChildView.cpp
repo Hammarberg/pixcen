@@ -496,14 +496,12 @@ void CChildView::OnPaint()
 
 			if (Paste && y >= PastePoint.y && y<PastePoint.y + PasteSizeY && x >= PastePoint.x && x<PastePoint.x + PasteSizeX)
 			{
+				col = m_pPasteBuffer[(y - PastePoint.y)*PasteSizeX + (x - PastePoint.x)];
+
 				if (MaskedPaste && col == Col2)
 				{
 					//col = map[x - mxs + xw * sy];
 					col = m_pbm->GetPixel(x, y);
-				}
-				else
-				{
-					col = m_pPasteBuffer[(y - PastePoint.y)*PasteSizeX + (x - PastePoint.x)];
 				}
 			}
 			else

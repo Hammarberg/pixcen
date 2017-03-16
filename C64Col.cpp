@@ -180,6 +180,44 @@ static const COLORREF s_Pallete[][16]={
 		RGB2REF(0x7373FF),
 		RGB2REF(0xB5B5B5),
 	},
+	//colodore
+	{
+		RGB2REF(0x000000),
+		RGB2REF(0xffffff),
+		RGB2REF(0x813338),
+		RGB2REF(0x75cec8),
+		RGB2REF(0x8e3c97),
+		RGB2REF(0x56ac4d),
+		RGB2REF(0x2e2c9b),
+		RGB2REF(0xedf171),
+		RGB2REF(0x8e5029),
+		RGB2REF(0x553800),
+		RGB2REF(0xc46c71),
+		RGB2REF(0x4a4a4a),
+		RGB2REF(0x7b7b7b),
+		RGB2REF(0xa9ff9f),
+		RGB2REF(0x706deb),
+		RGB2REF(0xb2b2b2),
+	},
+	//PALette
+	{
+		RGB2REF(0x000000),
+		RGB2REF(0xd5d5d5),
+		RGB2REF(0x72352c),
+		RGB2REF(0x659fa6),
+		RGB2REF(0x733a91),
+		RGB2REF(0x568d35),
+		RGB2REF(0x2e237d),
+		RGB2REF(0xaeb75e),
+		RGB2REF(0x774f1e),
+		RGB2REF(0x4b3c00),
+		RGB2REF(0x9c635a),
+		RGB2REF(0x474747),
+		RGB2REF(0x6b6b6b),
+		RGB2REF(0x8fc271),
+		RGB2REF(0x675db6),
+		RGB2REF(0x8f8f8f),
+	},
 };
 
 static const TCHAR s_PaletteName[][16]={
@@ -191,6 +229,8 @@ static const TCHAR s_PaletteName[][16]={
 	_T("frodo"),
 	_T("godot"),
 	_T("pc64"),
+	_T("colodore"),
+	_T("PALette"),
 	_T("")
 };
 
