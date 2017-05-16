@@ -126,6 +126,7 @@ public:
 
 	// Must overload
 	virtual BYTE GetPixel(int x, int y) = NULL;
+	virtual BYTE GetPixelColourMap(int x, int y) = NULL;
 	virtual void SetPixel(int x, int y, BYTE color) = NULL;
 
 	//Should overload
@@ -143,6 +144,9 @@ public:
 	static nstr IdentifyFile(nmemfile &file){return _T("");};
 
 	virtual void CustomCommand(int n){}
+
+	virtual void RemapCellColour(int cx, int cy, int colour, int indexTo) {};
+	virtual void SwapCellColours(int cx, int cy) {};
 
 //protected:
 
@@ -163,6 +167,8 @@ public:
 	int GetCellCountY(void){return ysize/ycell;}
 
 	BYTE GetBackground(void){return infouse[0].use != InfoUse::INFO_NO ? *infouse[0].pp[0] : 0;}
+
+	
 
 	int GuessBorderColor(void);
 	BYTE GetBorderColor(void){return *border;};
@@ -212,6 +218,7 @@ public:
 	tmode GetMode(void){return mode;}
 
 	void RenderImage(CImage &img, int startx=0, int starty=0, int width=-1, int height=-1);
+	void RenderColourUsageImage(CImage & inimg, int startx=0, int starty=0, int width=-1, int height=-1);
 
 	void SetBackBuffer(int n);
 	int GetBackBuffer(void){return rbackbufnum;}
@@ -517,6 +524,7 @@ public:
 protected:
 
 	BYTE GetPixel(int x, int y);
+	BYTE GetPixelColourMap(int x, int y);
 	void SetPixel(int x, int y, BYTE col);
 	void GetPixelBatch(BYTE *p, int x, int y, int w, int h) override;
 	int GetPixelWidth(void){return 2;}
@@ -529,6 +537,7 @@ protected:
 	static void GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt);
 
 	static nstr IdentifyFile(nmemfile &file);
+	void RemapCellColour(int cx, int cy, int colour, int indexTo);
 
 private:
 	inline BYTE GetPixelInternal(int x, int y);
@@ -554,6 +563,7 @@ public:
 protected:
 
 	BYTE GetPixel(int x, int y);
+	BYTE GetPixelColourMap(int x, int y) { return 0; }
 	void SetPixel(int x, int y, BYTE col);
 	void GetPixelBatch(BYTE *p, int x, int y, int w, int h) override;
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
@@ -570,6 +580,7 @@ private:
 	inline BYTE GetPixelInternal(int x, int y);
 
 	int GetMask(int x, int y);
+	void SwapCellColours(int cx, int cy);
 };
 
 
@@ -584,6 +595,7 @@ public:
 protected:
 
 	BYTE GetPixel(int x, int y);
+	BYTE GetPixelColourMap(int x, int y) { return 0; }
 	void SetPixel(int x, int y, BYTE col);
 	void GetPixelBatch(BYTE *p, int x, int y, int w, int h) override;
 	void GetCellInfo(int cx, int cy, int w, int h, CellInfo *info);
@@ -653,6 +665,7 @@ public:
 protected:
 
 	BYTE GetPixel(int x, int y);
+	BYTE GetPixelColourMap(int x, int y) { return 0; }
 	void SetPixel(int x, int y, BYTE col);
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	void Import(CImage &img);
@@ -678,6 +691,7 @@ public:
 protected:
 
 	BYTE GetPixel(int x, int y);
+	BYTE GetPixelColourMap(int x, int y) { return 0; }
 	void SetPixel(int x, int y, BYTE col);
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	void Import(CImage &img);
@@ -702,6 +716,7 @@ public:
 
 protected:
 	BYTE GetPixel(int x, int y);
+	BYTE GetPixelColourMap(int x, int y) { return 0; }
 	void SetPixel(int x, int y, BYTE color);
 
 	static void GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt);
@@ -724,6 +739,7 @@ public:
 
 protected:
 	BYTE GetPixel(int x, int y);
+	BYTE GetPixelColourMap(int x, int y) { return 0; }
 	void SetPixel(int x, int y, BYTE color);
 
 	static void GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt);

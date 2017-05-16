@@ -106,6 +106,7 @@ private:
 
 	bool m_Move;
 	bool m_Paint;
+	bool m_ShowColourInfo;
 	CPoint m_LastPaintPix;	//bm coord
 
 	CPoint m_MovePoint;
@@ -280,5 +281,11 @@ public:
 	afx_msg void OnUpdateFont2x2(CCmdUI *pCmdUI);
 	afx_msg void OnFont2x2();
 	afx_msg void OnViewGridcolors();
+	afx_msg void OnColourView();
+	afx_msg void OnUpdateColourView(CCmdUI* pCmdUI);
+	afx_msg void OnToolRemapcolours();
+	afx_msg void OnUpdateToolRemapcolours(CCmdUI *pCmdUI);
+	afx_msg void OnToolSwapcellcolours();
+	afx_msg void OnUpdateToolSwapcellcolours(CCmdUI *pCmdUI);
 };
 
