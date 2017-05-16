@@ -28,6 +28,7 @@
 #include "ChildView.h"
 #include <WinUser.h>
 #include "ImportDlg.h"
+#include "RemapColourDlg.h"
 #include "NewDlg.h"
 #include "AddressDlg.h"
 #include "Monomap.h"
@@ -83,6 +84,7 @@ CChildView::CChildView()
 
 	m_Move = false;
 	m_Paint = false;
+	m_ShowColourInfo = false;
 	m_AutoMarker = false;
 	m_ManualMarker = false;
 	m_Marker = false;
@@ -140,107 +142,113 @@ BEGIN_MESSAGE_MAP(CChildView, CWnd)
 	ON_WM_RBUTTONUP()
 	ON_COMMAND(ID_FILE_LOAD, &CChildView::OnFileLoad)
 	ON_COMMAND(ID_FILE_SAVE, &CChildView::OnFileSave)
-ON_COMMAND(ID_EDIT_UNDO, &CChildView::OnEditUndo)
-ON_COMMAND(ID_EDIT_REDO, &CChildView::OnEditRedo)
-ON_COMMAND(ID_FILE_SAVEAS, &CChildView::OnFileSaveas)
-ON_COMMAND(ID_VIEW_GRID, &CChildView::OnViewGrid)
-ON_UPDATE_COMMAND_UI(ID_VIEW_GRID, &CChildView::OnUpdateViewGrid)
-ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &CChildView::OnUpdateFileSave)
-ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &CChildView::OnUpdateEditUndo)
-ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &CChildView::OnUpdateEditRedo)
-ON_COMMAND(ID_TOOL_OPTIMIZE, &CChildView::OnToolOptimize)
-ON_UPDATE_COMMAND_UI(ID_TOOL_OPTIMIZE, &CChildView::OnUpdateToolOptimize)
-ON_COMMAND(ID_MODE_BITMAP, &CChildView::OnModeBitmap)
-ON_UPDATE_COMMAND_UI(ID_MODE_BITMAP, &CChildView::OnUpdateModeBitmap)
-ON_COMMAND(ID_MODE_SPRITE, &CChildView::OnModeSprite)
-ON_UPDATE_COMMAND_UI(ID_MODE_SPRITE, &CChildView::OnUpdateModeSprite)
-ON_COMMAND(ID_MODE_CHAR, &CChildView::OnModeChar)
-ON_UPDATE_COMMAND_UI(ID_MODE_CHAR, &CChildView::OnUpdateModeChar)
-ON_COMMAND(ID_MODE_MULTI, &CChildView::OnModeMulti)
-ON_UPDATE_COMMAND_UI(ID_MODE_MULTI, &CChildView::OnUpdateModeMulti)
-ON_WM_DROPFILES()
-ON_WM_CREATE()
-ON_WM_DESTROY()
-ON_WM_TIMER()
-ON_COMMAND(ID_EDIT_CUT, &CChildView::OnEditCut)
-ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &CChildView::OnUpdateEditCut)
-ON_COMMAND(ID_EDIT_COPY, &CChildView::OnEditCopy)
-ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &CChildView::OnUpdateEditCopy)
-ON_COMMAND(ID_EDIT_PASTE, &CChildView::OnEditPaste)
-ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &CChildView::OnUpdateEditPaste)
-ON_COMMAND(ID_MODE_UNRESTRICTED, &CChildView::OnModeUnrestricted)
-ON_UPDATE_COMMAND_UI(ID_MODE_UNRESTRICTED, &CChildView::OnUpdateModeUnrestricted)
-ON_COMMAND(ID_EDIT_SELECTMARKER, &CChildView::OnEditSelectmarker)
-ON_COMMAND(ID_EDIT_SELECTCELL, &CChildView::OnEditSelectcell)
-ON_COMMAND(ID_EDIT_SELECTALL, &CChildView::OnEditSelectall)
-ON_COMMAND(ID_FILE_NEW, &CChildView::OnFileNew)
-ON_COMMAND(ID_EDIT_DESELECT, &CChildView::OnEditDeselect)
-ON_UPDATE_COMMAND_UI(ID_EDIT_DESELECT, &CChildView::OnUpdateEditDeselect)
-ON_COMMAND(ID_COPYROMFONT_UPPERCASE, &CChildView::OnCopyromfontUppercase)
-ON_UPDATE_COMMAND_UI(ID_COPYROMFONT_UPPERCASE, &CChildView::OnUpdateCopyromfontUppercase)
-ON_COMMAND(ID_COPYROMFONT_LOWERCASE, &CChildView::OnCopyromfontLowercase)
-ON_UPDATE_COMMAND_UI(ID_COPYROMFONT_LOWERCASE, &CChildView::OnUpdateCopyromfontLowercase)
-ON_UPDATE_COMMAND_UI(ID_SELECTION_FLIPVERTICALLY, &CChildView::OnUpdateSelectionFlipvertically)
-ON_COMMAND(ID_SELECTION_FLIPVERTICALLY, &CChildView::OnSelectionFlipvertically)
-ON_UPDATE_COMMAND_UI(ID_SELECTION_FLIPHORIZONTALLY, &CChildView::OnUpdateSelectionFliphorizontally)
-ON_COMMAND(ID_SELECTION_FLIPHORIZONTALLY, &CChildView::OnSelectionFliphorizontally)
-ON_UPDATE_COMMAND_UI(ID_SELECTION_ROTATECW, &CChildView::OnUpdateSelectionRotatecw)
-ON_COMMAND(ID_SELECTION_ROTATECW, &CChildView::OnSelectionRotatecw)
-ON_UPDATE_COMMAND_UI(ID_SELECTION_ROTATECCW, &CChildView::OnUpdateSelectionRotateccw)
-ON_COMMAND(ID_SELECTION_ROTATECCW, &CChildView::OnSelectionRotateccw)
-ON_UPDATE_COMMAND_UI(ID_SELECTION_SHIFTLEFT, &CChildView::OnUpdateSelectionShiftleft)
-ON_UPDATE_COMMAND_UI(ID_SELECTION_SHIFTRIGHT, &CChildView::OnUpdateSelectionShiftright)
-ON_UPDATE_COMMAND_UI(ID_SELECTION_SHIFTUP, &CChildView::OnUpdateSelectionShiftup)
-ON_UPDATE_COMMAND_UI(ID_SELECTION_SHIFTDOWN, &CChildView::OnUpdateSelectionShiftdown)
-ON_COMMAND(ID_SELECTION_SHIFTLEFT, &CChildView::OnSelectionShiftleft)
-ON_COMMAND(ID_SELECTION_SHIFTRIGHT, &CChildView::OnSelectionShiftright)
-ON_COMMAND(ID_SELECTION_SHIFTUP, &CChildView::OnSelectionShiftup)
-ON_COMMAND(ID_SELECTION_SHIFTDOWN, &CChildView::OnSelectionShiftdown)
-ON_UPDATE_COMMAND_UI(ID_EDIT_AUTO_SELECT, &CChildView::OnUpdateEditAutoSelect)
-ON_COMMAND(ID_EDIT_AUTO_SELECT, &CChildView::OnEditAutoSelect)
-ON_COMMAND(ID_VIEW_NEXTBUFFER, &CChildView::OnViewNextbuffer)
-ON_UPDATE_COMMAND_UI(ID_VIEW_NEXTBUFFER, &CChildView::OnUpdateViewNextbuffer)
-ON_COMMAND(ID_VIEW_PREVBUFFER, &CChildView::OnViewPrevbuffer)
-ON_UPDATE_COMMAND_UI(ID_VIEW_PREVBUFFER, &CChildView::OnUpdateViewPrevbuffer)
-ON_COMMAND(ID_EDIT_BACKGROUNDMASKEDPASTE, &CChildView::OnEditBackgroundmaskedpaste)
-ON_UPDATE_COMMAND_UI(ID_EDIT_BACKGROUNDMASKEDPASTE, &CChildView::OnUpdateEditBackgroundmaskedpaste)
-ON_UPDATE_COMMAND_UI(ID_OVERFLOW_IGNORE, &CChildView::OnUpdateOverflowIgnore)
-ON_COMMAND(ID_OVERFLOW_IGNORE, &CChildView::OnOverflowIgnore)
-ON_UPDATE_COMMAND_UI(ID_OVERFLOW_CLOSEST, &CChildView::OnUpdateOverflowClosest)
-ON_COMMAND(ID_OVERFLOW_CLOSEST, &CChildView::OnOverflowClosest)
-ON_UPDATE_COMMAND_UI(ID_OVERFLOW_REPLACE, &CChildView::OnUpdateOverflowReplace)
-ON_COMMAND(ID_OVERFLOW_REPLACE, &CChildView::OnOverflowReplace)
-ON_COMMAND(ID_COLOROVERFLOW_TOGGLEIGNORE, &CChildView::OnColoroverflowToggleignore)
-ON_COMMAND(ID_VIEW_RESTOREMAINVIEW, &CChildView::OnViewRestoremainview)
-ON_UPDATE_COMMAND_UI(ID_PREVIEWPIXELASPECTRATIO_PC, &CChildView::OnUpdatePreviewpixelaspectratioPc)
-ON_COMMAND(ID_PREVIEWPIXELASPECTRATIO_PC, &CChildView::OnPreviewpixelaspectratioPc)
-ON_UPDATE_COMMAND_UI(ID_PREVIEWPIXELASPECTRATIO_PAL, &CChildView::OnUpdatePreviewpixelaspectratioPal)
-ON_COMMAND(ID_PREVIEWPIXELASPECTRATIO_PAL, &CChildView::OnPreviewpixelaspectratioPal)
-ON_UPDATE_COMMAND_UI(ID_PREVIEWPIXELASPECTRATIO_NTSC, &CChildView::OnUpdatePreviewpixelaspectratioNtsc)
-ON_COMMAND(ID_PREVIEWPIXELASPECTRATIO_NTSC, &CChildView::OnPreviewpixelaspectratioNtsc)
-ON_UPDATE_COMMAND_UI(ID_FILE_SAVESELECTION, &CChildView::OnUpdateFileSaveselection)
-ON_COMMAND(ID_FILE_SAVESELECTION, &CChildView::OnFileSaveselection)
-ON_UPDATE_COMMAND_UI(ID_EDIT_SNAPSELECTION, &CChildView::OnUpdateEditSnapselection)
-ON_COMMAND(ID_EDIT_SNAPSELECTION, &CChildView::OnEditSnapselection)
-ON_UPDATE_COMMAND_UI(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnUpdateToolDeleteundohistory)
-ON_COMMAND(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnToolDeleteundohistory)
-ON_UPDATE_COMMAND_UI(ID_PALETTE_DUMMY, &CChildView::OnUpdateModePalette)
-ON_COMMAND_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnModePalette)
-ON_UPDATE_COMMAND_UI_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnUpdateModePaletteRange)
-ON_COMMAND(ID_TOOL_FILL, &CChildView::OnToolFill)
-ON_COMMAND(ID_VIEW_CELLGRID, &CChildView::OnViewCellgrid)
-ON_UPDATE_COMMAND_UI(ID_VIEW_CELLGRID, &CChildView::OnUpdateViewCellgrid)
-ON_COMMAND(ID_HELP_LOADINTRO, &CChildView::OnHelpLoadintro)
-ON_UPDATE_COMMAND_UI(ID_FONT_1X1, &CChildView::OnUpdateFont1x1)
-ON_COMMAND(ID_FONT_1X1, &CChildView::OnFont1x1)
-ON_UPDATE_COMMAND_UI(ID_FONT_2X1, &CChildView::OnUpdateFont2x1)
-ON_COMMAND(ID_FONT_2X1, &CChildView::OnFont2x1)
-ON_UPDATE_COMMAND_UI(ID_FONT_1X2, &CChildView::OnUpdateFont1x2)
-ON_COMMAND(ID_FONT_1X2, &CChildView::OnFont1x2)
-ON_UPDATE_COMMAND_UI(ID_FONT_2X2, &CChildView::OnUpdateFont2x2)
-ON_COMMAND(ID_FONT_2X2, &CChildView::OnFont2x2)
-ON_COMMAND(ID_VIEW_GRIDCOLORS, &CChildView::OnViewGridcolors)
-END_MESSAGE_MAP()
+	ON_COMMAND(ID_EDIT_UNDO, &CChildView::OnEditUndo)
+	ON_COMMAND(ID_EDIT_REDO, &CChildView::OnEditRedo)
+	ON_COMMAND(ID_FILE_SAVEAS, &CChildView::OnFileSaveas)
+	ON_COMMAND(ID_VIEW_GRID, &CChildView::OnViewGrid)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_GRID, &CChildView::OnUpdateViewGrid)
+	ON_UPDATE_COMMAND_UI(ID_FILE_SAVE, &CChildView::OnUpdateFileSave)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, &CChildView::OnUpdateEditUndo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, &CChildView::OnUpdateEditRedo)
+	ON_COMMAND(ID_TOOL_OPTIMIZE, &CChildView::OnToolOptimize)
+	ON_UPDATE_COMMAND_UI(ID_TOOL_OPTIMIZE, &CChildView::OnUpdateToolOptimize)
+	ON_COMMAND(ID_MODE_BITMAP, &CChildView::OnModeBitmap)
+	ON_UPDATE_COMMAND_UI(ID_MODE_BITMAP, &CChildView::OnUpdateModeBitmap)
+	ON_COMMAND(ID_MODE_SPRITE, &CChildView::OnModeSprite)
+	ON_UPDATE_COMMAND_UI(ID_MODE_SPRITE, &CChildView::OnUpdateModeSprite)
+	ON_COMMAND(ID_MODE_CHAR, &CChildView::OnModeChar)
+	ON_UPDATE_COMMAND_UI(ID_MODE_CHAR, &CChildView::OnUpdateModeChar)
+	ON_COMMAND(ID_MODE_MULTI, &CChildView::OnModeMulti)
+	ON_UPDATE_COMMAND_UI(ID_MODE_MULTI, &CChildView::OnUpdateModeMulti)
+	ON_WM_DROPFILES()
+	ON_WM_CREATE()
+	ON_WM_DESTROY()
+	ON_WM_TIMER()
+	ON_COMMAND(ID_EDIT_CUT, &CChildView::OnEditCut)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_CUT, &CChildView::OnUpdateEditCut)
+	ON_COMMAND(ID_EDIT_COPY, &CChildView::OnEditCopy)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_COPY, &CChildView::OnUpdateEditCopy)
+	ON_COMMAND(ID_EDIT_PASTE, &CChildView::OnEditPaste)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_PASTE, &CChildView::OnUpdateEditPaste)
+	ON_COMMAND(ID_MODE_UNRESTRICTED, &CChildView::OnModeUnrestricted)
+	ON_UPDATE_COMMAND_UI(ID_MODE_UNRESTRICTED, &CChildView::OnUpdateModeUnrestricted)
+	ON_COMMAND(ID_EDIT_SELECTMARKER, &CChildView::OnEditSelectmarker)
+	ON_COMMAND(ID_EDIT_SELECTCELL, &CChildView::OnEditSelectcell)
+	ON_COMMAND(ID_EDIT_SELECTALL, &CChildView::OnEditSelectall)
+	ON_COMMAND(ID_FILE_NEW, &CChildView::OnFileNew)
+	ON_COMMAND(ID_EDIT_DESELECT, &CChildView::OnEditDeselect)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_DESELECT, &CChildView::OnUpdateEditDeselect)
+	ON_COMMAND(ID_COPYROMFONT_UPPERCASE, &CChildView::OnCopyromfontUppercase)
+	ON_UPDATE_COMMAND_UI(ID_COPYROMFONT_UPPERCASE, &CChildView::OnUpdateCopyromfontUppercase)
+	ON_COMMAND(ID_COPYROMFONT_LOWERCASE, &CChildView::OnCopyromfontLowercase)
+	ON_UPDATE_COMMAND_UI(ID_COPYROMFONT_LOWERCASE, &CChildView::OnUpdateCopyromfontLowercase)
+	ON_UPDATE_COMMAND_UI(ID_SELECTION_FLIPVERTICALLY, &CChildView::OnUpdateSelectionFlipvertically)
+	ON_COMMAND(ID_SELECTION_FLIPVERTICALLY, &CChildView::OnSelectionFlipvertically)
+	ON_UPDATE_COMMAND_UI(ID_SELECTION_FLIPHORIZONTALLY, &CChildView::OnUpdateSelectionFliphorizontally)
+	ON_COMMAND(ID_SELECTION_FLIPHORIZONTALLY, &CChildView::OnSelectionFliphorizontally)
+	ON_UPDATE_COMMAND_UI(ID_SELECTION_ROTATECW, &CChildView::OnUpdateSelectionRotatecw)
+	ON_COMMAND(ID_SELECTION_ROTATECW, &CChildView::OnSelectionRotatecw)
+	ON_UPDATE_COMMAND_UI(ID_SELECTION_ROTATECCW, &CChildView::OnUpdateSelectionRotateccw)
+	ON_COMMAND(ID_SELECTION_ROTATECCW, &CChildView::OnSelectionRotateccw)
+	ON_UPDATE_COMMAND_UI(ID_SELECTION_SHIFTLEFT, &CChildView::OnUpdateSelectionShiftleft)
+	ON_UPDATE_COMMAND_UI(ID_SELECTION_SHIFTRIGHT, &CChildView::OnUpdateSelectionShiftright)
+	ON_UPDATE_COMMAND_UI(ID_SELECTION_SHIFTUP, &CChildView::OnUpdateSelectionShiftup)
+	ON_UPDATE_COMMAND_UI(ID_SELECTION_SHIFTDOWN, &CChildView::OnUpdateSelectionShiftdown)
+	ON_COMMAND(ID_SELECTION_SHIFTLEFT, &CChildView::OnSelectionShiftleft)
+	ON_COMMAND(ID_SELECTION_SHIFTRIGHT, &CChildView::OnSelectionShiftright)
+	ON_COMMAND(ID_SELECTION_SHIFTUP, &CChildView::OnSelectionShiftup)
+	ON_COMMAND(ID_SELECTION_SHIFTDOWN, &CChildView::OnSelectionShiftdown)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_AUTO_SELECT, &CChildView::OnUpdateEditAutoSelect)
+	ON_COMMAND(ID_EDIT_AUTO_SELECT, &CChildView::OnEditAutoSelect)
+	ON_COMMAND(ID_VIEW_NEXTBUFFER, &CChildView::OnViewNextbuffer)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_NEXTBUFFER, &CChildView::OnUpdateViewNextbuffer)
+	ON_COMMAND(ID_VIEW_PREVBUFFER, &CChildView::OnViewPrevbuffer)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_PREVBUFFER, &CChildView::OnUpdateViewPrevbuffer)
+	ON_COMMAND(ID_EDIT_BACKGROUNDMASKEDPASTE, &CChildView::OnEditBackgroundmaskedpaste)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_BACKGROUNDMASKEDPASTE, &CChildView::OnUpdateEditBackgroundmaskedpaste)
+	ON_UPDATE_COMMAND_UI(ID_OVERFLOW_IGNORE, &CChildView::OnUpdateOverflowIgnore)
+	ON_COMMAND(ID_OVERFLOW_IGNORE, &CChildView::OnOverflowIgnore)
+	ON_UPDATE_COMMAND_UI(ID_OVERFLOW_CLOSEST, &CChildView::OnUpdateOverflowClosest)
+	ON_COMMAND(ID_OVERFLOW_CLOSEST, &CChildView::OnOverflowClosest)
+	ON_UPDATE_COMMAND_UI(ID_OVERFLOW_REPLACE, &CChildView::OnUpdateOverflowReplace)
+	ON_COMMAND(ID_OVERFLOW_REPLACE, &CChildView::OnOverflowReplace)
+	ON_COMMAND(ID_COLOROVERFLOW_TOGGLEIGNORE, &CChildView::OnColoroverflowToggleignore)
+	ON_COMMAND(ID_VIEW_RESTOREMAINVIEW, &CChildView::OnViewRestoremainview)
+	ON_UPDATE_COMMAND_UI(ID_PREVIEWPIXELASPECTRATIO_PC, &CChildView::OnUpdatePreviewpixelaspectratioPc)
+	ON_COMMAND(ID_PREVIEWPIXELASPECTRATIO_PC, &CChildView::OnPreviewpixelaspectratioPc)
+	ON_UPDATE_COMMAND_UI(ID_PREVIEWPIXELASPECTRATIO_PAL, &CChildView::OnUpdatePreviewpixelaspectratioPal)
+	ON_COMMAND(ID_PREVIEWPIXELASPECTRATIO_PAL, &CChildView::OnPreviewpixelaspectratioPal)
+	ON_UPDATE_COMMAND_UI(ID_PREVIEWPIXELASPECTRATIO_NTSC, &CChildView::OnUpdatePreviewpixelaspectratioNtsc)
+	ON_COMMAND(ID_PREVIEWPIXELASPECTRATIO_NTSC, &CChildView::OnPreviewpixelaspectratioNtsc)
+	ON_UPDATE_COMMAND_UI(ID_FILE_SAVESELECTION, &CChildView::OnUpdateFileSaveselection)
+	ON_COMMAND(ID_FILE_SAVESELECTION, &CChildView::OnFileSaveselection)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_SNAPSELECTION, &CChildView::OnUpdateEditSnapselection)
+	ON_COMMAND(ID_EDIT_SNAPSELECTION, &CChildView::OnEditSnapselection)
+	ON_UPDATE_COMMAND_UI(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnUpdateToolDeleteundohistory)
+	ON_COMMAND(ID_TOOL_DELETEUNDOHISTORY, &CChildView::OnToolDeleteundohistory)
+	ON_UPDATE_COMMAND_UI(ID_PALETTE_DUMMY, &CChildView::OnUpdateModePalette)
+	ON_COMMAND_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnModePalette)
+	ON_UPDATE_COMMAND_UI_RANGE(ID_MODE_PALETTE_0, ID_MODE_PALETTE_F, &CChildView::OnUpdateModePaletteRange)
+	ON_COMMAND(ID_TOOL_FILL, &CChildView::OnToolFill)
+	ON_COMMAND(ID_VIEW_CELLGRID, &CChildView::OnViewCellgrid)
+	ON_UPDATE_COMMAND_UI(ID_VIEW_CELLGRID, &CChildView::OnUpdateViewCellgrid)
+	ON_COMMAND(ID_HELP_LOADINTRO, &CChildView::OnHelpLoadintro)
+	ON_UPDATE_COMMAND_UI(ID_FONT_1X1, &CChildView::OnUpdateFont1x1)
+	ON_COMMAND(ID_FONT_1X1, &CChildView::OnFont1x1)
+	ON_UPDATE_COMMAND_UI(ID_FONT_2X1, &CChildView::OnUpdateFont2x1)
+	ON_COMMAND(ID_FONT_2X1, &CChildView::OnFont2x1)
+	ON_UPDATE_COMMAND_UI(ID_FONT_1X2, &CChildView::OnUpdateFont1x2)
+	ON_COMMAND(ID_FONT_1X2, &CChildView::OnFont1x2)
+	ON_UPDATE_COMMAND_UI(ID_FONT_2X2, &CChildView::OnUpdateFont2x2)
+	ON_COMMAND(ID_FONT_2X2, &CChildView::OnFont2x2)
+	ON_COMMAND(ID_VIEW_GRIDCOLORS, &CChildView::OnViewGridcolors)
+	ON_COMMAND(ID_MODE_COLOURVIEW, &CChildView::OnColourView)
+	ON_UPDATE_COMMAND_UI(ID_MODE_COLOURVIEW, &CChildView::OnUpdateColourView)
+		ON_COMMAND(ID_TOOL_REMAPCOLOURS, &CChildView::OnToolRemapcolours)
+		ON_UPDATE_COMMAND_UI(ID_TOOL_REMAPCOLOURS, &CChildView::OnUpdateToolRemapcolours)
+		ON_COMMAND(ID_TOOL_SWAPCELLCOLOURS, &CChildView::OnToolSwapcellcolours)
+		ON_UPDATE_COMMAND_UI(ID_TOOL_SWAPCELLCOLOURS, &CChildView::OnUpdateToolSwapcellcolours)
+		END_MESSAGE_MAP()
 
 
 
@@ -499,7 +507,14 @@ void CChildView::OnPaint()
 			else
 			{
 				//col = col = map[x - mxs + xw * sy];
-				col = m_pbm->GetPixel(x, y);
+				if (m_ShowColourInfo)
+				{
+					col = m_pbm->GetPixelColourMap(x, y);
+				}
+				else
+				{
+					col = m_pbm->GetPixel(x, y);
+				}
 			}
 
 			//dc.FillSolidRect(posx,posy,(scale*pw),(scale*1),g_Vic2[col]);
@@ -720,7 +735,7 @@ void CChildView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CChildView::OnMButtonDown(UINT nFlags, CPoint point)
 {
-	if(nFlags & MK_MBUTTON || nFlags == -1)
+	if(nFlags & MK_MBUTTON || nFlags == -1 || nFlags & MK_CONTROL)
 	{
 		m_Move=true;
 		m_MovePoint=point;
@@ -891,9 +906,14 @@ void CChildView::OnMouseLeave()
 	CWnd::OnMouseLeave();
 }
 
-
 void CChildView::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	if (nFlags & MK_CONTROL)
+	{
+		OnMButtonDown(nFlags, point);
+		return;
+	}
+
 	CPoint pix;
 	if(GetPixelFromPoint(point, pix))
 	{
@@ -1113,6 +1133,10 @@ void CChildView::SelectInfo(CellInfo *pset)
 
 void CChildView::OnLButtonUp(UINT nFlags, CPoint point)
 {
+	if (m_Move)
+	{
+		m_Move = false;
+	}
 	if(m_Paint)
 	{
 		m_Paint = false;
@@ -1659,7 +1683,7 @@ void CChildView::UpdateStatus(CPoint &pix)
 		int x, y, w, h;
 		InterpretMarker(&x,&y,&w,&h);
 		TCHAR t[256];
-		_stprintf(t, _T(" (Marker: X:%03d Y:%03d W:%03d H:%03d)"), x, y, w, h);
+		_stprintf(t, _T(" (Marker: X:%03d Y:%03d W:%03d H:%03d WC:%02d HC:%02d)"), x, y, w, h, w/m_pbm->GetCellSizeX(),h/m_pbm->GetCellSizeY());
 		_tcscat(txt, t);
 	}
 
@@ -1845,6 +1869,7 @@ void CChildView::ChangeMode(C64Interface::tmode to)
 		
 		Invalidate();
 		Mail(MSG_REFRESH);
+
 	}
 	catch(LPCTSTR str)
 	{
@@ -3265,4 +3290,121 @@ void CChildView::OnViewGridcolors()
 
 		Invalidate(FALSE);
 	}
+}
+
+void CChildView::OnColourView()
+{
+	m_ShowColourInfo = !m_ShowColourInfo;
+	Invalidate(false);
+}
+
+void CChildView::OnUpdateColourView(CCmdUI* pCmdUI)
+{
+	pCmdUI->SetCheck(m_ShowColourInfo);
+}
+
+void CChildView::OnToolRemapcolours()
+{
+	int x, y, w, h;
+	InterpretMarker(&x, &y, &w, &h);
+	x /= m_pbm->GetCellSizeX();
+	w /= m_pbm->GetCellSizeX();
+	y /= m_pbm->GetCellSizeY();
+	h /= m_pbm->GetCellSizeY();
+
+	int colourUsageMap[16];
+	int colourList[16];
+	memset(colourUsageMap, 0, 16*sizeof(int));
+	for (int cy = y; cy < y + h; ++cy)
+	{
+		for (int cx = x; cx < x + w; ++cx)
+		{
+			CellInfo info;
+			m_pbm->GetCellInfo(cx, cy, 1, 1, &info);
+			for (int c = 0; c < 4; ++c)
+			{
+				colourUsageMap[info.col[c]]++;
+			}
+		}
+	}
+
+	std::vector<LPCTSTR> colours;
+	int colourListIndex = 0;
+	for (int c = 0; c < 16; ++c)
+	{
+		if (colourUsageMap[c] > 0)
+		{
+			//colours.push_back(&g_VicColourNames[c]);
+			LPCTSTR pStr = s_VICColourName[c];
+			colours.push_back(pStr);
+			colourList[colourListIndex] = c;
+			++colourListIndex;
+		}
+	}
+
+	RemapColourDlg dlg;
+
+	std::vector<LPCTSTR> dest;
+	dest.push_back(_T("Background"));
+	dest.push_back(_T("MCOL 1"));
+	dest.push_back(_T("MCOL 2"));
+	dest.push_back(_T("CRAM"));
+	dlg.setDataVectors(&colours, &dest);
+
+	
+
+	if (dlg.DoModal() == IDOK)
+	{
+		int colourToRemap = colourList[dlg.GetSelectedColourIndex()];
+		int targetSlot = dlg.GetSelectedDestIndex();
+		for (int cy = y; cy < y + h; ++cy)
+		{
+			for (int cx = x; cx < x + w; ++cx)
+			{
+				m_pbm->RemapCellColour(cx, cy, colourToRemap, targetSlot);
+			}
+		}
+	}
+	Invalidate();
+	Mail(MSG_REFRESH);
+}
+
+
+void CChildView::OnUpdateToolRemapcolours(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(m_pbm->GetMode() == C64Interface::tmode::MC_BITMAP);
+}
+
+
+void CChildView::OnToolSwapcellcolours()
+{
+	if (m_MarkerCount == 2)
+	{
+		int x, y, w, h;
+		InterpretMarker(&x, &y, &w, &h);
+
+		int cx = x / m_pbm->GetCellSizeX();
+		int cy = y / m_pbm->GetCellSizeY();
+
+		int cw = ((x + w + m_pbm->GetCellSizeX() - 1) / m_pbm->GetCellSizeX()) - cx;
+		int ch = ((y + h + m_pbm->GetCellSizeY() - 1) / m_pbm->GetCellSizeY()) - cy;
+
+		for (int y = 0; y < ch; ++y)
+		{
+			for (int x = 0; x < cw; ++x)
+			{
+				m_pbm->SwapCellColours(cx+x, cy+y);
+			}
+		}
+		Invalidate();
+		CellInfo* pInfo = new CellInfo();
+		m_pbm->GetCellInfo(cx, cy, 1, 1, pInfo);
+		Mail(MSG_CELL_INFO, UINT_PTR(pInfo));
+	}
+}
+
+
+void CChildView::OnUpdateToolSwapcellcolours(CCmdUI *pCmdUI)
+{
+	pCmdUI->Enable(m_pbm->GetMode() == C64Interface::tmode::BITMAP);
 }

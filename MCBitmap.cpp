@@ -356,6 +356,105 @@ nstr MCBitmap::IdentifyFile(nmemfile &file)
 	return ex;
 }
 
+void MCBitmap::RemapCellColour(int cx, int cy, int colour, int indexTo)
+{
+	static int maskLUT[4] = { 0,1,2,3 };
+
+	CellInfo info;
+	GetCellInfo(cx, cy, 1, 1, &info);
+
+
+	int targetMask = maskLUT[indexTo];
+
+	//does this cell use the colour we want
+	int colourUsed = 0;
+	for (int c = 0; c < 4; ++c)
+	{
+		if (info.col[c] == colour)
+		{
+			++colourUsed;
+		}
+	}
+	if (colourUsed == 1)
+	{
+		for (int c = 0; c < 4; ++c)
+		{
+			if (info.col[c] == colour)
+			{
+				//is it already where we want it to be
+				if (c != indexTo)
+				{
+					//no
+					int srcMask = maskLUT[c];
+					SwapmaskCell2(cx, cy, srcMask, targetMask);
+					//also need to swap the colours
+					int oldColour = info.col[indexTo];
+					int ci = cy * (xsize / 4) + cx;
+
+					SetColor(ci, targetMask, colour);
+					SetColor(ci, srcMask, oldColour);
+					break;  //found it so exit
+				}
+			}
+		}
+	}
+	else if (colourUsed >= 3)
+	{
+		//they are all the colour
+		if (targetMask != 1) RemapCell2(cx, cy, maskLUT[1], targetMask);
+		if (targetMask != 2) RemapCell2(cx, cy, maskLUT[2], targetMask);
+		if (targetMask != 3) RemapCell2(cx, cy, maskLUT[3], targetMask);
+	}
+	else if (colourUsed >= 2) //2 are the colour
+	{
+		//find first colour with it
+		int c = 0;
+		int firstIndex = 0;
+		while (c < 4)
+		{
+			if (info.col[c] == colour)
+			{
+				firstIndex = c;
+				break;
+			}
+			++c;
+		}
+		//find second colour with it
+		int secondIndex = 0;
+		++c;
+		while (c < 4)
+		{
+			if (info.col[c] == colour)
+			{
+				secondIndex = c;
+				break;
+			}
+			++c;
+		}		
+		//if dest = first, map second onto first
+		if (firstIndex == indexTo)
+		{
+			RemapCell2(cx, cy, maskLUT[secondIndex], maskLUT[firstIndex]);
+		}
+		//else if dest = second, map first onto second
+		else if (secondIndex == indexTo)
+		{
+			RemapCell2(cx, cy, maskLUT[firstIndex], maskLUT[secondIndex]);
+		}
+		//else map first colour into second, swap with dest
+		else
+		{
+			RemapCell2(cx, cy, maskLUT[firstIndex], maskLUT[secondIndex]);
+			SwapmaskCell2(cx, cy, maskLUT[secondIndex], targetMask);
+
+			int oldColour = info.col[indexTo];
+			int ci = cy * (xsize / 4) + cx;
+			SetColor(ci, targetMask, colour);
+			SetColor(ci, maskLUT[secondIndex], oldColour);
+		}
+	}
+}
+
 void MCBitmap::Load(nmemfile &file, LPCTSTR type, int version)
 {
 	__super::Load(file,type,version);
@@ -802,6 +901,21 @@ BYTE MCBitmap::GetPixelInternal(int x, int y)
 BYTE MCBitmap::GetPixel(int x, int y)
 {
 	return GetPixelInternal(x,y);
+}
+
+BYTE MCBitmap::GetPixelColourMap(int x, int y)
+{
+	int cx = x / 4;
+	int cy = y / 8;
+	CellInfo info;
+	GetCellInfo(cx, cy, 1, 1, &info);
+	int iX = 0;
+	if (x % 4 >= 2) iX = 1;
+	int iY = 0;
+	if (y % 8 >= 4) iY = 2;
+	int colourIndex = iX + iY;
+	BYTE colour = info.col[colourIndex];
+	return colour;
 }
 
 void MCBitmap::GetPixelBatch(BYTE *p, int xs, int ys, int w, int h)

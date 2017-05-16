@@ -403,6 +403,7 @@
     <ClInclude Include="mail.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Preview.h" />
+    <ClInclude Include="RemapColourDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Romfont.h" />
     <ClInclude Include="stdafx.h" />
@@ -429,6 +430,7 @@
     <ClCompile Include="ImportDlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="Preview.cpp" />
+    <ClCompile Include="RemapColourDlg.cpp" />
     <ClCompile Include="Romfont.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">

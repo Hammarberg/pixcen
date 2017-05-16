@@ -337,3 +337,19 @@ int Bitmap::GetMask(int x, int y)
 
 	return (map[cy * xsize + cx * 8 + (y%8)] >> (1*(7-(x%8)))) & 1;
 }
+
+void Bitmap::SwapCellColours(int cx, int cy)
+{
+	int mi = GetMapIndexFromCell(cx, cy), t;
+	for (t = 0; t < sizecell; t++)
+		map[mi + t] = map[mi + t] ^ 0xFF; // invert it
+
+	CellInfo info;
+	GetCellInfo(cx, cy, 1, 1, &info);
+
+	int oldColour0 = info.col[0];
+	int oldColour1 = info.col[1];
+	int ci = cy * (xsize / 8) + cx;
+	SetColor(ci, 0, oldColour1);
+	SetColor(ci, 1, oldColour0);
+}

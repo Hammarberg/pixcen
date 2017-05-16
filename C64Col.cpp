@@ -234,8 +234,27 @@ static const TCHAR s_PaletteName[][16]={
 	_T("")
 };
 
-const COLORREF *g_Vic2 = &s_Pallete[0][0];
+static const TCHAR s_VICColourName[][16] = {
+	_T("Black"),
+	_T("White"),
+	_T("Red"),
+	_T("Cyan"),
+	_T("Purple"),
+	_T("Green"),
+	_T("Blue"),
+	_T("Yellow"),
+	_T("Orange"),
+	_T("Brown"),
+	_T("Pink"),
+	_T("D.Grey"),
+	_T("M.Grey"),
+	_T("L.Green"),
+	_T("L.Blue"),
+	_T("L.Grey")
+};
 
+const COLORREF *g_Vic2 = &s_Pallete[0][0];
+//const TCHAR* g_VicColourNames = s_VICColourName[0];
 
 //http://www.compuphase.com/cmetric.htm
 
