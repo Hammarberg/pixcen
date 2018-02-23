@@ -721,7 +721,7 @@ void C64Interface::Save(nmemfile &file, LPCTSTR type)
 		file << (unsigned short)GetMetaInt("pcol");
 		if(mode == MC_CHAR)
 		{
-			for(int r=0;r<1000;r++)
+			for(int r=0;r<rcolorsize;r++)
 			{
 				assert(color[r]<8);
 				file << BYTE((color[r]&7) | 8);
@@ -736,7 +736,7 @@ void C64Interface::Save(nmemfile &file, LPCTSTR type)
 	{
 		if(mode == MC_CHAR)
 		{
-			for(int r=0;r<1000;r++)
+			for(int r=0;r<rcolorsize;r++)
 			{
 				assert(color[r]<8);
 				file << BYTE((color[r]&7) | 8);
