@@ -143,7 +143,7 @@ void CommonFont::Save(nmemfile &file, LPCTSTR type)
 	}
 	else if(lstrcmpi(_T("piscr"),type)==0)
 	{
-		file << (unsigned short)GetMetaInt("pscr");
+		file << (unsigned short)GetMetaInt("piscr");
 
 		narray<BYTE,int> c,s;
 		if(CreateCharScreen(c,s,true)>256)
@@ -161,7 +161,7 @@ void CommonFont::Save(nmemfile &file, LPCTSTR type)
 	}
 	else if(lstrcmpi(_T("pimap"),type)==0)
 	{
-		file << (unsigned short)GetMetaInt("pmap");
+		file << (unsigned short)GetMetaInt("pimap");
 
 		narray<BYTE,int> c,s;
 		if(CreateCharScreen(c,s,true)>256)
