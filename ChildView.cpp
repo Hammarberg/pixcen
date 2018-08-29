@@ -3313,8 +3313,9 @@ void CChildView::OnToolRemapcolours()
 	h /= m_pbm->GetCellSizeY();
 
 	int colourUsageMap[16];
+	memset(colourUsageMap, 0, 16 * sizeof(int));
 	int colourList[16];
-	memset(colourUsageMap, 0, 16*sizeof(int));
+	memset(colourList, 0, 16 * sizeof(int));
 	for (int cy = y; cy < y + h; ++cy)
 	{
 		for (int cx = x; cx < x + w; ++cx)
