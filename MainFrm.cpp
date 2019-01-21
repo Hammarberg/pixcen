@@ -1,6 +1,6 @@
 /*
    Pixcen - A windows platform low level pixel editor for C64
-   Copyright (C) 2013  John Hammarberg (crt@nospam.censordesign.com)
+   Copyright (C) 2013  John Hammarberg (crt@nospam.binarybone.com)
    
     This file is part of Pixcen.
 
@@ -499,7 +499,7 @@ UINT CMainFrame::UpdateThread( LPVOID pParam )
 		CMainFrame *pWnd = (CMainFrame *)pParam;
 		CInternetSession session; 
 		CHttpFile* file = NULL; 
-		file = (CHttpFile *)session.OpenURL(_T("http://censordesign.com/pixcen/ver"), 1UL, INTERNET_FLAG_TRANSFER_ASCII|INTERNET_FLAG_RELOAD); 
+		file = (CHttpFile *)session.OpenURL(_T("http://binarybone.com/pixcen/ver"), 1UL, INTERNET_FLAG_TRANSFER_ASCII|INTERNET_FLAG_RELOAD); 
 
 		if (NULL != file)
 		{
@@ -546,9 +546,9 @@ afx_msg LRESULT CMainFrame::OnUmUpdateVersion(WPARAM wParam, LPARAM lParam)
 		if(MessageBox(_T("There is an updated version of Pixcen.\nWould you like to download?"),_T("New version"),MB_YESNO|MB_ICONQUESTION) == IDYES)
 		{
 #ifdef _M_X64
-			ShellExecute(NULL,L"open",L"http://censordesign.com/pixcen/pixcen64.zip",NULL,NULL,SW_SHOWNORMAL);
+			ShellExecute(NULL,L"open",L"http://binarybone.com/pixcen/pixcen64.zip",NULL,NULL,SW_SHOWNORMAL);
 #else
-			ShellExecute(NULL,L"open",L"http://censordesign.com/pixcen/pixcen.zip",NULL,NULL,SW_SHOWNORMAL);
+			ShellExecute(NULL,L"open",L"http://binarybone.com/pixcen/pixcen.zip",NULL,NULL,SW_SHOWNORMAL);
 #endif
 		}
 	}

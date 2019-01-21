@@ -1,6 +1,6 @@
 /*
    Pixcen - A windows platform low level pixel editor for C64
-   Copyright (C) 2013  John Hammarberg (crt@nospam.censordesign.com)
+   Copyright (C) 2013  John Hammarberg (crt@nospam.binarybone.com)
    
     This file is part of Pixcen.
 
