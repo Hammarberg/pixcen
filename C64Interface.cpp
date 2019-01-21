@@ -1732,7 +1732,7 @@ C64Interface *C64Interface::Load(LPCTSTR pszFileName, LPCTSTR type, tmode mode, 
 			if(n == Z_BUF_ERROR) continue;
 			if(n == Z_OK)break;
 
-			delete [] p;
+			free(p);
 			throw _T("Error decompressing gpx-file, corrupt?");
 		}
 
@@ -1922,7 +1922,7 @@ C64Interface::ImportHelper::ImportHelper(C64Interface *pp, CImage &inimg, bool i
 
 		palette = ClosestPalette(unmap, r);
 
-		delete unmap;
+		delete [] unmap;
 	}
 	else
 	{

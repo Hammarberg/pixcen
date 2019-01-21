@@ -76,7 +76,7 @@ nstr Bitmap::IdentifyFile(nmemfile &file)
 
 	file >> addr;
 
-	if((file.len() == 9002 && file.len() == 9009)  && addr == 0x2000)
+	if((file.len() == 9002 || file.len() == 9009)  && addr == 0x2000)
 	{
 		ex = _T("art");
 	}
@@ -119,7 +119,7 @@ void Bitmap::Load(nmemfile &file, LPCTSTR type, int version)
 	}
 	else if(lstrcmpi(_T("dd"),type)==0)
 	{
-		if(file.len() != 9218 && file.len() != 9218)
+		if(file.len() != 9218)
 		{
 			throw _T("Invalid Doodle file size");
 		}
