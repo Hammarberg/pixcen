@@ -1,6 +1,6 @@
 /*
 Pixcen - A windows platform low level pixel editor for C64
-Copyright (C) 2013  John Hammarberg (crt@nospam.binarybone.com)
+Copyright (C) 2019  John Hammarberg (crt@nospam.binarybone.com)
 
 This file is part of Pixcen.
 
@@ -18,31 +18,31 @@ You should have received a copy of the GNU General Public License
 along with Pixcen.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-#include "afxcolorbutton.h"
+#include "StdAfx.h"
+#include "b2wrap.h"
 
-
-// CGridColorDlg dialog
-
-class CGridColorDlg : public CDialogEx
+#define BBWRAP
+extern "C"
 {
-	DECLARE_DYNAMIC(CGridColorDlg)
+#include "b2/cruncher.h"
+}
+#undef BBWRAP
 
-public:
-	CGridColorDlg(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CGridColorDlg();
+bool B2Crunch(B2File *aSource, B2File *aTarget, unsigned short startAdress)
+{
+	File Source;
+	Source.name = nullptr;
+	Source.data = aSource->data;
+	Source.size = aSource->size;
+	File Target;
+	Target.name = nullptr;
+	Target.data = aTarget->data;
+	Target.size = aTarget->size;
 
-// Dialog Data
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_GRID };
-#endif
+	bool res = crunch(&Source, &Target, startAdress, true, false);
 
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	aTarget->data = Target.data;
+	aTarget->size = Target.size;
 
-	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg void OnBnClickedOk();
-	CMFCColorButton m_CellColor;
-	CMFCColorButton m_PixelColor;
-};
+	return res;
+}

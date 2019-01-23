@@ -1,6 +1,6 @@
 /*
 Pixcen - A windows platform low level pixel editor for C64
-Copyright (C) 2013  John Hammarberg (crt@nospam.binarybone.com)
+Copyright (C) 2019  John Hammarberg (crt@nospam.binarybone.com)
 
 This file is part of Pixcen.
 
@@ -19,30 +19,16 @@ along with Pixcen.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #pragma once
-#include "afxcolorbutton.h"
 
-
-// CGridColorDlg dialog
-
-class CGridColorDlg : public CDialogEx
+struct B2File
 {
-	DECLARE_DYNAMIC(CGridColorDlg)
-
-public:
-	CGridColorDlg(CWnd* pParent = NULL);   // standard constructor
-	virtual ~CGridColorDlg();
-
-// Dialog Data
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_GRID };
-#endif
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-	DECLARE_MESSAGE_MAP()
-public:
-	afx_msg void OnBnClickedOk();
-	CMFCColorButton m_CellColor;
-	CMFCColorButton m_PixelColor;
+	size_t size;
+	BYTE *data;
 };
+
+bool B2Crunch(B2File *aSource, B2File *aTarget, unsigned short startAdress);
+
+static void B2FreeFile(B2File *aFile)
+{
+	free(aFile->data);
+}

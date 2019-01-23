@@ -1,6 +1,6 @@
 /*
    Pixcen - A windows platform low level pixel editor for C64
-   Copyright (C) 2013  John Hammarberg (crt@nospam.censordesign.com)
+   Copyright (C) 2013  John Hammarberg (crt@nospam.binarybone.com)
    
     This file is part of Pixcen.
 
@@ -28,7 +28,7 @@
 #include "nstr.h"
 #include "nmemfile.h"
 #include "autoptr.h"
-#include "bb.h"
+#include "b2wrap.h"
 #include <map>
 
 #define CURRENT_GPX_FILE_VERSION 4

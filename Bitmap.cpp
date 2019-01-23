@@ -1,6 +1,6 @@
 /*
    Pixcen - A windows platform low level pixel editor for C64
-   Copyright (C) 2013  John Hammarberg (crt@nospam.censordesign.com)
+   Copyright (C) 2013  John Hammarberg (crt@nospam.binarybone.com)
    
     This file is part of Pixcen.
 
@@ -244,12 +244,12 @@ void Bitmap::Save(nmemfile &file, LPCTSTR type)
 		file.write(screen,1000);
 		file << *border;
 
-		ByteBoozer::File bbin, bbout;
+		B2File bbin, bbout;
 		bbin.size = file.len();
 		bbin.data = (byte *)file.detach();
 
-		ByteBoozer::crunch(&bbin, &bbout, 0x1f00, ByteBoozer::normalDecr, false, false);
-		ByteBoozer::freeFile(&bbin);
+		B2Crunch(&bbin, &bbout, 0x1f00);
+		B2FreeFile(&bbin);
 
 		file.attach(bbout.data, bbout.size, true);
 	}

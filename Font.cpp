@@ -1,3 +1,23 @@
+/*
+Pixcen - A windows platform low level pixel editor for C64
+Copyright (C) 2013  John Hammarberg (crt@nospam.binarybone.com)
+
+This file is part of Pixcen.
+
+Pixcen is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Pixcen is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Pixcen.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "StdAfx.h"
 #include "C64Interface.h"
 #include "Romfont.h"
@@ -148,7 +168,7 @@ void CommonFont::Save(nmemfile &file, LPCTSTR type)
 	}
 	else if(lstrcmpi(_T("piscr"),type)==0)
 	{
-		file << (unsigned short)GetMetaInt("pscr");
+		file << (unsigned short)GetMetaInt("piscr");
 
 		narray<BYTE,int> c,s;
 		int n = CreateCharScreen(c, s, true);
@@ -176,7 +196,7 @@ void CommonFont::Save(nmemfile &file, LPCTSTR type)
 	}
 	else if(lstrcmpi(_T("pimap"),type)==0)
 	{
-		file << (unsigned short)GetMetaInt("pmap");
+		file << (unsigned short)GetMetaInt("pimap");
 
 		narray<BYTE,int> c,s;
 		int n = CreateCharScreen(c, s, true);
@@ -403,12 +423,12 @@ void MCFont::Save(nmemfile &file, LPCTSTR type)
 
 		file.write(c.getarray(),c.count());
 
-		ByteBoozer::File bbin, bbout;
+		B2File bbin, bbout;
 		bbin.size = file.len();
 		bbin.data = (byte *)file.detach();
 
-		ByteBoozer::crunch(&bbin, &bbout, 0x1f00, ByteBoozer::normalDecr, false, false);
-		ByteBoozer::freeFile(&bbin);
+		B2Crunch(&bbin, &bbout, 0x1f00);
+		B2FreeFile(&bbin);
 
 		file.attach(bbout.data, bbout.size, true);
 	}
@@ -608,12 +628,12 @@ void SFont::Save(nmemfile &file, LPCTSTR type)
 
 		file.write(c.getarray(),c.count());
 
-		ByteBoozer::File bbin, bbout;
+		B2File bbin, bbout;
 		bbin.size = file.len();
 		bbin.data = (byte *)file.detach();
 
-		ByteBoozer::crunch(&bbin, &bbout, 0x1f00, ByteBoozer::normalDecr, false, false);
-		ByteBoozer::freeFile(&bbin);
+		B2Crunch(&bbin, &bbout, 0x1f00);
+		B2FreeFile(&bbin);
 
 		file.attach(bbout.data, bbout.size, true);
 	}
