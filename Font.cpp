@@ -136,8 +136,13 @@ void CommonFont::Save(nmemfile &file, LPCTSTR type)
 	if(lstrcmpi(_T("iscr"),type)==0)
 	{
 		narray<BYTE,int> c,s;
-		if(CreateCharScreen(c,s,true)>256)
-			throw _T("Too many characters");
+		int n = CreateCharScreen(c, s, true);
+		if (n > 256)
+		{
+			char output[64];
+			sprintf(output, "Too many characters (%d/256)", n);
+			throw (output);
+		}
 
 		file.write(s.getarray(), s.count());
 	}
@@ -146,16 +151,26 @@ void CommonFont::Save(nmemfile &file, LPCTSTR type)
 		file << (unsigned short)GetMetaInt("pscr");
 
 		narray<BYTE,int> c,s;
-		if(CreateCharScreen(c,s,true)>256)
-			throw _T("Too many characters");
+		int n = CreateCharScreen(c, s, true);
+		if (n > 256)
+		{
+			char output[64];
+			sprintf(output, "Too many characters (%d/256)", n);
+			throw (output);
+		}
 
 		file.write(s.getarray(), s.count());
 	}
 	else if(lstrcmpi(_T("imap"),type)==0)
 	{
 		narray<BYTE,int> c,s;
-		if(CreateCharScreen(c,s,true)>256)
-			throw _T("Too many characters");
+		int n = CreateCharScreen(c, s, true);
+		if (n > 256)
+		{
+			char output[64];
+			sprintf(output, "Too many characters (%d/256)", n);
+			throw (output);
+		}
 
 		file.write(c.getarray(), c.count());
 	}
@@ -164,8 +179,13 @@ void CommonFont::Save(nmemfile &file, LPCTSTR type)
 		file << (unsigned short)GetMetaInt("pmap");
 
 		narray<BYTE,int> c,s;
-		if(CreateCharScreen(c,s,true)>256)
-			throw _T("Too many characters");
+		int n = CreateCharScreen(c, s, true);
+		if (n > 256)
+		{
+			char output[64];
+			sprintf(output, "Too many characters (%d/256)", n);
+			throw (output);
+		}
 
 		file.write(c.getarray(), c.count());
 	}
@@ -340,8 +360,13 @@ void MCFont::Save(nmemfile &file, LPCTSTR type)
 			throw _T("Dimensions must be 160*200");
 
 		narray<BYTE,int> c,s;
-		if(CreateCharScreen(c,s,true)>256)
-			throw _T("Too many characters");
+		int n = CreateCharScreen(c, s, true);
+		if (n > 256)
+		{
+			char output[64];
+			sprintf(output, "Too many characters (%d/256)", n);
+			throw (output);
+		}
 
 		ASSERT(s.count() == 1000);
 
@@ -547,8 +572,13 @@ void SFont::Save(nmemfile &file, LPCTSTR type)
 			throw _T("Dimensions must be 320*200");
 
 		narray<BYTE,int> c,s;
-		if(CreateCharScreen(c,s,true)>256)
-			throw _T("Too many characters");
+		int n = CreateCharScreen(c, s, true);
+		if (n > 256)
+		{
+			wchar_t output[64];
+			wsprintf(output, L"Too many characters (%d/256)", n);
+			throw (output);
+		}
 
 		ASSERT(s.count() == 1000);
 
