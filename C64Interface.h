@@ -28,7 +28,7 @@
 #include "nstr.h"
 #include "nmemfile.h"
 #include "autoptr.h"
-#include "bb.h"
+#include "b2wrap.h"
 #include <map>
 
 #define CURRENT_GPX_FILE_VERSION 4

@@ -244,12 +244,12 @@ void Bitmap::Save(nmemfile &file, LPCTSTR type)
 		file.write(screen,1000);
 		file << *border;
 
-		ByteBoozer::File bbin, bbout;
+		B2File bbin, bbout;
 		bbin.size = file.len();
 		bbin.data = (byte *)file.detach();
 
-		ByteBoozer::crunch(&bbin, &bbout, 0x1f00, ByteBoozer::normalDecr, false, false);
-		ByteBoozer::freeFile(&bbin);
+		B2Crunch(&bbin, &bbout, 0x1f00);
+		B2FreeFile(&bbin);
 
 		file.attach(bbout.data, bbout.size, true);
 	}
