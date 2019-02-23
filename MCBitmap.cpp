@@ -105,7 +105,7 @@ void MCBitmap::GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt)
 	fmt.add(new SaveFormat(_T("Advanced Art Studio"),_T("ocp"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Multigraf"), _T("mg"), true, 160, 200, MC_BITMAP));
-	fmt.add(new SaveFormat(_T("Multipaint"), _T("bin"), true, 160, 200, MC_BITMAP));
+	fmt.add(new SaveFormat(_T("Multipaint"), _T("bin;binmc"), true, 160, 200, MC_BITMAP));
 }
 
 int MCBitmap::DecompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size)
@@ -325,7 +325,7 @@ nstr MCBitmap::IdentifyFile(nmemfile &file)
 		static const BYTE cmp[] = { 0x00,0x0A,0x0F,0x28,0x00,0x19 };
 		if (!memcmp(ptr + 2, cmp, 6))
 		{
-			ex = "bin";
+			ex = "binmc";
 			return ex;
 		}
 	}
@@ -651,7 +651,7 @@ void MCBitmap::Load(nmemfile &file, LPCTSTR type, int version)
 		crippled[3] = 1;
 
 	}
-	else if (lstrcmpi(_T("bin"), type) == 0)
+	else if (lstrcmpi(_T("binmc"), type) == 0)
 	{
 		if (file.len() != 88000)
 		{
