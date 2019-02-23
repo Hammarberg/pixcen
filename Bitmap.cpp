@@ -146,7 +146,7 @@ void Bitmap::Load(nmemfile &file, LPCTSTR type, int version)
 
 		*border = GuessBorderColor();
 	}
-	else if(lstrcmpi(_T("bin"),type)==0)
+	else if(lstrcmpi(_T("raw"),type)==0)
 	{
 		size_t len = file.len();
 

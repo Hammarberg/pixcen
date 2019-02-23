@@ -93,6 +93,7 @@ void MCBitmap::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
 		if(crippled[3])fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true));
 		fmt.add(new SaveFormat(_T("Multigraf"), _T("mg"), true));
 		fmt.add(new SaveFormat(_T("C64 Exe"),_T("prg"),false));
+		fmt.add(new SaveFormat(_T("Multipaint"), _T("bin"), true));
 	}
 }
 
@@ -104,6 +105,7 @@ void MCBitmap::GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt)
 	fmt.add(new SaveFormat(_T("Advanced Art Studio"),_T("ocp"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Multigraf"), _T("mg"), true, 160, 200, MC_BITMAP));
+	fmt.add(new SaveFormat(_T("Multipaint"), _T("bin"), true, 160, 200, MC_BITMAP));
 }
 
 int MCBitmap::DecompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size)
@@ -316,8 +318,19 @@ int MCBitmap::CompressZoomaticStreamFlush(BYTE *buffer, int w, BYTE b, int count
 nstr MCBitmap::IdentifyFile(nmemfile &file)
 {
 	nstr ex;
-	unsigned short addr;
 
+	if (file.len() == 88000)
+	{
+		BYTE *ptr = file;
+		static const BYTE cmp[] = { 0x00,0x0A,0x0F,0x28,0x00,0x19 };
+		if (!memcmp(ptr + 2, cmp, 6))
+		{
+			ex = "bin";
+			return ex;
+		}
+	}
+
+	unsigned short addr;
 	file >> addr;
 
 	if(file.len() == 10003 && (addr == 0x6000 || addr == 0x2000))
@@ -638,7 +651,57 @@ void MCBitmap::Load(nmemfile &file, LPCTSTR type, int version)
 		crippled[3] = 1;
 
 	}
-	else if(lstrcmpi(_T("bin"),type)==0)
+	else if (lstrcmpi(_T("bin"), type) == 0)
+	{
+		if (file.len() != 88000)
+		{
+			throw _T("Invalid Multipaint file size");
+		}
+
+		file.read(border, 1);
+		file.read(background, 1);
+
+		// Skip to the bitmap
+		file.setpos(0x0400);
+
+		BYTE b;
+
+		for(int y = 0; y < 200; y++)
+		{
+			for (int x = 0; x < 40; x++)
+			{
+				int mapindex = (y / 8) * 320 + y % 8 + x * 8;
+				BYTE tmp = 0;
+				for (int bit = 7; bit >= 0; bit--)
+				{
+					file >> b;
+					tmp |= b << bit;
+				}
+				map[mapindex] = tmp;
+			}
+		}
+
+		// Skip to the screen and color data
+		file.setpos(0x10000);
+
+		for (int r = 0; r < 1000; r++)
+		{
+			file >> b;
+			screen[r] = b;
+		}
+		for (int r = 0; r < 1000; r++)
+		{
+			file >> b;
+			screen[r] |= b << 4;
+		}
+		for (int r = 0; r < 1000; r++)
+		{
+			file >> b;
+			color[r] |= b;
+		}
+
+	}
+	else if(lstrcmpi(_T("raw"),type)==0)
 	{
 		size_t len = file.len();
 
@@ -668,42 +731,42 @@ void MCBitmap::Load(nmemfile &file, LPCTSTR type, int version)
 
 void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 {
-	__super::Save(file,type);
+	__super::Save(file, type);
 
-	if(lstrcmpi(_T("kla"),type)==0 || lstrcmpi(_T("koa"),type)==0)
+	if (lstrcmpi(_T("kla"), type) == 0 || lstrcmpi(_T("koa"), type) == 0)
 	{
-		if(xsize!=160 || ysize!=200)
+		if (xsize != 160 || ysize != 200)
 			throw _T("Buffers are not in standard multi-color format");
 
 		file << unsigned short(0x6000);
 
-		file.write(map,8000);
-		file.write(screen,1000);
-		file.write(color,1000);
+		file.write(map, 8000);
+		file.write(screen, 1000);
+		file.write(color, 1000);
 		file << *background;
 	}
-	else if(lstrcmpi(_T("gg"),type)==0)
+	else if (lstrcmpi(_T("gg"), type) == 0)
 	{
-		if(xsize!=160 || ysize!=200)
+		if (xsize != 160 || ysize != 200)
 			throw _T("Buffers are not in standard multi-color format");
 
 		BYTE src[10001];
 
-		memcpy(src,map,8000);
-		memcpy(src+8000,screen,1000);
-		memcpy(src+9000,color,1000);
-		src[10000]=*background;
+		memcpy(src, map, 8000);
+		memcpy(src + 8000, screen, 1000);
+		memcpy(src + 9000, color, 1000);
+		src[10000] = *background;
 
 		BYTE buffer[30003];
-		int size=CompressKoalaStream(src, 10001, buffer, 30003);
+		int size = CompressKoalaStream(src, 10001, buffer, 30003);
 
-		if(size == -1)
+		if (size == -1)
 		{
 			throw _T("Failed compressing koala");
 		}
 
 		file << unsigned short(0x6000);
-		file.write(buffer,size);
+		file.write(buffer, size);
 	}
 	else if (lstrcmpi(_T("zom"), type) == 0)
 	{
@@ -728,17 +791,17 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 		file << unsigned short(0x6000);
 		file.write(buffer, size);
 	}
-	else if(lstrcmpi(_T("cen"),type)==0)
+	else if (lstrcmpi(_T("cen"), type) == 0)
 	{
-		if(xsize!=160 || ysize!=200)
+		if (xsize != 160 || ysize != 200)
 			throw _T("Buffers are not in standard multi-color format");
 
 		file << unsigned short(0x5800);
 
 		file.write(color, 1000);
-		for(int r=0;r<24;r++)file << BYTE(0);
+		for (int r = 0; r < 24; r++)file << BYTE(0);
 		file.write(screen, 1000);
-		for(int r=0;r<24;r++)file << BYTE(0);
+		for (int r = 0; r < 24; r++)file << BYTE(0);
 		file.write(map, 8000);
 		file << *background;
 	}
@@ -750,20 +813,20 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 		file << unsigned short(0x3000);
 
 		file.write(map, 8000);
-		for (int r = 0; r<175; r++)file << BYTE(0);
+		for (int r = 0; r < 175; r++)file << BYTE(0);
 		file << *background;
 		static const BYTE multigraf[16] = { 0x4D, 0x55, 0x4C, 0x54, 0x49, 0x47, 0x52, 0x41, 0x46, 0x20, 0x56, 0x31, 0x2E, 0x33, 0x30, 0x00 };
-		for (int r = 0; r<16; r++)file << multigraf[r];
+		for (int r = 0; r < 16; r++)file << multigraf[r];
 		file.write(screen, 1000);
-		for (int r = 0; r<24; r++)file << BYTE(0);
+		for (int r = 0; r < 24; r++)file << BYTE(0);
 		file.write(color, 1000);
-		for (int r = 0; r<24; r++)file << BYTE(0);
-		for (int r = 0; r<1024; r++)file << BYTE(0);	//Just fill the extra 1K for now
+		for (int r = 0; r < 24; r++)file << BYTE(0);
+		for (int r = 0; r < 1024; r++)file << BYTE(0);	//Just fill the extra 1K for now
 
 	}
-	else if(lstrcmpi(_T("ocp"),type)==0)
+	else if (lstrcmpi(_T("ocp"), type) == 0)
 	{
-		if(xsize!=160 || ysize!=200)
+		if (xsize != 160 || ysize != 200)
 			throw _T("Buffers are not in standard multi-color format");
 
 		file << unsigned short(0x2000);
@@ -772,17 +835,17 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 		file.write(screen, 1000);
 		file << *border;
 		file << *background;
-		for(int r=0;r<14;r++)file << BYTE(0);
+		for (int r = 0; r < 14; r++)file << BYTE(0);
 		file.write(color, 1000);
 	}
-	else if(lstrcmpi(_T("pmg"),type)==0)
+	else if (lstrcmpi(_T("pmg"), type) == 0)
 	{
-		if(xsize!=160 || ysize!=200)
+		if (xsize != 160 || ysize != 200)
 			throw _T("Buffers are not in standard multi-color format");
 
 		assert(crippled[3]);
 
-		static unsigned char viewer[]={
+		static unsigned char viewer[] = {
 		0x0b,0x08,0x0a,0x00,0x9e,0x32,0x30,0x36,0x39,0x00,0x13,0x08,0x14,0x00,
 		0x89,0x32,0x30,0x00,0x00,0x00,0xa0,0x00,0x8c,0x11,0xd0,0xa2,0x24,0xb9,0x73,0x08,
 		0x99,0x00,0x40,0xc8,0xd0,0xf7,0xee,0x1e,0x08,0xee,0x21,0x08,0xca,0xd0,0xee,0xa9,
@@ -790,15 +853,15 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 		0x02,0x8d,0x00,0xdd,0xa9,0x80,0x8d,0x18,0xd0,0xa9,0xd8,0x8d,0x16,0xd0,0xad,0x40,
 		0x5f,0x8d,0x21,0xd0,0xad,0x43,0x5f,0xa0,0x00,0x99,0x00,0xd8,0x99,0x00,0xd9,0x99,
 		0x00,0xda,0x99,0x00,0xdb,0xc8,0xd0,0xf1,0xa9,0x3b,0x8d,0x11,0xd0,0x60,0x48,0x81,
-		0x71,0x80,0x71,0x80};
+		0x71,0x80,0x71,0x80 };
 
 		unsigned short addr = 0x3f8e;
 
 		file << addr;
 		file.write(viewer, sizeof(viewer));
-		addr+=sizeof(viewer);
+		addr += sizeof(viewer);
 
-		while(addr < 0x4000)
+		while (addr < 0x4000)
 		{
 			file << BYTE(0);
 			addr++;
@@ -814,7 +877,7 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 		file << *border;
 
 		addr = 0x5f45;
-		while(addr < 0x6000)
+		while (addr < 0x6000)
 		{
 			file << BYTE(0);
 			addr++;
@@ -823,38 +886,38 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 		file.write(screen, 1000);
 
 		addr = 0x63e8;
-		while(addr < 0x6400)
+		while (addr < 0x6400)
 		{
 			file << BYTE(0);
 			addr++;
 		}
 
 	}
-	else if(lstrcmpi(_T("prg"),type)==0)
+	else if (lstrcmpi(_T("prg"), type) == 0)
 	{
-		if(xsize!=160 || ysize!=200)
+		if (xsize != 160 || ysize != 200)
 			throw _T("Buffers are not in standard multi-color format");
 
-		static unsigned char viewer[]={
+		static unsigned char viewer[] = {
 		0x00,0x1f,0x78,0xa9,0x3b,0x8d,0x11,0xd0,0xa9,0x18,0x8d,0x16,0xd0,0xa9,0x18,0x8d,
 		0x18,0xd0,0xa2,0x00,0xbd,0x40,0x3f,0x9d,0x00,0x04,0xbd,0x40,0x40,0x9d,0x00,0x05,
 		0xbd,0x40,0x41,0x9d,0x00,0x06,0xbd,0x40,0x42,0x9d,0x00,0x07,0xbd,0x28,0x43,0x9d,
 		0x00,0xd8,0xbd,0x28,0x44,0x9d,0x00,0xd9,0xbd,0x28,0x45,0x9d,0x00,0xda,0xbd,0x28,
 		0x46,0x9d,0x00,0xdb,0xe8,0xd0,0xcd,0xad,0x10,0x47,0x8d,0x21,0xd0,0xad,0x11,0x47,
-		0x8d,0x20,0xd0,0x4c,0x51,0x1f};
+		0x8d,0x20,0xd0,0x4c,0x51,0x1f };
 
-		file.write(viewer,sizeof(viewer));
+		file.write(viewer, sizeof(viewer));
 
 		int pad = sizeof(viewer) - 2;	//minus prg header
-		while(pad < 256)
+		while (pad < 256)
 		{
 			file << BYTE(0);
 			pad++;
 		}
 
-		file.write(map,8000);
-		file.write(screen,1000);
-		file.write(color,1000);
+		file.write(map, 8000);
+		file.write(screen, 1000);
+		file.write(color, 1000);
 		file << *background;
 		file << *border;
 
@@ -866,6 +929,69 @@ void MCBitmap::Save(nmemfile &file, LPCTSTR type)
 		B2FreeFile(&bbin);
 
 		file.attach(bbout.data, bbout.size, true);
+	}
+	else if (lstrcmpi(_T("bin"), type) == 0)
+	{
+		//Multipaint C64 multicolor format
+		if (xsize != 160 || ysize != 200)
+			throw _T("Buffers are not in standard multi-color format");
+
+		file << *border;
+		file << *background;
+
+		//Just to not confuse Multipaint in any way, write all unidentified metadata (some are settings) produced by Multipaint
+		static const BYTE head[] = { 0x00,0x0A,0x0F,0x28,0x00,0x19 };
+		file.write(head, 6);
+
+		for (int r = 0; r < 4; r++)
+			file << BYTE(0);
+
+		file << BYTE(3);
+
+		while (file.getpos() < 0x103)
+			file << BYTE(0);
+
+		static const BYTE meta[] = { 0xFF,0xFF,0xFF,0x68,0x37,0x2B,0x70,0xA4,0xB2,0x6F,0x3D,0x86,0x58,0x8D,0x43,0x35,0x28,0x79,0xB8,0xC7,0x6F,0x6F,0x4F,0x25,0x43,0x39,0x00,0x9A,0x67,0x59,0x44,0x44,0x44,0x6C,0x6C,0x6C,0x9A,0xD2,0x84,0x6C,0x5E,0xB5,0x95,0x95,0x95 };
+
+		file.write(meta, sizeof(meta));
+
+		while (file.getpos() < 0x400)
+			file << BYTE(0);
+
+		//Write bitmap
+		for (int y = 0; y < 200; y++)
+		{
+			for (int x = 0; x < 40; x++)
+			{
+				int mapindex = (y / 8) * 320 + y % 8 + x * 8;
+				BYTE tmp = map[mapindex];
+				for (int bit = 7; bit >= 0; bit--)
+				{
+					file << BYTE((tmp >> bit) & 1);
+				}
+			}
+		}
+
+		// Fill up to screen and color data
+		while (file.getpos() < 0x10000)
+			file << BYTE(0);
+
+		for (int r = 0; r < 1000; r++)
+		{
+			file << BYTE(screen[r] & 0xf);
+		}
+		for (int r = 0; r < 1000; r++)
+		{
+			file << BYTE(screen[r] >> 4);
+		}
+		for (int r = 0; r < 1000; r++)
+		{
+			file << BYTE(color[r]);
+		}
+
+		// Fill rest to fixed size
+		while (file.getpos() < 88000)
+			file << BYTE(0);
 	}
 }
 

@@ -1244,7 +1244,7 @@ void CChildView::Load(LPCTSTR file, LPCTSTR iex)
 
 	if(ex.isempty())
 	{
-		ex=_T("bin");
+		ex=_T("raw");
 	}
 	else
 	{
@@ -1266,12 +1266,12 @@ void CChildView::Load(LPCTSTR file, LPCTSTR iex)
 		}
 		else
 		{
-			ex=_T("bin");
+			ex=_T("raw");
 		}
 	}
 
 found:
-	if(lstrcmpi(_T("bmp"),ex)==0 || lstrcmpi(_T("png"),ex)==0 || lstrcmpi(_T("jpg"),ex)==0 || lstrcmpi(_T("gif"),ex)==0 || lstrcmpi(_T("bin"),ex)==0)
+	if(lstrcmpi(_T("bmp"),ex)==0 || lstrcmpi(_T("png"),ex)==0 || lstrcmpi(_T("jpg"),ex)==0 || lstrcmpi(_T("gif"),ex)==0 || lstrcmpi(_T("raw"),ex)==0)
 	{
 		CImportDlg dlg;
 

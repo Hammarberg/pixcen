@@ -342,7 +342,7 @@ void MCFont::Load(nmemfile &file, LPCTSTR type, int version)
 {
 	__super::Load(file,type,version);
 
-	if(lstrcmpi(_T("bin"),type)==0)
+	if(lstrcmpi(_T("raw"),type)==0)
 	{
 		size_t len = file.len();
 
@@ -553,7 +553,7 @@ void SFont::Load(nmemfile &file, LPCTSTR type, int version)
 {
 	__super::Load(file,type,version);
 
-	if(lstrcmpi(_T("bin"),type)==0)
+	if(lstrcmpi(_T("raw"),type)==0)
 	{
 		size_t len = file.len();
 

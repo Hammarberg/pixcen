@@ -53,7 +53,7 @@ void Unrestricted::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
 	__super::GetSaveFormats(fmt);
 
 	//fmt.add(new SaveFormat(_T("Assembler"),_T("s")));
-	//fmt.add(new SaveFormat(_T("Binary"),_T("bin"),false));
+	//fmt.add(new SaveFormat(_T("Binary"),_T("raw"),false));
 }
 
 void Unrestricted::GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt)

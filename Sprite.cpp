@@ -122,14 +122,14 @@ void Sprite::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
 {
 	__super::GetSaveFormats(fmt);
 
-	//fmt.add(new SaveFormat(_T("Raw sprites"),_T("bin"),false));
+	//fmt.add(new SaveFormat(_T("Raw sprites"),_T("raw"),false));
 }
 
 void Sprite::Load(nmemfile &file, LPCTSTR type, int version)
 {
 	__super::Load(file,type,version);
 
-	if(lstrcmpi(_T("bin"),type)==0)
+	if(lstrcmpi(_T("raw"),type)==0)
 	{
 		size_t len = file.len();
 
@@ -164,7 +164,7 @@ void Sprite::Save(nmemfile &file, LPCTSTR type)
 {
 	__super::Save(file,type);
 
-	if(lstrcmpi(_T("bin"),type)==0)
+	if(lstrcmpi(_T("raw"),type)==0)
 	{
 		file.write(map, rmapsize);
 	}
@@ -309,14 +309,14 @@ void MCSprite::GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt)
 {
 	__super::GetSaveFormats(fmt);
 
-	//fmt.add(new SaveFormat(_T("Raw sprites"),_T("bin"),false));
+	//fmt.add(new SaveFormat(_T("Raw sprites"),_T("raw"),false));
 }
 
 void MCSprite::Load(nmemfile &file, LPCTSTR type, int version)
 {
 	__super::Load(file,type,version);
 
-	if(lstrcmpi(_T("bin"),type)==0)
+	if(lstrcmpi(_T("raw"),type)==0)
 	{
 		size_t len = file.len();
 
@@ -351,7 +351,7 @@ void MCSprite::Save(nmemfile &file, LPCTSTR type)
 {
 	__super::Save(file,type);
 
-	if(lstrcmpi(_T("bin"),type)==0)
+	if(lstrcmpi(_T("raw"),type)==0)
 	{
 		file.write(map, rmapsize);
 	}
