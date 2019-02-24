@@ -130,8 +130,6 @@ public:
 	virtual void SetPixel(int x, int y, BYTE color) = NULL;
 
 	//Should overload
-	virtual void GetPixelBatch(BYTE *p, int x, int y, int w, int h);	//Default slow implementation
-
 	virtual void GetCellInfo(int cx, int cy, int w, int h, CellInfo *info);
 	virtual void SetCellInfo(int cx, int cy, int w, int h, CellInfo *info);
 
@@ -526,7 +524,6 @@ protected:
 	BYTE GetPixel(int x, int y);
 	BYTE GetPixelColourMap(int x, int y);
 	void SetPixel(int x, int y, BYTE col);
-	void GetPixelBatch(BYTE *p, int x, int y, int w, int h) override;
 	int GetPixelWidth(void){return 2;}
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	bool CanOptimize(void){return true;}
@@ -565,7 +562,6 @@ protected:
 	BYTE GetPixel(int x, int y);
 	BYTE GetPixelColourMap(int x, int y) { return 0; }
 	void SetPixel(int x, int y, BYTE col);
-	void GetPixelBatch(BYTE *p, int x, int y, int w, int h) override;
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);
 	bool CanOptimize(void){return true;}
 	void Import(CImage &img);
@@ -597,7 +593,6 @@ protected:
 	BYTE GetPixel(int x, int y);
 	BYTE GetPixelColourMap(int x, int y) { return 0; }
 	void SetPixel(int x, int y, BYTE col);
-	void GetPixelBatch(BYTE *p, int x, int y, int w, int h) override;
 	void GetCellInfo(int cx, int cy, int w, int h, CellInfo *info);
 	int GetPixelWidth(void){return mode == W_UNRESTRICTED ? 2 : 1;}
 	void GetSaveFormats(narray<autoptr<SaveFormat>,int> &fmt);

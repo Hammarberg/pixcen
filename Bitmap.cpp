@@ -424,18 +424,6 @@ BYTE Bitmap::GetPixel(int x, int y)
 	return GetPixelInternal(x, y);
 }
 
-void Bitmap::GetPixelBatch(BYTE *p, int xs, int ys, int w, int h)
-{
-	for (int y = ys; y < ys + h; y++)
-	{
-		for (int x = xs; x < xs + w; x++)
-		{
-			*p = GetPixelInternal(x, y);
-			p++;
-		}
-	}
-}
-
 void Bitmap::SetPixel(int x, int y, BYTE col)
 {
 	ASSERT(x>=0 && x<xsize && y>=0 && y<ysize);

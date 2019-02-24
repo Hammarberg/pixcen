@@ -1044,18 +1044,6 @@ BYTE MCBitmap::GetPixelColourMap(int x, int y)
 	return colour;
 }
 
-void MCBitmap::GetPixelBatch(BYTE *p, int xs, int ys, int w, int h)
-{
-	for (int y = ys; y < ys + h; y++)
-	{
-		for (int x = xs; x < xs + w; x++)
-		{
-			*p = GetPixelInternal(x, y);
-			p++;
-		}
-	}
-}
-
 void MCBitmap::SetPixel(int x, int y, BYTE col)
 {
 	ASSERT(x>=0 && x<xsize && y>=0 && y<ysize);
