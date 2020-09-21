@@ -539,6 +539,8 @@ protected:
 private:
 	inline BYTE GetPixelInternal(int x, int y);
 
+	static int DecompressAmicaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size);
+
 	static int DecompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size);
 	static int CompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size);
 

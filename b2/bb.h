@@ -1,5 +1,6 @@
 #ifndef _bb_h_
 #define _bb_h_
+#define _CRT_SECURE_NO_WARNINGS
 
 #ifndef NULL
 #define NULL ((void*)0)

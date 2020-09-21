@@ -106,7 +106,58 @@ void MCBitmap::GetLoadFormats(narray<autoptr<SaveFormat>,int> &fmt)
 	fmt.add(new SaveFormat(_T("Paint Magic"),_T("pmg"),true,160,200,MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Multigraf"), _T("mg"), true, 160, 200, MC_BITMAP));
 	fmt.add(new SaveFormat(_T("Multipaint"), _T("bin;binmc"), true, 160, 200, MC_BITMAP));
+	fmt.add(new SaveFormat(_T("Amica"), _T("ami"), true, 160, 200, MC_BITMAP));
 }
+
+int MCBitmap::DecompressAmicaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size)
+{
+	int r = 0, w = 0 ,t;
+	BYTE b;
+	while (r < stream_size)
+	{
+		if (r == stream_size)
+			return -1;
+		b = stream[r];
+		r++;
+
+		if (b == 0xc2)
+		{
+			//rle
+			if (r == stream_size)
+				return -1;
+			t = stream[r];
+			r++;
+
+			if (!t)
+				return w;
+
+			if (r == stream_size)
+				return -1;
+			b = stream[r];
+			r++;
+
+			while (t)
+			{
+				if (w == buffer_size)
+					return -1;
+				buffer[w] = b;
+				w++;
+				--t;
+			}
+		}
+		else
+		{
+			//Literal
+			if (w == buffer_size)
+				return -1;
+			buffer[w] = b;
+			w++;
+		}
+	}
+
+	return -1;
+}
+
 
 int MCBitmap::DecompressKoalaStream(const BYTE *stream, int stream_size, BYTE *buffer, int buffer_size)
 {
@@ -365,6 +416,14 @@ nstr MCBitmap::IdentifyFile(nmemfile &file)
 			ex = _T("zom");
 		}
 	}
+	else if (addr == 0x4000)
+	{
+		BYTE buffer[20000];
+		if (DecompressAmicaStream(((BYTE *)file) + 2, int(file.len() - 2), buffer, 20000)  > 0)
+		{
+			ex = _T("ami");
+		}
+	}
 
 	return ex;
 }
@@ -511,6 +570,26 @@ void MCBitmap::Load(nmemfile &file, LPCTSTR type, int version)
 
 		//Clean up masks
 		for(int r=0;r<1000;r++)
+			color[r] &= 0x0f;
+
+		*border = GuessBorderColor();
+	}
+	else if (lstrcmpi(_T("ami"), type) == 0)
+	{
+		BYTE buffer[20000];	//Decompress will skip PRG header
+		if (DecompressAmicaStream(((BYTE *)file) + 2, int(file.len() - 2), buffer, 20000) < 0)
+		{
+			throw _T("Invalid Amica stream");
+		}
+
+		memcpy(map, buffer, 8000);
+		memcpy(screen, buffer + 8000, 1000);
+		memcpy(color, buffer + 9000, 1000);
+
+		*background = buffer[10000] & 0x0f;
+
+		//Clean up masks
+		for (int r = 0; r<1000; r++)
 			color[r] &= 0x0f;
 
 		*border = GuessBorderColor();
