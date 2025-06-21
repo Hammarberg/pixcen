@@ -150,13 +150,15 @@ void Sprite::Load(nmemfile &file, LPCTSTR type, int version)
 		Create(num * 64, 3, 0);
 
 		*background = 0;
-		color[0] = 11;
-		color[1] = 12;
-		color[2] = 1;
+
+		//; if we're loading RAW format, we have no sprite colours - so default them all to white
+		for (int i = 0; i < num; i++)
+		{
+			color[i] = 1;
+		}
 
 		file.read(map, len);
 	}
-
 }
 
 
