@@ -108,7 +108,7 @@ void Sprite::SetPixel(int x, int y, BYTE col)
 
 int Sprite::GetMask(int x, int y)
 {
-	int cx = x/22;
+	int cx = x/24;
 	int cy = y/21;
 
 	return (map[64 * (cy * (xsize/24) + cx) + y%21 * 3 + (x/8)%3] >> (1*(7-(x%8)))) & 1;
@@ -199,7 +199,7 @@ MCSprite::MCSprite(int x, int y, int backbuffers)
 {
 	mode = MC_SPRITE;
 
-	if(x%12!=0)throw _T("X must be divisible by 24");
+	if(x%12!=0)throw _T("X must be divisible by 12");
 	if(y%21!=0)throw _T("Y must be divisible by 21");
 
 	xsize=x;
@@ -374,7 +374,7 @@ void MCSprite::Import(CImage &img)
 		if (num >= 3)ext[1] = top[2];
 
 		PushLocks();
-		lock[0] = lock[1] = lock[3] = 1;
+		lock[0] = lock[1] = lock[2] = 1;
 		lock[3] = lock[4] = lock[5] = 0;
 
 		help.ReduceColors(4, top, num < 3 ? num : 3);
