@@ -20,3 +20,4 @@ res/ver
 *.db
 Pixcen.VC.VC.opendb
 upload/
+.vs
