@@ -545,11 +545,7 @@ afx_msg LRESULT CMainFrame::OnUmUpdateVersion(WPARAM wParam, LPARAM lParam)
 	{
 		if(MessageBox(_T("There is an updated version of Pixcen.\nWould you like to download?"),_T("New version"),MB_YESNO|MB_ICONQUESTION) == IDYES)
 		{
-#ifdef _M_X64
-			ShellExecute(NULL,L"open",L"http://binarybone.com/pixcen/pixcen64.zip",NULL,NULL,SW_SHOWNORMAL);
-#else
 			ShellExecute(NULL,L"open",L"http://binarybone.com/pixcen/pixcen.zip",NULL,NULL,SW_SHOWNORMAL);
-#endif
 		}
 	}
 
