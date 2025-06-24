@@ -7,9 +7,9 @@ name: MSBuild
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "development" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "development" ]
 
 env:
   # Path to the solution file relative to the root of the project.
@@ -42,3 +42,12 @@ jobs:
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Zip Artifacts
+      run: Compress-Archive -Path x64\Release\Pixcen.exe -DestinationPath Pixcen.zip
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Pixcen
+        path: Pixcen.zip
