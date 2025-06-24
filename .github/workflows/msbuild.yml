@@ -6,22 +6,22 @@
 name: MSBuild
 
 on:
-push:
+  push:
     branches: [ "master", "development" ]
-pull_request:
+  pull_request:
     branches: [ "master", "development" ]
 
 env:
-    # Path to the solution file relative to the root of the project.
-    SOLUTION_FILE_PATH: .
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: .
 
-    # Configuration type to build.
-    # You can convert this to a build matrix if you need coverage of multiple configuration types.
-    # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
-    BUILD_CONFIGURATION: ReleaseRevision
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: ReleaseRevision
 
 permissions:
-    contents: read
+  contents: read
 
 jobs:
   build:
@@ -47,4 +47,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Pixcen
-        path: x64\Release\Pixcen.exe
+        path: x64\ReleaseRevision\Pixcen.exe
